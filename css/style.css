@@ -1392,12 +1392,6 @@ h3 {
     padding: 1.75rem;
   }
 }
-@media (max-width: 30rem) {
-  .hero h1 {
-    max-width: 100%;
-    font-size: clamp(2rem, 10vw, 2.4rem);
-  }
-}
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
