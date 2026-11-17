@@ -185,11 +185,14 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const previous = carousel.querySelector('[data-carousel-prev]');
   const next = carousel.querySelector('[data-carousel-next]');
   const status = carousel.querySelector('[data-carousel-status]');
+  const rotationToggle = carousel.querySelector('[data-carousel-rotation]');
 
-  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status) return;
+  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status || !rotationToggle) return;
 
   controls.hidden = false;
   let statusFrame = 0;
+  let rotationTimer = null;
+  let rotationPaused = reduceMotion;
 
   const getStep = () => {
     const gap = Number.parseFloat(window.getComputedStyle(track).gap) || 0;
@@ -206,15 +209,66 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     status.textContent = (Math.min(activeIndex + 1, slides.length)) + ' de ' + slides.length;
   };
 
+  const updateRotationControl = () => {
+    rotationToggle.setAttribute('aria-pressed', String(rotationPaused));
+    rotationToggle.textContent = rotationPaused ? 'Retomar depoimentos' : 'Pausar depoimentos';
+    rotationToggle.hidden = motionPreference.matches;
+  };
+
+  const stopRotation = () => {
+    if (rotationTimer === null) return;
+    window.clearInterval(rotationTimer);
+    rotationTimer = null;
+  };
+
+  const advance = () => {
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    const atEnd = viewport.scrollLeft >= maxScroll - 1;
+    status.setAttribute('aria-live', 'off');
+    viewport.scrollTo({
+      left: atEnd ? 0 : viewport.scrollLeft + getStep(),
+      behavior: 'smooth',
+    });
+  };
+
+  const startRotation = () => {
+    if (rotationTimer !== null || rotationPaused || motionPreference.matches) return;
+    rotationTimer = window.setInterval(advance, 6000);
+  };
+
+  const resetRotation = () => {
+    stopRotation();
+    startRotation();
+  };
+
+  const pauseRotationForInteraction = () => {
+    if (rotationPaused) return;
+    rotationPaused = true;
+    stopRotation();
+    updateRotationControl();
+    status.setAttribute('aria-live', 'polite');
+  };
+
   const move = (direction) => {
     viewport.scrollBy({
       left: direction * getStep(),
-      behavior: reduceMotion ? 'auto' : 'smooth',
+      behavior: motionPreference.matches ? 'auto' : 'smooth',
     });
+    resetRotation();
+    status.setAttribute('aria-live', 'polite');
   };
 
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
+  carousel.addEventListener('focusin', pauseRotationForInteraction);
+  viewport.addEventListener('pointerdown', pauseRotationForInteraction);
+  rotationToggle.addEventListener('click', () => {
+    rotationPaused = !rotationPaused;
+    if (rotationPaused) stopRotation();
+    else startRotation();
+    updateRotationControl();
+    status.setAttribute('aria-live', 'polite');
+  });
 
   viewport.addEventListener('scroll', () => {
     if (statusFrame) return;
@@ -225,7 +279,19 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   }, { passive: true });
 
   window.addEventListener('resize', updateControls);
+  motionPreference.addEventListener('change', (event) => {
+    rotationPaused = event.matches;
+    if (rotationPaused) stopRotation();
+    else startRotation();
+    updateRotationControl();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopRotation();
+    else startRotation();
+  });
   updateControls();
+  updateRotationControl();
+  startRotation();
 });
 
 faqAnswers.forEach((details) => {

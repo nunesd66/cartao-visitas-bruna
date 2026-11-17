@@ -25,7 +25,7 @@ Capturas da versão atual, feitas localmente em 17/11/2026:
 - Galerias de resultados na seção Serviços, com alternância automática a cada 3 segundos, transição de 0,5 segundo e um controle compartilhado de pausa/retomada; respeitam a preferência por movimento reduzido do dispositivo.
 - Casos reais, apresentação da profissional e avaliações de clientes.
 - Perguntas frequentes, chamada final, localização e canais de contato.
-- Navegação por teclado, menu móvel, cabeçalho que acompanha a direção da rolagem e controles do carrossel de depoimentos.
+- Navegação por teclado, menu móvel, cabeçalho que acompanha a direção da rolagem e carrossel de depoimentos com avanço automático, pausa/retomada e botões anterior/próximo; a rotação respeita a preferência por movimento reduzido.
 
 ### Links do rodapé
 
