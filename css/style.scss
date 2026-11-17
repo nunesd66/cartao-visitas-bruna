@@ -523,11 +523,16 @@ h3 {
 
 .services__grid {
   display: grid;
+  grid-auto-rows: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 
 .service-card {
   position: relative;
+  display: flex;
+  height: 100%;
+  flex-direction: column;
   overflow: hidden;
   border: 0.0625rem solid var(--color-border);
   border-radius: var(--radius-md);
@@ -548,22 +553,32 @@ h3 {
 }
 
 .service-card > img.henna-comparison {
-  aspect-ratio: auto;
+  aspect-ratio: 4 / 3;
+  background: var(--color-surface-soft);
   object-fit: contain;
 }
 
 .service-card__body {
   position: relative;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   padding: 1.4rem;
+}
+
+.service-card__body h3 {
+  min-height: 3.2em;
 }
 
 .service-card__body p {
   margin-bottom: 0.4rem;
   color: var(--color-text-muted);
+  min-height: 6.6em;
   font-size: 0.93rem;
 }
 
 .service-card__body > .button {
+  margin-top: auto;
   width: 100%;
   white-space: normal;
 }
@@ -1287,7 +1302,7 @@ h3 {
   }
 
   .services__grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .testimonials__grid {
@@ -1438,6 +1453,10 @@ h3 {
 }
 
 @media (min-width: 80rem) {
+  .services__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .header__inner {
     min-height: 5.2rem;
   }
