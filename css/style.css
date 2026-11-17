@@ -1793,6 +1793,9 @@ body:has(.mobile-nav[open]) {
   }
 }
 @media (min-width: 80rem) {
+  html {
+    scroll-padding-top: 6rem;
+  }
   .desktop-nav {
     flex-direction: row;
     align-items: center;
