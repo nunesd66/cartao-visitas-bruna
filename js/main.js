@@ -294,22 +294,12 @@ const imageRotators = [];
 
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
-  const toggle = gallery.querySelector('[data-rotation-toggle]');
-  if (images.length < 2 || !toggle) return;
+  if (images.length < 2) return;
 
   let activeIndex = images.findIndex((image) => image.classList.contains('is-active'));
   if (activeIndex < 0) activeIndex = 0;
 
   let timer = null;
-  let paused = motionPreference.matches;
-
-  const renderState = () => {
-    toggle.textContent = paused ? 'Retomar' : 'Pausar';
-    toggle.setAttribute(
-      'aria-label',
-      paused ? 'Retomar rotação automática das imagens' : 'Pausar rotação automática das imagens',
-    );
-  };
 
   const rotate = () => {
     images[activeIndex].classList.remove('is-active');
@@ -326,37 +316,20 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null) return;
-    timer = window.setInterval(rotate, 5000);
-  };
-
-  const pause = () => {
-    paused = true;
-    stop();
-    renderState();
+    if (timer !== null || motionPreference.matches) return;
+    timer = window.setInterval(rotate, 3000);
   };
 
   images.forEach((image, index) => {
     if (index === activeIndex) image.removeAttribute('aria-hidden');
     else image.setAttribute('aria-hidden', 'true');
   });
-  toggle.hidden = false;
-  toggle.addEventListener('click', () => {
-    paused = !paused;
-    if (paused) stop();
-    else start();
-    renderState();
-  });
-  gallery.addEventListener('focusin', pause);
-  gallery.addEventListener('pointerenter', pause);
 
-  const controller = { pause, start, stop, get paused() { return paused; } };
+  const controller = { start, stop };
   imageRotators.push(controller);
-  renderState();
-  if (!paused) start();
+  start();
 });
 
 motionPreference.addEventListener('change', (event) => {
-  if (!event.matches) return;
-  imageRotators.forEach((rotator) => rotator.pause());
+  imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
 });

@@ -670,37 +670,11 @@ body:has(.mobile-nav[open]) {
   height: 100%;
   object-fit: cover;
   opacity: 0;
-  transition: opacity 1s ease;
+  transition: opacity 500ms ease;
 }
 
 .service-card__gallery img.is-active {
   opacity: 1;
-}
-
-.gallery-rotation-toggle {
-  position: absolute;
-  z-index: 1;
-  right: 0.75rem;
-  bottom: 0.75rem;
-  min-height: 2.5rem;
-  padding: 0.5rem 0.85rem;
-  border: 0.0625rem solid rgb(255 255 255 / 0.8);
-  border-radius: 999px;
-  color: #fff;
-  background: rgb(28 37 29 / 0.92);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.gallery-rotation-toggle[hidden] {
-  display: none;
-}
-
-.gallery-rotation-toggle:focus-visible {
-  outline: 0.2rem solid #fff;
-  outline-offset: 0.15rem;
 }
 
 @media (prefers-reduced-motion: reduce) {

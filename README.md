@@ -22,6 +22,7 @@ Capturas da versão atual, feitas localmente em 17/11/2026:
 
 - Hero com chamada para agendamento.
 - Serviços de micropigmentação, design de sobrancelhas, tintura e henna.
+- Galerias de resultados na seção Serviços, com alternância automática a cada 3 segundos e transição de 0,5 segundo; respeitam a preferência por movimento reduzido do dispositivo.
 - Casos reais, apresentação da profissional e avaliações de clientes.
 - Perguntas frequentes, chamada final, localização e canais de contato.
 - Navegação por teclado, menu móvel, cabeçalho que acompanha a direção da rolagem e controles do carrossel de depoimentos.
