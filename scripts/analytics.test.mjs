@@ -49,6 +49,15 @@ test('sin ID real, consentimento nao inicia fila, script ou eventos', () => {
   assert.deepEqual(calls(), []);
 });
 
+test('ID real configurado nao ativa coleta nem solicita Google tag sem consentimento', () => {
+  const { analytics, scripts, calls } = createAnalytics('G-YVS4N0BZ9S');
+
+  assert.equal(analytics.isEnabled(), false);
+  assert.equal(analytics.track('whatsapp_booking_click', { cta_location: 'hero' }), false);
+  assert.equal(scripts.length, 0);
+  assert.deepEqual(calls(), []);
+});
+
 test('exige consentimento, carrega uma tag e configura o consent mode uma vez', () => {
   const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
 

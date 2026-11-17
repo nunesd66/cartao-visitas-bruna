@@ -77,19 +77,19 @@ O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na 
 
 Em telas abaixo de 60 rem, o botão de fixar cabeçalho fica oculto para manter a marca e o menu dentro da largura disponível. Ele aparece apenas em desktop com ponteiro preciso; a navegação móvel segue sem esse controle.
 
-Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. O GA4 permanece desativado até haver um Measurement ID real e uma decisão de consentimento conectada.
+Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. O Measurement ID real está configurado, mas o GA4 permanece desativado até haver uma decisão de consentimento aprovada e conectada.
 
 ## Mensuração com Google Analytics 4
 
 ### Arquitetura e estado padrão
 
-A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém `meta[name="ga4-measurement-id"]` com valor vazio; este não é um ID fictício. `js/analytics.js`, carregado antes de `js/main.js`, só solicita o Google tag quando encontra um ID válido `G-...` e recebe consentimento explícito por `window.BrunaAnalytics.setConsent(true)`. Sem qualquer uma dessas condições, não cria `dataLayer`, não carrega script remoto, não define cookies e descarta eventos.
+A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém o Measurement ID real confirmado para o fluxo Web: `G-YVS4N0BZ9S` (Stream ID `16362293759`). `js/analytics.js`, carregado antes de `js/main.js`, só solicita o Google tag depois de receber consentimento explícito por `window.BrunaAnalytics.setConsent(true)`. O HTML não chama essa API; portanto, mesmo com o ID configurado, não cria `dataLayer`, não carrega script remoto, não define cookies e descarta eventos até a integração de consentimento ser aprovada e conectada.
 
 O fluxo usa o modo básico de Consent Mode: o tag não carrega antes da escolha de consentimento. Após a concessão, o código define todos os estados como `denied`, atualiza apenas `analytics_storage` para `granted` e mantém os estados de publicidade negados. Google Signals e personalização de anúncios ficam desativados. Ao negar ou revogar, o código bloqueia os eventos próprios e, se o tag já tiver sido iniciado, atualiza os estados para `denied`.
 
 Não existe banner, texto de consentimento nem armazenamento da escolha neste projeto. Uma CMP ou solução aprovada deve chamar `window.BrunaAnalytics.setConsent(true)` após a pessoa autorizar Analytics e `window.BrunaAnalytics.setConsent(false)` ao negar ou revogar. Ela também precisa restaurar a escolha previamente registrada em cada carregamento. A redação e a solução de consentimento continuam dependências externas; não ativar o ID antes disso.
 
-O `page_view` é enviado uma vez após a concessão, com `send_page_view: false` na configuração para evitar duplicidade. `page_location` é limitado à origem e ao caminho; `page_referrer`, quando disponível, é limitado à origem. Query string e fragmento não são enviados por esses parâmetros. Isso preserva indicação de origem por domínio, mas não atribuição de campanhas UTM. Não incluir dados pessoais em URLs de entrada.
+O código configura `send_page_view: false` e envia um `page_view` manual após consentimento, evitando a pageview padrão do comando `config`. A Mensuração otimizada da propriedade também pode enviar pageviews em alterações do histórico do navegador, independentemente dessa opção; como o site navega por âncoras, desative a medição de mudanças por histórico na propriedade antes de ativar a coleta. `page_location` é limitado à origem e ao caminho; `page_referrer`, quando disponível, é limitado à origem. Query string e fragmento não são enviados por esses parâmetros. Isso preserva indicação de origem por domínio, mas não atribuição de campanhas UTM. Não incluir dados pessoais em URLs de entrada.
 
 ### Eventos e parâmetros
 
@@ -106,13 +106,13 @@ O listener delegado existente em `js/main.js` continua sendo o único listener d
 
 ### Configuração e ativação
 
-1. No fluxo Web da propriedade GA4, copie o Measurement ID real iniciado por `G-`.
-2. Depois da decisão de consentimento e da integração com a solução aprovada, preencha somente o `content` de `meta[name="ga4-measurement-id"]` em `index.html`.
-3. Conecte a CMP/solução aprovada à API `window.BrunaAnalytics.setConsent`. Não persista a escolha neste código; a solução de consentimento é responsável por guardar e restaurar a escolha.
-4. Na propriedade GA4, revise a Mensuração otimizada: desative cliques de saída para evitar um segundo evento automático `click` e coleta de `link_url` (os canais relevantes já têm eventos próprios); desative mudanças de página baseadas no histórico do navegador para não tratar âncoras/hash da landing page como novas páginas. Revise também quaisquer outras medições automáticas antes de ativar.
+1. O Measurement ID real já está configurado: `G-YVS4N0BZ9S`; não substituir por outro sem confirmação da propriedade.
+2. Defina e aprove a solução de consentimento, incluindo como informar a escolha, guardar/restaurar a decisão e chamar `window.BrunaAnalytics.setConsent(true|false)`. Nenhuma interface ou texto de consentimento foi criado nesta alteração.
+3. A Mensuração otimizada está ativada na propriedade. Antes da coleta, desligue **cliques de saída** ou aprove explicitamente a coleta sobreposta: os cliques personalizados `contact_intent`/`contact_channel_click` coexistiriam com o evento automático `click`, que inclui `link_url` (potencialmente URL de WhatsApp com telefone e mensagem pré-preenchida). Recomendamos desligar cliques de saída para reduzir duplicação e exposição de dados.
+4. Desative também mudanças de pageview baseadas em histórico do navegador, evitando pageviews extras em navegação interna; mantenha o `page_view` manual único. Revise os demais eventos da Mensuração otimizada antes de ativar.
 5. Após publicar com autorização, valide a tag no Tag Assistant e no DebugView. Só afirmar recebimento quando houver evidência real nesses produtos.
 
-Referências oficiais: [instalação do Google tag](https://support.google.com/analytics/answer/14183469?hl=pt-BR), [eventos recomendados GA4](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [Consent Mode para sites](https://developers.google.com/tag-platform/security/guides/consent), [eventos de Mensuração otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR), [parâmetros e dimensões personalizadas](https://developers.google.com/analytics/devguides/collection/ga4/event-parameters).
+Referências oficiais: [instalação do Google tag](https://support.google.com/analytics/answer/14183469?hl=pt-BR), [eventos recomendados GA4](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [Consent Mode para sites](https://developers.google.com/tag-platform/security/guides/consent), [eventos de Mensuração otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR), [pageviews e mudanças de histórico](https://developers.google.com/analytics/devguides/collection/ga4/views), [parâmetros e dimensões personalizadas](https://developers.google.com/analytics/devguides/collection/ga4/event-parameters).
 
 ### Testes locais
 
@@ -122,7 +122,7 @@ node --check js/main.js
 node --test scripts/analytics.test.mjs
 ```
 
-Os testes usam um ID de fixture somente no contexto Node isolado; o HTML público permanece sem Measurement ID. Eles verificam ausência de script/fila sem configuração, consentimento obrigatório, uma única inicialização, normalização de eventos, filtragem de parâmetros e revogação. O envio real deve ser confirmado no Tag Assistant/DebugView após configuração e autorização; os testes locais não simulam dados recebidos pelo GA4.
+Os testes usam um ID de fixture somente no contexto Node isolado. O HTML contém o ID real, mas não chama a API de consentimento, então a tag remota continua ausente. Os testes verificam ausência de script/fila sem consentimento, inicialização única, normalização de eventos, filtragem de parâmetros e revogação. O envio real deve ser confirmado no Tag Assistant/DebugView após a integração e autorização; os testes locais não simulam dados recebidos pelo GA4.
 
 Para reverter um deploy defeituoso, crie um novo commit com `git revert <sha-do-commit-de-publicação>` e confirme o novo workflow de Pages. A tag `backup-2026-11-16` é uma referência histórica anterior a alterações aprovadas depois de 16/11; não mova `master` diretamente para ela nem use force-push.
 
