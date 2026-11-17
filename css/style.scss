@@ -1339,6 +1339,12 @@ h3 {
   text-decoration: none;
 }
 
+.site-footer nav a[href^="https://wa.me/"] {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+}
+
 .site-footer nav a:hover {
   color: #fff;
   text-decoration: underline;
