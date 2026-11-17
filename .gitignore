@@ -1,9 +1,12 @@
 /*
 !/.gitignore
+!/README.md
 !/index.html
 !/css/
 !/js/
 !/images/
+!/docs/
+!/docs/**
 
 /css/*
 !/css/style.css
