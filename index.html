@@ -67,6 +67,10 @@
 
         <a class="button button--small header__cta" data-analytics-event="whatsapp_booking_click" data-analytics-location="header_desktop" href="https://wa.me/5534992797055?text=Ol%C3%A1%2C%20quero%20agendar%20um%20hor%C3%A1rio%20para%20meu%20atendimento." target="_blank" rel="noopener noreferrer"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 11.7a8.4 8.4 0 0 1-12.4 7.4L3.5 20l.9-4.4A8.4 8.4 0 1 1 20.5 11.7Z"/><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.496.1-.198.05-.372-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.693.626.711.226 1.358.194 1.87.118.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.412-.074-.124-.272-.198-.57-.347z"/></svg><span>Agendar meu hor&#225;rio</span></a>
 
+        <button class="header-pin" type="button" data-header-pin aria-label="Fixar cabeçalho" aria-pressed="false" title="Fixar cabeçalho">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3h6l-.8 5 3.8 3v1H6v-1l3.8-3L9 3Z"/><path d="M12 12v9"/></svg>
+        </button>
+
         <details class="mobile-nav">
           <summary aria-label="Abrir menu de navegação" aria-expanded="false">
             <span aria-hidden="true"></span>
@@ -116,16 +120,17 @@
               fetchpriority="high"
               decoding="async"
             >
+            <span class="photo-watermark" aria-hidden="true">@abrunasobrancelhas</span>
             <p class="hero__note">Mais que sobrancelhas:<br>confiança para se reconhecer.</p>
           </div>
         </div>
       </section>
 
-      <section class="section services" id="servicos" aria-labelledby="services-title">
+      <section class="section services" id="servicos" aria-labelledby="casos-reais">
         <div class="container">
           <header class="section-heading section-heading--center">
-            <p class="eyebrow" id="casos-reais">Serviços</p>
-            <h2 id="services-title">Cuidado em cada detalhe</h2>
+            <p class="eyebrow">Serviços</p>
+            <h2 id="casos-reais">Cuidado em cada detalhe</h2>
             <p>Cada escolha é feita com técnica e atenção à sua individualidade. As fotos mostram resultados reais de clientes atendidas pela Bruna.</p>
           </header>
 
@@ -134,7 +139,6 @@
               <div class="service-card__gallery" data-image-rotator role="group" aria-label="Resultados de micropigmentação esfumada">
                 <img class="is-active" src="images/1.jpg" width="1600" height="1600" alt="Resultado de micropigmentação esfumada com acabamento natural" loading="lazy" decoding="async">
                 <img src="images/2.JPG" width="2410" height="1499" alt="Outro resultado de micropigmentação esfumada" loading="lazy" decoding="async" aria-hidden="true">
-                <button class="gallery-rotation-toggle" type="button" data-rotation-toggle hidden>Pausar</button>
               </div>
               <div class="service-card__body">
                 <h3>Micropigmentação esfumada | Natural Shadow</h3>
@@ -147,7 +151,6 @@
               <div class="service-card__gallery" data-image-rotator role="group" aria-label="Resultados de design de sobrancelhas">
                 <img class="is-active" src="images/IMG_3113.JPG" width="2408" height="1387" alt="Resultado de design de sobrancelhas com fios alinhados e acabamento natural" loading="lazy" decoding="async">
                 <img src="images/IMG_3114.JPG" width="2410" height="1462" alt="Outro resultado de design de sobrancelhas com acabamento natural" loading="lazy" decoding="async" aria-hidden="true">
-                <button class="gallery-rotation-toggle" type="button" data-rotation-toggle hidden>Pausar</button>
               </div>
               <div class="service-card__body">
                 <h3>Design de sobrancelhas</h3>
@@ -157,14 +160,17 @@
             </article>
 
             <article class="service-card">
-              <img
-                src="images/design-com-tintura.jpg"
-                width="1022"
-                height="592"
-                alt="Resultado de design de sobrancelhas com tintura"
-                loading="lazy"
-                decoding="async"
-              >
+              <div class="service-card__photo">
+                <img
+                  src="images/design-com-tintura.jpg"
+                  width="1022"
+                  height="592"
+                  alt="Resultado de design de sobrancelhas com tintura"
+                  loading="lazy"
+                  decoding="async"
+                >
+                <span class="photo-watermark" aria-hidden="true">@abrunasobrancelhas</span>
+              </div>
               <div class="service-card__body">
                 <h3>Design com tintura</h3>
                 <p>Design finalizado com tintura que tem por objetivo tingir os pelos. Indicado para quem deseja realçar a cor das sobrancelhas sem deixar de lado a naturalidade. Durabilidade de até 25 dias nos pelos.</p>
@@ -184,7 +190,7 @@
       </section>
 
 
-      <section class="section about" id="sobre" aria-labelledby="about-title">
+      <section class="section about" id="sobre" aria-labelledby="about-eyebrow">
         <div class="container about__grid">
           <div class="about__visual">
             <img
@@ -195,10 +201,11 @@
               loading="lazy"
               decoding="async"
             >
+            <span class="photo-watermark" aria-hidden="true">@abrunasobrancelhas</span>
           </div>
           <div class="about__content">
-            <p class="eyebrow" id="about-eyebrow">Quem vai cuidar de você</p>
-            <h2 id="about-title">Beleza é sentir-se bem na própria pele</h2>
+            <p class="eyebrow">Quem vai cuidar de você</p>
+            <h2 id="about-eyebrow">Beleza é sentir-se bem na própria pele</h2>
             <div class="about__intro">
               <p>Olá, sou a Bruna! Especialista em micropigmentação e design de sobrancelhas. Falo em primeira pessoa porque meu trabalho carrega muito de quem eu sou. Desde pequena, sempre tive uma conexão com a arte. Desenhar, pintar, criar e transformar ideias em algo concreto sempre fizeram parte de mim. E foi na arte das sobrancelhas — uma arte feita na pele humana — que encontrei uma forma de transformar essa paixão em profissão.</p>
               <p>Acredito que beleza não precisa seguir regras ou tendências. Para mim, uma sobrancelha bonita é aquela que respeita quem você é, suas características e o seu gosto pessoal.</p>
@@ -216,11 +223,11 @@
         </div>
       </section>
 
-      <section class="section testimonials" id="depoimentos" aria-labelledby="testimonials-title">
+      <section class="section testimonials" aria-labelledby="depoimentos">
         <div class="container">
           <header class="section-heading section-heading--center">
             <p class="eyebrow">Histórias de autoestima</p>
-            <h2 id="testimonials-title">O que dizem as clientes</h2>
+            <h2 id="depoimentos">O que dizem as clientes</h2>
             <p>Avaliações reais do Google e mensagens recebidas pelo Instagram.</p>
           </header>
 
@@ -344,17 +351,16 @@
         </div>
       </section>
 
-      <section class="section faq" id="faq" aria-labelledby="faq-title">
+      <section class="section faq" aria-labelledby="faq">
         <div class="container faq__grid">
           <div class="faq__intro">
             <p class="eyebrow">Antes do seu atendimento</p>
-            <h2 id="faq-title">Dúvidas frequentes</h2>
+            <h2 id="faq">Dúvidas frequentes</h2>
             <p>Informações iniciais para você chegar tranquila e segura à sua escolha.</p>
             <form class="faq-question" data-whatsapp-form>
               <label for="faq-question-input">Ainda tem uma dúvida específica?</label>
               <textarea id="faq-question-input" name="question" rows="3" maxlength="500" placeholder="Escreva sua dúvida aqui..." required></textarea>
               <button class="button button--small" type="submit">Enviar dúvida pelo WhatsApp</button>
-              <a class="faq-question__fallback" href="https://wa.me/5534992797055?text=Ol%C3%A1%2C%20tenho%20uma%20d%C3%BAvida%20espec%C3%ADfica%20sobre%20os%20atendimentos." target="_blank" rel="noopener noreferrer">Prefiro falar sem escrever a dúvida</a>
             </form>
           </div>
           <div class="faq__list">
@@ -421,11 +427,11 @@
         </div>
       </section>
 
-      <section class="section contact" id="contato" aria-labelledby="contact-title">
+      <section class="section contact" aria-labelledby="contato">
         <div class="container contact__grid">
           <div class="contact__intro">
             <p class="eyebrow">Localização &amp; contato</p>
-            <h2 id="contact-title">Onde nos encontrar?</h2>
+            <h2 id="contato">Onde nos encontrar?</h2>
           </div>
 
           <address class="contact__details">

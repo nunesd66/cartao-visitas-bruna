@@ -22,9 +22,18 @@ Capturas da versão atual, feitas localmente em 17/11/2026:
 
 - Hero com chamada para agendamento.
 - Serviços de micropigmentação, design de sobrancelhas, tintura e henna.
+- Galerias de resultados na seção Serviços, com alternância automática a cada 3 segundos e transição de 0,5 segundo; respeitam a preferência por movimento reduzido do dispositivo.
 - Casos reais, apresentação da profissional e avaliações de clientes.
 - Perguntas frequentes, chamada final, localização e canais de contato.
-- Navegação acessível por teclado, menu móvel e controles do carrossel de depoimentos.
+- Navegação por teclado, menu móvel, cabeçalho que acompanha a direção da rolagem e controles do carrossel de depoimentos.
+
+### Links do rodapé
+
+Os sete links do rodapé permanecem em uma linha quando há espaço suficiente. Em telas médias, eles se distribuem em duas linhas equilibradas; em telas menores, usam três linhas centralizadas (3 + 2 + 2). Os ícones compartilham o mesmo tamanho e os links mantêm uma área de toque confortável.
+
+### Navegação e cabeçalho
+
+Os links de navegação levam diretamente aos títulos das seções, evitando que o espaço interno da seção deixe o título afastado do topo. O cabeçalho aparece ao carregar a página ou ao rolar para cima e se recolhe ao rolar para baixo, próximo à seção Serviços. O botão de alfinete mantém o cabeçalho visível enquanto estiver ativado; ao desativá-lo, o comportamento de rolagem é retomado. A fixação vale até recarregar a página.
 
 ## Tecnologias e estrutura
 
@@ -53,21 +62,14 @@ python -m http.server 8080
 
 Depois acesse <http://localhost:8080>.
 
-Para compilar os estilos, é necessário ter Node.js `>=20.19.0` e npm. O requisito mínimo decorre da versão travada de `sass` (`1.108.2`) no `package-lock.json`; essa dependência é apenas de desenvolvimento. Instale as versões travadas e compile o SCSS assim:
+Para compilar os estilos, é necessário ter Node.js `>=20.19.0` e npm. O requisito decorre da versão de `sass` (`1.108.2`) travada no `package-lock.json`; Sass é dependência apenas de desenvolvimento. Instale as versões travadas e compile o SCSS assim:
 
 ```bash
 npm ci
 npm run build:css
 ```
 
-Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css` com a versão de Sass travada no lockfile:
-
-```bash
-npm ci
-npm run build:css
-```
-
-O `index.html` referencia `css/style.css`; mudanças apenas no SCSS não aparecem no navegador até a compilação. Sass é dependência apenas de desenvolvimento; a página publicada é estática e não precisa de npm ou Node em runtime.
+Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css`. O `index.html` carrega o CSS compilado; mudanças apenas no SCSS não aparecem no navegador até a compilação. A página publicada é estática e não precisa de npm ou Node em runtime.
 
 ### SEO e publicação
 
