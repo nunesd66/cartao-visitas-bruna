@@ -73,7 +73,9 @@ Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css`. 
 
 ### SEO e publicação
 
-O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na página. `robots.txt` e `sitemap.xml` devem estar na raiz publicada para responder em `/robots.txt` e `/sitemap.xml`. Não há favicon de marca aprovado; não crie um ícone provisório.
+O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na página. `robots.txt` e `sitemap.xml` devem estar na raiz publicada para responder em `/robots.txt` e `/sitemap.xml`. Não há favicon de marca aprovado; não crie um ícone provisório. Até haver uma marca gráfica aprovada, `<link rel="icon" href="data:,">` evita a tentativa automática do navegador a `/favicon.ico`. Quando um favicon aprovado estiver disponível, use um caminho relativo ao projeto (base `/cartao-visitas-bruna/`) e confirme HTTP 200.
+
+Em telas abaixo de 60 rem, o botão de fixar cabeçalho fica oculto para manter a marca e o menu dentro da largura disponível. Ele aparece apenas em desktop com ponteiro preciso; a navegação móvel segue sem esse controle.
 
 Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. Analytics permanece desligado sem um Measurement ID real e decisão de privacidade/consentimento.
 
@@ -93,4 +95,8 @@ O gráfico abaixo resume os **19 commits** existentes no histórico local até 1
 
 ## Conteúdo a revisar antes de publicar
 
-Confirme textos, telefone e links de agendamento, endereço e horário de atendimento. As informações de contato ficam no `index.html`; imagens e textos também podem ser substituídos diretamente no HTML. A publicação em domínio ou serviço de hospedagem ainda não faz parte deste projeto.
+Confirme textos, telefone e links de agendamento, endereço e horário de atendimento. As informações de contato ficam no `index.html`; imagens e textos também podem ser substituídos diretamente no HTML. O site está publicado no [GitHub Pages](https://nunesd66.github.io/cartao-visitas-bruna/). Alterações entram no site público após integração na branch `master` e conclusão bem-sucedida do workflow de publicação.
+
+## Preservação obrigatória do conteúdo textual
+
+Nenhum texto existente no site pode ser alterado sem autorização explícita do responsável pelo projeto. Isso inclui títulos, subtítulos, parágrafos, CTAs, menus, serviços, FAQ, avaliações, dados comerciais e de contato, mensagens de WhatsApp, textos alternativos (alt), rótulos acessíveis (ARIA) e metadados textuais de SEO. Alterações estruturais, de estilo, acessibilidade, desempenho e interação são permitidas desde que preservem integralmente esses textos. Se uma melhoria exigir mudança textual, apresente a proposta e aguarde autorização específica. Antes de cada commit, compare o conteúdo textual antes e depois e rejeite qualquer diferença não autorizada.

@@ -316,7 +316,7 @@ h3 {
 }
 
 .header-pin {
-  display: grid;
+  display: none;
   width: 2.75rem;
   height: 2.75rem;
   flex: 0 0 2.75rem;
@@ -1925,6 +1925,11 @@ body:has(.mobile-nav[open]) {
   }
   .whatsapp-float {
     display: none;
+  }
+}
+@media (min-width: 60rem) and (hover: hover) and (pointer: fine) {
+  .header-pin {
+    display: grid;
   }
 }
 @media (min-width: 80rem) {
