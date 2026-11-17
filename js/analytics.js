@@ -36,11 +36,48 @@
   let consentGranted = false;
   let tagRequested = false;
   let tagFailed = false;
+  let pageViewSentForCurrentGrant = false;
 
   const readMeasurementId = () => {
     const meta = document.querySelector('meta[name="ga4-measurement-id"]');
     const value = meta?.content?.trim() || '';
     return measurementIdPattern.test(value) ? value : '';
+  };
+
+  const setGoogleCollectionDisabled = (disabled) => {
+    const measurementId = readMeasurementId();
+    if (measurementId) window[`ga-disable-${measurementId}`] = disabled;
+  };
+
+  const clearAnalyticsCookies = () => {
+    let cookieNames = [];
+    try {
+      cookieNames = document.cookie
+        .split(';')
+        .map((cookie) => cookie.trim().split('=')[0])
+        .filter((name) => /^_ga(?:_|$)|^_gid$|^_gat(?:_|$)|^_gac_/.test(name));
+    } catch {
+      return;
+    }
+
+    const pathname = window.location.pathname || '/';
+    const directory = pathname.endsWith('/') ? pathname : pathname.slice(0, pathname.lastIndexOf('/') + 1) || '/';
+    const paths = new Set(['/', directory]);
+    const hostname = window.location.hostname;
+    const domains = [null, ...(hostname ? [hostname, `.${hostname}`] : [])];
+
+    cookieNames.forEach((name) => {
+      paths.forEach((path) => {
+        domains.forEach((domain) => {
+          const domainAttribute = domain ? `; domain=${domain}` : '';
+          try {
+            document.cookie = `${name}=; Max-Age=0; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=${path}${domainAttribute}; SameSite=Lax`;
+          } catch {
+            // Cookie deletion is best effort; collection is still disabled at the tag level.
+          }
+        });
+      });
+    });
   };
 
   const queueGoogleTag = () => {
@@ -76,6 +113,7 @@
       allow_ad_personalization_signals: false,
     });
     window.gtag('event', 'page_view');
+    pageViewSentForCurrentGrant = true;
 
     const script = document.createElement('script');
     script.async = true;
@@ -90,18 +128,25 @@
 
   const setConsent = (granted) => {
     if (granted !== true) {
-      const wasGranted = consentGranted;
       consentGranted = false;
-      if (wasGranted && tagRequested && typeof window.gtag === 'function') {
+      pageViewSentForCurrentGrant = false;
+      setGoogleCollectionDisabled(true);
+      if (tagRequested && typeof window.gtag === 'function') {
         window.gtag('consent', 'update', { ...deniedConsent });
       }
+      clearAnalyticsCookies();
       return false;
     }
 
     if (consentGranted && tagRequested) return true;
     consentGranted = true;
+    setGoogleCollectionDisabled(false);
     if (tagRequested) {
       window.gtag('consent', 'update', { ...grantedConsent });
+      if (!pageViewSentForCurrentGrant) {
+        window.gtag('event', 'page_view');
+        pageViewSentForCurrentGrant = true;
+      }
       return true;
     }
 

@@ -83,11 +83,17 @@ Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, conf
 
 ### Arquitetura e estado padrão
 
-A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém o Measurement ID real confirmado para o fluxo Web: `G-YVS4N0BZ9S` (Stream ID `16362293759`). `js/analytics.js`, carregado antes de `js/main.js`, só solicita o Google tag depois de receber consentimento explícito por `window.BrunaAnalytics.setConsent(true)`. O HTML não chama essa API; portanto, mesmo com o ID configurado, não cria `dataLayer`, não carrega script remoto, não define cookies e descarta eventos até a integração de consentimento ser aprovada e conectada.
+A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém o Measurement ID real confirmado para o fluxo Web: `G-YVS4N0BZ9S` (Stream ID `16362293759`). `js/analytics.js`, carregado antes de `js/privacy.js` e `js/main.js`, só solicita o Google tag depois de consentimento afirmativo. `js/privacy.js` chama `setConsent(true)` apenas quando restaura uma escolha aceita ou quando a pessoa aciona Aceitar. Em primeira visita sem escolha, recusa ou revogação, não cria `dataLayer`, não carrega script remoto nem envia eventos.
 
-O fluxo usa o modo básico de Consent Mode: o tag não carrega antes da escolha de consentimento. Após a concessão, o código define todos os estados como `denied`, atualiza apenas `analytics_storage` para `granted` e mantém os estados de publicidade negados. Google Signals e personalização de anúncios ficam desativados. Ao negar ou revogar, o código bloqueia os eventos próprios e, se o tag já tiver sido iniciado, atualiza os estados para `denied`.
+O fluxo usa o modo básico de Consent Mode: o tag não carrega antes da escolha afirmativa. Após aceitar, o código define todos os estados como `denied`, atualiza apenas `analytics_storage` para `granted` e mantém os estados de publicidade negados. Google Signals e personalização de anúncios ficam desativados. Recusa ou revogação bloqueiam eventos próprios, atualizam o Consent Mode para `denied` e ativam `ga-disable-<ID>` para interromper novas transmissões.
 
-Não existe banner, texto de consentimento nem armazenamento da escolha neste projeto. Uma CMP ou solução aprovada deve chamar `window.BrunaAnalytics.setConsent(true)` após a pessoa autorizar Analytics e `window.BrunaAnalytics.setConsent(false)` ao negar ou revogar. Ela também precisa restaurar a escolha previamente registrada em cada carregamento. A redação e a solução de consentimento continuam dependências externas; não ativar o ID antes disso.
+### Componente de privacidade
+
+`js/privacy.js` apresenta o painel na primeira visita sem decisão, oferece Aceitar e Recusar e mantém o controle Privacidade disponível para alterar a escolha. A escolha é persistida no `localStorage` sob `bruna-analytics-consent-v1`; apenas os valores `accepted` ou `rejected` são armazenados. Não há opção pré-selecionada e a ausência de escolha mantém a coleta desligada. Se o navegador impedir armazenamento local, a decisão explícita vale somente até o fim daquela página e o pedido reaparece na próxima visita.
+
+Ao recusar ou revogar depois de aceitar, o código desativa o Google tag, bloqueia novos eventos e tenta remover cookies GA acessíveis (`_ga`, `_ga_*` e famílias relacionadas) no domínio/caminho atual. Isso não apaga dados já transmitidos aos servidores do Google; pedidos de eliminação/retention e dados históricos exigem controles da propriedade GA4. Acessar Privacidade reabre as opções sem presumir que a pessoa manteve a decisão anterior.
+
+O componente é uma interface técnica mínima, não uma política de privacidade nem garantia de conformidade legal. Antes de ativar a coleta, a responsável deve validar a base legal, transparência e documentação aplicáveis, incluindo quem controla os dados, finalidades, dados/cookies tratados, destinatários (incluindo Google), retenção, transferências aplicáveis, canal de contato e direitos/revogação. A ANPD recomenda informação clara e procedimento gratuito/facilitado para revogar o consentimento; avaliar com orientação jurídica ou de privacidade a necessidade e o conteúdo de um aviso/política de privacidade e cookies. Consulte o [Guia orientativo da ANPD sobre cookies](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia_orientativo_cookies_e_protecao_de_dados_pessoais) e a página de [direitos dos titulares](https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados/direito-dos-titulares).
 
 O código configura `send_page_view: false` e envia um `page_view` manual após consentimento, evitando a pageview padrão do comando `config`. A Mensuração otimizada da propriedade também pode enviar pageviews em alterações do histórico do navegador, independentemente dessa opção; como o site navega por âncoras, desative a medição de mudanças por histórico na propriedade antes de ativar a coleta. `page_location` é limitado à origem e ao caminho; `page_referrer`, quando disponível, é limitado à origem. Query string e fragmento não são enviados por esses parâmetros. Isso preserva indicação de origem por domínio, mas não atribuição de campanhas UTM. Não incluir dados pessoais em URLs de entrada.
 
@@ -107,7 +113,7 @@ O listener delegado existente em `js/main.js` continua sendo o único listener d
 ### Configuração e ativação
 
 1. O Measurement ID real já está configurado: `G-YVS4N0BZ9S`; não substituir por outro sem confirmação da propriedade.
-2. Defina e aprove a solução de consentimento, incluindo como informar a escolha, guardar/restaurar a decisão e chamar `window.BrunaAnalytics.setConsent(true|false)`. Nenhuma interface ou texto de consentimento foi criado nesta alteração.
+2. A interface de primeira camada está implementada. Aprove o comportamento e providencie a revisão do aviso/política de privacidade e cookies; confirme que as informações de controlador, finalidade, base legal, compartilhamento, retenção e direitos são suficientes para o caso concreto.
 3. A Mensuração otimizada está ativada na propriedade. Antes da coleta, desligue **cliques de saída** ou aprove explicitamente a coleta sobreposta: os cliques personalizados `contact_intent`/`contact_channel_click` coexistiriam com o evento automático `click`, que inclui `link_url` (potencialmente URL de WhatsApp com telefone e mensagem pré-preenchida). Recomendamos desligar cliques de saída para reduzir duplicação e exposição de dados.
 4. Desative também mudanças de pageview baseadas em histórico do navegador, evitando pageviews extras em navegação interna; mantenha o `page_view` manual único. Revise as demais opções antes de ativar: `scroll` não duplica evento próprio; `form_start`/`form_submit` podem registrar interação com o formulário de dúvidas do WhatsApp (sem evento personalizado equivalente); não foram encontrados links para downloads. Desative a pesquisa de site automática ou confirme que URLs nunca usarão `q`, `s`, `search`, `query` ou `keyword` com valores pessoais, pois esses parâmetros podem gerar evento e termo de pesquisa automáticos.
 5. Após publicar com autorização, valide a tag no Tag Assistant e no DebugView. Só afirmar recebimento quando houver evidência real nesses produtos.
@@ -118,11 +124,12 @@ Referências oficiais: [instalação do Google tag](https://support.google.com/a
 
 ```bash
 node --check js/analytics.js
+node --check js/privacy.js
 node --check js/main.js
-node --test scripts/analytics.test.mjs
+node --test scripts/analytics.test.mjs scripts/privacy.test.mjs
 ```
 
-Os testes usam um ID de fixture somente no contexto Node isolado. O HTML contém o ID real, mas não chama a API de consentimento, então a tag remota continua ausente. Os testes verificam ausência de script/fila sem consentimento, inicialização única, normalização de eventos, filtragem de parâmetros e revogação. O envio real deve ser confirmado no Tag Assistant/DebugView após a integração e autorização; os testes locais não simulam dados recebidos pelo GA4.
+Os testes usam IDs fixture somente no contexto Node isolado. A página contém o ID real, mas em primeira visita, recusa ou revogação não carrega a tag remota. Os testes verificam consentimento, persistência, restauração, revogação, remoção de cookies acessíveis, atributos/estrutura acessível e regras responsivas. O envio real deve ser confirmado no Tag Assistant/DebugView após revisão e decisão; os testes locais não simulam dados recebidos pelo GA4.
 
 Para reverter um deploy defeituoso, crie um novo commit com `git revert <sha-do-commit-de-publicação>` e confirme o novo workflow de Pages. A tag `backup-2026-11-16` é uma referência histórica anterior a alterações aprovadas depois de 16/11; não mova `master` diretamente para ela nem use force-push.
 

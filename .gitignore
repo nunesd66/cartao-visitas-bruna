@@ -25,10 +25,12 @@
 /js/*
 !/js/main.js
 !/js/analytics.js
+!/js/privacy.js
 
 /scripts/*
 !/scripts/check-local-assets.mjs
 !/scripts/analytics.test.mjs
+!/scripts/privacy.test.mjs
 
 /images/*
 !/images/bruna-profissional.jpg

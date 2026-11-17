@@ -5,12 +5,14 @@ import vm from 'node:vm';
 
 const analyticsSource = await readFile(new URL('../js/analytics.js', import.meta.url), 'utf8');
 
-function createAnalytics(measurementId = '') {
+function createAnalytics(measurementId = '', initialCookies = []) {
   const scripts = [];
+  const cookieJar = new Map(initialCookies);
   const window = {
     location: {
       origin: 'https://beauty.example',
       pathname: '/cartao-visitas-bruna/',
+      hostname: 'beauty.example',
       search: '?email=visitor@example.com',
       hash: '#faq',
     },
@@ -29,12 +31,26 @@ function createAnalytics(measurementId = '') {
       return { nodeName: name.toUpperCase() };
     },
   };
+  Object.defineProperty(document, 'cookie', {
+    get() {
+      return [...cookieJar].map(([name, value]) => `${name}=${value}`).join('; ');
+    },
+    set(cookie) {
+      const [pair, ...attributes] = cookie.split(';');
+      const separator = pair.indexOf('=');
+      const name = pair.slice(0, separator).trim();
+      if (attributes.some((attribute) => /max-age\s*=\s*0/i.test(attribute))) cookieJar.delete(name);
+      else cookieJar.set(name, pair.slice(separator + 1));
+    },
+  });
 
   vm.runInNewContext(analyticsSource, { window, document, URL });
 
   return {
     analytics: window.BrunaAnalytics,
     scripts,
+    cookieNames: () => [...cookieJar.keys()],
+    isCollectionDisabled: () => Boolean(window['ga-disable-G-YVS4N0BZ9S'] || window['ga-disable-G-TEST123456']),
     calls: () => Array.from(window.dataLayer || [], (entry) => JSON.parse(JSON.stringify([...entry]))),
   };
 }
@@ -131,11 +147,18 @@ test('normaliza eventos e descarta parametros fora da lista permitida', () => {
 });
 
 test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', () => {
-  const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
+  const { analytics, scripts, calls, cookieNames, isCollectionDisabled } = createAnalytics('G-TEST123456', [
+    ['_ga', 'client-id'],
+    ['_ga_G-TEST123456', 'session-id'],
+    ['site-preference', 'kept'],
+  ]);
   analytics.setConsent(true);
+  assert.equal(isCollectionDisabled(), false);
   analytics.setConsent(false);
 
   assert.equal(analytics.isEnabled(), false);
+  assert.equal(isCollectionDisabled(), true);
+  assert.deepEqual(cookieNames(), ['site-preference']);
   assert.equal(analytics.track('whatsapp_booking_click', { cta_location: 'hero' }), false);
   assert.equal(scripts.length, 1);
   assert.equal(calls().at(-1)[0], 'consent');
@@ -147,6 +170,7 @@ test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', (
   });
 
   analytics.setConsent(true);
+  assert.equal(isCollectionDisabled(), false);
   assert.equal(scripts.length, 1);
   assert.equal(calls().filter(([command]) => command === 'config').length, 1);
 });
