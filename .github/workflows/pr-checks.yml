@@ -1,0 +1,38 @@
+name: Pull request checks
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.0
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Build SCSS
+        run: npm run build:css
+
+      - name: Check JavaScript syntax
+        run: node --check js/main.js
+
+      - name: Check local asset references
+        run: node scripts/check-local-assets.mjs

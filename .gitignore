@@ -5,12 +5,18 @@
 !/css/
 !/js/
 !/images/
+!/scripts/
 !/docs/
 !/docs/**
 !/package.json
 !/package-lock.json
 !/robots.txt
 !/sitemap.xml
+!/.github/
+/.github/*
+!/.github/workflows/
+/.github/workflows/*
+!/.github/workflows/pr-checks.yml
 
 /css/*
 !/css/style.css
@@ -18,6 +24,9 @@
 
 /js/*
 !/js/main.js
+
+/scripts/*
+!/scripts/check-local-assets.mjs
 
 /images/*
 !/images/bruna-profissional.jpg

@@ -28,20 +28,35 @@ const reduceMotion = motionPreference.matches;
 
 document.querySelectorAll('.mobile-nav').forEach((menu) => {
   const summary = menu.querySelector('summary');
+  const syncMenuState = () => {
+    if (!summary) return;
+    summary.setAttribute('aria-expanded', String(menu.open));
+    summary.setAttribute(
+      'aria-label',
+      menu.open ? 'Fechar menu de navegação' : 'Abrir menu de navegação',
+    );
+  };
+
+  menu.addEventListener('toggle', syncMenuState);
   summary?.addEventListener('click', () => {
     window.requestAnimationFrame(() => {
-      summary.setAttribute('aria-label', menu.open ? 'Fechar menu de navegação' : 'Abrir menu de navegação');
+      syncMenuState();
       if (menu.open) menu.querySelector('nav a')?.focus();
     });
   });
   menu.addEventListener('click', (event) => {
-    if (event.target.closest('a[href^="#"]')) menu.open = false;
+    if (event.target instanceof Element && event.target.closest('a[href^="#"]')) {
+      menu.open = false;
+      syncMenuState();
+    }
   });
   menu.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || !menu.open) return;
     menu.open = false;
+    syncMenuState();
     summary?.focus();
   });
+  syncMenuState();
 });
 
 const siteHeader = document.querySelector('.site-header');
