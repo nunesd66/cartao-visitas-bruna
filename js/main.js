@@ -44,6 +44,76 @@ document.querySelectorAll('.mobile-nav').forEach((menu) => {
   });
 });
 
+const siteHeader = document.querySelector('.site-header');
+const casesRealAnchor = document.querySelector('#casos-reais');
+
+if (siteHeader && casesRealAnchor) {
+  const directionLockMs = 2000;
+  let lastScrollY = window.scrollY;
+  let lastTransitionAt = performance.now() - directionLockMs;
+  let scrollFrame = 0;
+  let pendingVisibility = null;
+  let pendingTimer = null;
+  let headerHidden = false;
+
+  const applyVisibility = (visible) => {
+    headerHidden = !visible;
+    siteHeader.classList.toggle('is-hidden', headerHidden);
+    lastTransitionAt = performance.now();
+  };
+
+  const requestVisibility = (visible) => {
+    if (visible === !headerHidden) {
+      pendingVisibility = null;
+      window.clearTimeout(pendingTimer);
+      pendingTimer = null;
+      return;
+    }
+
+    const lockRemaining = directionLockMs - (performance.now() - lastTransitionAt);
+    if (lockRemaining <= 0) {
+      pendingVisibility = null;
+      window.clearTimeout(pendingTimer);
+      pendingTimer = null;
+      applyVisibility(visible);
+      return;
+    }
+
+    if (pendingVisibility === visible && pendingTimer !== null) return;
+    pendingVisibility = visible;
+    window.clearTimeout(pendingTimer);
+    pendingTimer = window.setTimeout(() => {
+      const visibilityToApply = pendingVisibility;
+      pendingVisibility = null;
+      pendingTimer = null;
+      if (visibilityToApply !== null && visibilityToApply !== !headerHidden) {
+        applyVisibility(visibilityToApply);
+      }
+    }, lockRemaining);
+  };
+
+  const updateHeaderOnScroll = () => {
+    scrollFrame = 0;
+    const currentScrollY = window.scrollY;
+    const scrollDirection = Math.sign(currentScrollY - lastScrollY);
+    lastScrollY = currentScrollY;
+    if (scrollDirection === 0) return;
+
+    if (currentScrollY <= 16 || scrollDirection < 0) {
+      requestVisibility(true);
+      return;
+    }
+
+    const casesAreNearHeader = casesRealAnchor.getBoundingClientRect().top <= siteHeader.offsetHeight + 40;
+    requestVisibility(!casesAreNearHeader);
+  };
+
+  window.addEventListener('scroll', () => {
+    if (scrollFrame) return;
+    scrollFrame = window.requestAnimationFrame(updateHeaderOnScroll);
+  }, { passive: true });
+}
+
 const aboutVisual = document.querySelector('.about__visual');
 
 if (aboutVisual && !reduceMotion) {

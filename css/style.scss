@@ -192,6 +192,11 @@ h3 {
   stroke-width: 0.5;
 }
 
+.whatsapp-icon path:nth-of-type(2) {
+  fill: currentColor;
+  stroke: none;
+}
+
 .instagram-icon {
   width: 1.2em;
   height: 1.2em;
@@ -280,6 +285,12 @@ h3 {
   border-bottom: 0.0625rem solid rgb(231 216 207 / 0.78);
   background: rgb(255 253 251 / 0.94);
   backdrop-filter: blur(0.8rem);
+  transition: transform 280ms ease;
+}
+
+.site-header.is-hidden:not(:focus-within):not(:has(.mobile-nav[open])) {
+  transform: translateY(calc(-100% - 1px));
+  pointer-events: none;
 }
 
 .header__inner {
@@ -436,6 +447,10 @@ body:has(.mobile-nav[open]) {
   z-index: 1;
 }
 
+.hero h1 {
+  color: var(--color-primary-dark);
+}
+
 .hero__lead {
   max-width: 37rem;
   margin-bottom: 1.6rem;
@@ -520,7 +535,7 @@ body:has(.mobile-nav[open]) {
 
 .section {
   padding-block: clamp(4.25rem, 10vw, 7.5rem);
-  scroll-margin-top: 4.75rem;
+  scroll-margin-top: 0;
 }
 
 .section-heading {
@@ -1583,6 +1598,10 @@ body:has(.mobile-nav[open]) {
 }
 
 @media (min-width: 60rem) {
+  html {
+    scroll-padding-top: 11rem;
+  }
+
   .desktop-nav {
     display: flex;
     flex-direction: column;
