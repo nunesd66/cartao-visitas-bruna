@@ -1,0 +1,10 @@
+{
+  "name": "bruna-eduarda-beauty-site",
+  "private": true,
+  "scripts": {
+    "build:css": "sass --no-source-map --style=expanded css/style.scss css/style.css"
+  },
+  "devDependencies": {
+    "sass": "1.108.2"
+  }
+}

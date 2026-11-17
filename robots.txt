@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml

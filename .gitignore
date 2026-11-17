@@ -5,8 +5,18 @@
 !/css/
 !/js/
 !/images/
+!/scripts/
 !/docs/
 !/docs/**
+!/package.json
+!/package-lock.json
+!/robots.txt
+!/sitemap.xml
+!/.github/
+/.github/*
+!/.github/workflows/
+/.github/workflows/*
+!/.github/workflows/pr-checks.yml
 
 /css/*
 !/css/style.css
@@ -14,6 +24,9 @@
 
 /js/*
 !/js/main.js
+
+/scripts/*
+!/scripts/check-local-assets.mjs
 
 /images/*
 !/images/bruna-profissional.jpg
@@ -34,3 +47,7 @@
 !/images/feedback-monstera-bg.jpg
 !/images/micropigmentacao.jpg
 !/images/primeira-foto.jpg
+!/images/1.jpg
+!/images/2.JPG
+!/images/IMG_3113.JPG
+!/images/IMG_3114.JPG

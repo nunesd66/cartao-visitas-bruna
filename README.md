@@ -6,7 +6,7 @@ Landing page estática para apresentar os serviços de design e micropigmentaç�
 
 - **Ver no navegador local:** [abra `index.html`](index.html) ou abra esse arquivo diretamente no navegador.
 - **Repositório:** [github.com/nunesd66/cartao-visitas-bruna](https://github.com/nunesd66/cartao-visitas-bruna)
-- **Site publicado:** ainda não há uma URL pública. O GitHub Pages não está configurado; por enquanto, a página é executada localmente.
+- **Site publicado:** [nunesd66.github.io/cartao-visitas-bruna](https://nunesd66.github.io/cartao-visitas-bruna/). A branch `master` é publicada pelo GitHub Pages; esta branch de preparação não altera o site público.
 
 ## Prévia
 
@@ -53,13 +53,29 @@ python -m http.server 8080
 
 Depois acesse <http://localhost:8080>.
 
-Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css` com Dart Sass instalado:
+Para compilar os estilos, é necessário ter Node.js `>=20.19.0` e npm. O requisito mínimo decorre da versão travada de `sass` (`1.108.2`) no `package-lock.json`; essa dependência é apenas de desenvolvimento. Instale as versões travadas e compile o SCSS assim:
 
 ```bash
-sass --no-source-map css/style.scss css/style.css
+npm ci
+npm run build:css
 ```
 
-O `index.html` referencia `css/style.css`; mudanças apenas no SCSS não aparecem no navegador até a compilação. O projeto não inclui `package.json`, processo de build ou deploy automatizado.
+Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css` com a versão de Sass travada no lockfile:
+
+```bash
+npm ci
+npm run build:css
+```
+
+O `index.html` referencia `css/style.css`; mudanças apenas no SCSS não aparecem no navegador até a compilação. Sass é dependência apenas de desenvolvimento; a página publicada é estática e não precisa de npm ou Node em runtime.
+
+### SEO e publicação
+
+O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na página. `robots.txt` e `sitemap.xml` devem estar na raiz publicada para responder em `/robots.txt` e `/sitemap.xml`. Não há favicon de marca aprovado; não crie um ícone provisório.
+
+Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. Analytics permanece desligado sem um Measurement ID real e decisão de privacidade/consentimento.
+
+Para reverter um deploy defeituoso, crie um novo commit com `git revert <sha-do-commit-de-publicação>` e confirme o novo workflow de Pages. A tag `backup-2026-11-16` é uma referência histórica anterior a alterações aprovadas depois de 16/11; não mova `master` diretamente para ela nem use force-push.
 
 ## Evolução do repositório
 
