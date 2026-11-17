@@ -1295,11 +1295,24 @@ h3 {
 }
 
 .site-footer nav a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
   min-height: 2.75rem;
-  align-content: center;
   color: rgba(255, 255, 255, 0.78);
   font-size: 0.78rem;
   text-decoration: none;
+}
+
+.footer-link-icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
 }
 
 .site-footer nav a[href^="https://wa.me/"] {
