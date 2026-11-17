@@ -53,6 +53,13 @@ python -m http.server 8080
 
 Depois acesse <http://localhost:8080>.
 
+Para compilar os estilos, é necessário ter Node.js `>=20.19.0` e npm. O requisito mínimo decorre da versão travada de `sass` (`1.108.2`) no `package-lock.json`; essa dependência é apenas de desenvolvimento. Instale as versões travadas e compile o SCSS assim:
+
+```bash
+npm ci
+npm run build:css
+```
+
 Ao alterar os estilos, edite `css/style.scss` e gere novamente `css/style.css` com a versão de Sass travada no lockfile:
 
 ```bash

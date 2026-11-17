@@ -23,7 +23,8 @@ document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
 });
 
 const faqAnswers = document.querySelectorAll('.faq details');
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const reduceMotion = motionPreference.matches;
 
 document.querySelectorAll('.mobile-nav').forEach((menu) => {
   const summary = menu.querySelector('summary');
@@ -183,18 +184,73 @@ document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
     window.open(url, '_blank', 'noopener,noreferrer');
   });
 });
+const imageRotators = [];
+
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
-  if (images.length < 2 || reduceMotion) return;
+  const toggle = gallery.querySelector('[data-rotation-toggle]');
+  if (images.length < 2 || !toggle) return;
 
   let activeIndex = images.findIndex((image) => image.classList.contains('is-active'));
   if (activeIndex < 0) activeIndex = 0;
 
-  window.setInterval(() => {
+  let timer = null;
+  let paused = motionPreference.matches;
+
+  const renderState = () => {
+    toggle.textContent = paused ? 'Retomar' : 'Pausar';
+    toggle.setAttribute(
+      'aria-label',
+      paused ? 'Retomar rotação automática das imagens' : 'Pausar rotação automática das imagens',
+    );
+  };
+
+  const rotate = () => {
     images[activeIndex].classList.remove('is-active');
     images[activeIndex].setAttribute('aria-hidden', 'true');
     activeIndex = (activeIndex + 1) % images.length;
     images[activeIndex].classList.add('is-active');
     images[activeIndex].removeAttribute('aria-hidden');
-  }, 5000);
+  };
+
+  const stop = () => {
+    if (timer === null) return;
+    window.clearInterval(timer);
+    timer = null;
+  };
+
+  const start = () => {
+    if (timer !== null) return;
+    timer = window.setInterval(rotate, 5000);
+  };
+
+  const pause = () => {
+    paused = true;
+    stop();
+    renderState();
+  };
+
+  images.forEach((image, index) => {
+    if (index === activeIndex) image.removeAttribute('aria-hidden');
+    else image.setAttribute('aria-hidden', 'true');
+  });
+  toggle.hidden = false;
+  toggle.addEventListener('click', () => {
+    paused = !paused;
+    if (paused) stop();
+    else start();
+    renderState();
+  });
+  gallery.addEventListener('focusin', pause);
+  gallery.addEventListener('pointerenter', pause);
+
+  const controller = { pause, start, stop, get paused() { return paused; } };
+  imageRotators.push(controller);
+  renderState();
+  if (!paused) start();
+});
+
+motionPreference.addEventListener('change', (event) => {
+  if (!event.matches) return;
+  imageRotators.forEach((rotator) => rotator.pause());
 });
