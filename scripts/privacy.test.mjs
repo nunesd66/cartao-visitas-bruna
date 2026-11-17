@@ -129,9 +129,12 @@ test('markup acessivel, textos autorizados e layout fluido para telas estreitas'
   assert.match(htmlSource, /data-privacy-choice="rejected">Recusar<\/button>/);
   assert.match(htmlSource, /<button class="privacy-control__accept" type="button"/);
   assert.match(htmlSource, /<button class="privacy-control__reject" type="button"/);
-  assert.match(htmlSource, /aria-controls="privacy-panel"[\s\S]*aria-expanded="false"[\s\S]*>Privacidade<\/button>/);
+  assert.match(htmlSource, /aria-controls="privacy-panel"[\s\S]*aria-expanded="false"[\s\S]*<span class="privacy-control__label">Privacidade<\/span>[\s\S]*<\/button>/);
   assert.match(scssSource, /width: min\(28rem, calc\(100vw - 2rem\)\)/);
   assert.match(scssSource, /min-height: 2\.75rem/);
   assert.match(scssSource, /@media \(min-width: 60rem\)[\s\S]*\.privacy-control__panel,[\s\S]*bottom: 1rem/);
+  assert.match(scssSource, /\.privacy-control__toggle svg\s*\{\s*display: none;/);
+  assert.match(scssSource, /\.privacy-control__toggle\s*\{\s*position: static;/);
+  assert.match(scssSource, /\.accessibility-tools,[\s\S]*\.whatsapp-float\s*\{\s*display: none;/);
   assert.doesNotMatch(scssSource.slice(scssSource.indexOf('.privacy-control__panel {'), scssSource.indexOf('.whatsapp-float {')), /transition:/);
 });
