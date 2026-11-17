@@ -41,7 +41,7 @@ jobs:
         run: node --check js/privacy.js
 
       - name: Test analytics consent and event filtering
-        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs
+        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs
 
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs

@@ -152,3 +152,25 @@ Confirme textos, telefone e links de agendamento, endereço e horário de atendi
 ## Preservação obrigatória do conteúdo textual
 
 Nenhum texto existente no site pode ser alterado sem autorização explícita do responsável pelo projeto. Isso inclui títulos, subtítulos, parágrafos, CTAs, menus, serviços, FAQ, avaliações, dados comerciais e de contato, mensagens de WhatsApp, textos alternativos (alt), rótulos acessíveis (ARIA) e metadados textuais de SEO. Alterações estruturais, de estilo, acessibilidade, desempenho e interação são permitidas desde que preservem integralmente esses textos. Se uma melhoria exigir mudança textual, apresente a proposta e aguarde autorização específica. Antes de cada commit, compare o conteúdo textual antes e depois e rejeite qualquer diferença não autorizada.
+
+## Auditoria UX/UI de 17/11/2026
+
+Na avaliação inicial, o PR #7 foi verificado na branch `ux-mobile-ui-polish-2026-11-17`, commit `620057b7a490aa21041668cc0553a7997fe9f91f`, antes do merge. Depois, o PR foi integrado à `master` pelo commit `434a5ae`. Os resultados daquela auditoria referem-se à branch avaliada naquele momento, não à produção. O workflow de Pull Request checks (run #22) concluiu com sucesso.
+
+A auditoria visual e as interações em navegador ficaram **não verificadas**: a automação do Firefox foi bloqueada pela política de URL do navegador nesta sessão antes de abrir a página. Não foram produzidas capturas de tela, medições Lighthouse ou observações de Network. Nenhum defeito P0–P3 foi confirmado; isso não comprova ausência de defeitos. O baseline informado para referência (mobile: Performance 98, LCP 1,54 s; desktop: Performance 100, LCP 0,50 s) não foi re-medido nesta auditoria. Consulte o relatório privado em `.local/relatorios/evolucao-comercial.md` antes de considerar a avaliação visual concluída.
+
+## Validação analítica e Gate A — 17/11/2026
+
+Na validação inicial, `master` estava no commit `da6426e8e706a47a64ce76b99320e6bb81b22e2f` e PR #7 ainda estava aberta; ela foi posteriormente integrada pelo commit `434a5ae`. O workflow `pages build and deployment` (run #44174925040) concluiu os jobs de build e deploy com sucesso para o commit da master então vigente.
+
+Na URL pública, a página, CSS, JavaScript, as imagens referenciadas (incluindo as quatro fotografias de galeria), `robots.txt` e `sitemap.xml` responderam HTTP 200. Canonical, Open Graph, metatag de verificação do Search Console e JSON-LD `BeautySalon` foram encontrados; o JSON-LD foi parseado com sucesso e não foi encontrado `noindex`. Isso confirma indexabilidade técnica, não indexação efetiva nem estado atual da propriedade no Search Console. O envio do sitemap é informado pelo histórico do projeto, sem consulta ao painel nesta validação.
+
+O HTML público contém o Measurement ID real e carrega os scripts locais de analytics e privacidade. A implementação em código mantém a chamada do Google tag condicionada ao consentimento e filtra parâmetros de eventos próprios. Porém, Network não foi inspecionada nesta validação: carregamento antes/depois de aceitar, recusa, persistência, revogação e duplicidade em execução real continuam **não verificados**. O recebimento de eventos no GA4/DebugView também não foi verificado.
+
+A Mensuração otimizada foi anteriormente informada como ativa. A configuração atual das opções de cliques externos e pageviews por histórico não foi consultada. Revise essas opções antes de considerar a mensuração pronta, porque os cliques automáticos podem se sobrepor semanticamente aos eventos próprios e incluir o URL do link. O componente de consentimento, isoladamente, não documenta controlador, bases/finalidades detalhadas, dados/cookies, destinatários, retenção e direitos. Não conclua conformidade LGPD sem revisar e aprovar essa transparência e a estratégia aplicável.
+
+Não foi executado Lighthouse atual nem teste manual com leitor de tela. Os baselines informados anteriormente (mobile: Performance 98/LCP 1,54 s; desktop: Performance 100/LCP 0,50 s) foram preservados como histórico, sem comparação de regressão nesta validação. O PR #7 tem checks estáticos aprovados no head atual, mas isso não substitui validação visual, de rede e manual.
+
+### Correção do carrossel de depoimentos
+
+Em 17/11/2026 foi relatado que a rotação pulava a décima avaliação após a nona. A navegação foi ajustada para selecionar o slide mais próximo do centro do viewport e alinhar o próximo/índice escolhido pela posição real do elemento, em vez de acumular deslocamentos de pixels no `scrollLeft`. Foram adicionados testes automatizados que percorrem os 11 itens até 9→10→11, verificam a volta ao primeiro e navegam diretamente ao item 10. O teste foi incluído no workflow de Pull Request. A confirmação visual em navegador e Lighthouse após a correção continuam pendentes.
