@@ -659,6 +659,31 @@ body:has(.mobile-nav[open]) {
   opacity: 1;
 }
 
+.gallery-rotation-toggle {
+  display: block;
+  min-height: 2.75rem;
+  margin: 1rem auto 0;
+  padding: 0.6rem 0.95rem;
+  border: 0.0625rem solid var(--color-primary-dark);
+  border-radius: 999px;
+  color: var(--color-primary-dark);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.gallery-rotation-toggle[aria-pressed=true] {
+  color: #fff;
+  background: var(--color-primary-dark);
+}
+
+.gallery-rotation-toggle[hidden] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .service-card__gallery img {
     transition: none;

@@ -291,6 +291,8 @@ document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
   });
 });
 const imageRotators = [];
+const galleryRotationToggle = document.querySelector('[data-rotation-toggle]');
+let galleriesPaused = false;
 
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
@@ -316,7 +318,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches) return;
+    if (timer !== null || motionPreference.matches || galleriesPaused) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -330,6 +332,24 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   start();
 });
 
+const updateGalleryRotationToggle = () => {
+  if (!galleryRotationToggle) return;
+  galleryRotationToggle.setAttribute('aria-pressed', String(galleriesPaused));
+  galleryRotationToggle.textContent = galleriesPaused
+    ? 'Retomar a troca das imagens'
+    : 'Pausar a troca das imagens';
+  galleryRotationToggle.hidden = motionPreference.matches || imageRotators.length === 0;
+};
+
+galleryRotationToggle?.addEventListener('click', () => {
+  galleriesPaused = !galleriesPaused;
+  imageRotators.forEach((rotator) => (galleriesPaused ? rotator.stop() : rotator.start()));
+  updateGalleryRotationToggle();
+});
+updateGalleryRotationToggle();
+
 motionPreference.addEventListener('change', (event) => {
+  galleriesPaused = false;
   imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
+  updateGalleryRotationToggle();
 });
