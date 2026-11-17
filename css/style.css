@@ -527,8 +527,7 @@ h3 {
   object-fit: cover;
 }
 
-.service-card > img.henna-comparison,
-.result-card__visual > img.henna-comparison {
+.service-card > img.henna-comparison {
   aspect-ratio: auto;
   object-fit: contain;
 }
@@ -563,60 +562,6 @@ h3 {
   background: var(--color-primary);
   font-size: 0.72rem;
   font-weight: 800;
-}
-
-.results {
-  background: var(--color-bg);
-}
-
-.content-notice {
-  max-width: 53rem;
-  margin: -1.25rem 0 1.5rem;
-  padding: 0.7rem 0.9rem;
-  border-left: 0.2rem solid var(--color-accent);
-  color: var(--color-text-muted);
-  background: rgba(234, 216, 204, 0.35);
-  font-size: 0.78rem;
-}
-
-.results__grid {
-  display: grid;
-  gap: 1rem;
-}
-
-.result-card {
-  overflow: hidden;
-  border: 0.0625rem solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-}
-
-.result-card__visual {
-  overflow: hidden;
-}
-
-.result-card__visual > img {
-  width: 100%;
-  aspect-ratio: 4/3;
-  object-fit: cover;
-  transition: transform 300ms ease;
-}
-
-.result-card:hover .result-card__visual > img {
-  transform: scale(1.025);
-}
-
-.result-card > p {
-  margin: 0;
-  padding: 0.9rem 1rem;
-  font-family: var(--font-serif);
-  font-size: 1rem;
-  text-align: center;
-}
-
-.section-action {
-  margin-top: 2rem;
-  text-align: center;
 }
 
 .about {
@@ -815,11 +760,54 @@ h3 {
   box-shadow: 0 0.2rem 0.75rem rgba(35, 31, 28, 0.14);
 }
 
-.testimonial--image img {
+.testimonial__link {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: calc(var(--radius-md) - 0.25rem);
+}
+
+.testimonial__link:focus-visible {
+  outline: 0.2rem solid var(--color-accent);
+  outline-offset: 0.2rem;
+  box-shadow: 0 0 0 0.12rem var(--color-surface);
+}
+
+.testimonial__link img {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: calc(var(--radius-md) - 0.25rem);
+  border-radius: inherit;
+  transition: transform 220ms ease;
+}
+
+.testimonial__link:hover img {
+  transform: scale(1.025);
+}
+
+.testimonial__action {
+  position: absolute;
+  right: 0.7rem;
+  bottom: 0.7rem;
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(36, 58, 46, 0.96);
+  box-shadow: 0 0.2rem 0.65rem rgba(0, 0, 0, 0.25);
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.testimonial__action span {
+  font-size: 1rem;
+  line-height: 0.8;
 }
 
 .feedback-source {
@@ -1027,6 +1015,20 @@ h3 {
 .final-cta__inner > p:not(.eyebrow) {
   margin-bottom: 1.6rem;
   color: rgba(255, 255, 255, 0.82);
+}
+
+.final-cta .button {
+  box-shadow: 0 0.55rem 1.4rem rgba(0, 0, 0, 0.2);
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.final-cta .button:hover {
+  box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.12), 0 0.85rem 1.8rem rgba(0, 0, 0, 0.28);
+  transform: translateY(-0.16rem) scale(1.015);
+}
+
+.final-cta .button:active {
+  transform: translateY(0) scale(0.99);
 }
 
 .contact {
@@ -1250,9 +1252,6 @@ h3 {
   .services__grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  .results__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
   .testimonials__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1384,19 +1383,6 @@ h3 {
   .service-card__body,
   .testimonial {
     padding: 1.75rem;
-  }
-  .results__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-}
-@media (min-width: 100rem) {
-  .hero__grid {
-    min-height: 50rem;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
   }
   *,
   *::before,
