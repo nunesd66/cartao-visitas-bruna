@@ -8,6 +8,12 @@ document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
 const faqAnswers = document.querySelectorAll('.faq details');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+document.querySelectorAll('.mobile-nav').forEach((menu) => {
+  menu.addEventListener('click', (event) => {
+    if (event.target.closest('a[href^="#"]')) menu.open = false;
+  });
+});
+
 const aboutVisual = document.querySelector('.about__visual');
 
 if (aboutVisual && !reduceMotion) {

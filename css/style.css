@@ -154,7 +154,7 @@ h3 {
   border-radius: var(--radius-sm);
   color: #fff;
   background: var(--color-primary);
-  box-shadow: 0 0.6rem 1.3rem rgba(135, 71, 68, 0.16);
+  box-shadow: 0 0.6rem 1.3rem rgba(36, 58, 46, 0.16);
   font-size: 0.91rem;
   font-weight: 700;
   line-height: 1.2;
@@ -509,6 +509,7 @@ h3 {
   grid-auto-rows: 1fr;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
+  scroll-margin-top: 5.5rem;
 }
 
 .service-card {
@@ -524,7 +525,7 @@ h3 {
 }
 
 .service-card:hover {
-  border-color: rgba(168, 95, 91, 0.45);
+  border-color: rgba(36, 58, 46, 0.45);
   box-shadow: var(--shadow-soft);
   transform: translateY(-0.25rem);
 }
