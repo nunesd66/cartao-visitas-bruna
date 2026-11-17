@@ -1576,6 +1576,75 @@ body:has(.mobile-nav[open]) {
   font-size: 0.68rem;
 }
 
+.accessibility-help {
+  position: fixed;
+  z-index: 89;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  left: 1rem;
+}
+
+.accessibility-help > summary {
+  display: grid;
+  width: 2.9rem;
+  height: 2.9rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 0.14);
+  cursor: pointer;
+  list-style: none;
+}
+
+.accessibility-help > summary::-webkit-details-marker {
+  display: none;
+}
+
+.accessibility-help > summary svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.accessibility-help > summary:focus-visible {
+  outline: 0.18rem solid var(--color-primary);
+  outline-offset: 0.18rem;
+}
+
+.accessibility-help__panel {
+  position: absolute;
+  bottom: calc(100% + 0.65rem);
+  left: 0;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(26rem, calc(100vh - 6rem));
+  overflow: auto;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: 0 0.6rem 2rem rgb(0 0 0 / 0.18);
+}
+
+.accessibility-help__panel h2 {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.accessibility-help__panel ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
 .whatsapp-float {
   position: fixed;
   z-index: 90;
