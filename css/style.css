@@ -1408,6 +1408,10 @@ body:has(.mobile-nav[open]) {
   color: #fff;
 }
 
+.brand--footer .brand__tagline {
+  font-weight: 600;
+}
+
 .site-footer__top {
   display: grid;
   gap: 1.5rem;
