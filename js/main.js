@@ -150,6 +150,39 @@ if (siteHeader && casesRealAnchor) {
   });
 }
 
+const accessibilityHelp = document.querySelector('.accessibility-help');
+const accessibilityShortcutTargets = {
+  Digit0: 'hero-title',
+  Digit1: 'casos-reais',
+  Digit2: 'about-eyebrow',
+  Digit3: 'depoimentos',
+  Digit4: 'faq',
+  Digit5: 'contato',
+};
+
+document.addEventListener('keydown', (event) => {
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target || target.closest('input, textarea, select, [contenteditable="true"]')) return;
+  const windowsOrLinux = event.ctrlKey && event.altKey && event.shiftKey && !event.metaKey;
+  const mac = event.metaKey && event.altKey && event.shiftKey && !event.ctrlKey;
+  if ((!windowsOrLinux && !mac) || event.repeat) return;
+
+  const targetId = accessibilityShortcutTargets[event.code];
+  if (!targetId) return;
+
+  const heading = document.getElementById(targetId);
+  if (!heading) return;
+
+  event.preventDefault();
+  if (accessibilityHelp) accessibilityHelp.open = false;
+  heading.tabIndex = -1;
+  heading.focus({ preventScroll: true });
+  heading.scrollIntoView({
+    behavior: motionPreference.matches ? 'auto' : 'smooth',
+    block: 'start',
+  });
+});
+
 const aboutVisual = document.querySelector('.about__visual');
 
 if (aboutVisual && !reduceMotion) {
