@@ -318,22 +318,43 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   let scrollAnimationFrame = 0;
   let rotationPaused = reduceMotion;
 
-  const getStep = () => {
-    const gap = Number.parseFloat(window.getComputedStyle(track).gap) || 0;
-    return slides[0].getBoundingClientRect().width + gap;
+  const getActiveIndex = () => {
+    const viewportRect = viewport.getBoundingClientRect();
+    const viewportCenter = viewportRect.left + viewport.clientLeft + viewport.clientWidth / 2;
+    let activeIndex = 0;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    slides.forEach((slide, index) => {
+      const slideRect = slide.getBoundingClientRect();
+      const slideCenter = slideRect.left + slideRect.width / 2;
+      const distance = Math.abs(viewportCenter - slideCenter);
+
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        activeIndex = index;
+      }
+    });
+
+    return activeIndex;
+  };
+
+  const getSlideTarget = (index) => {
+    const viewportRect = viewport.getBoundingClientRect();
+    const slideRect = slides[index].getBoundingClientRect();
+    const viewportContentLeft = viewportRect.left + viewport.clientLeft;
+    const slideContentLeft = viewport.scrollLeft + slideRect.left - viewportContentLeft;
+
+    return slideContentLeft + (slideRect.width - viewport.clientWidth) / 2;
   };
 
   const updateControls = () => {
-    const step = getStep();
-    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
-    const activeIndex = step ? Math.round(viewport.scrollLeft / step) : 0;
+    const activeIndex = getActiveIndex();
 
-    previous.disabled = viewport.scrollLeft <= 1;
-    next.disabled = viewport.scrollLeft >= maxScroll - 1;
-    const currentIndex = Math.min(activeIndex, slides.length - 1);
-    status.textContent = (currentIndex + 1) + ' de ' + slides.length;
+    previous.disabled = activeIndex === 0;
+    next.disabled = activeIndex === slides.length - 1;
+    status.textContent = (activeIndex + 1) + ' de ' + slides.length;
     dots.forEach((dot, index) => {
-      dot.setAttribute('aria-current', String(index === currentIndex));
+      dot.setAttribute('aria-current', String(index === activeIndex));
     });
   };
 
@@ -397,10 +418,10 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const advance = () => {
-    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
-    const atEnd = viewport.scrollLeft >= maxScroll - 1;
+    const activeIndex = getActiveIndex();
+    const nextIndex = activeIndex === slides.length - 1 ? 0 : activeIndex + 1;
     status.setAttribute('aria-live', 'off');
-    animateTo(atEnd ? 0 : viewport.scrollLeft + getStep());
+    animateTo(getSlideTarget(nextIndex));
   };
 
   const startRotation = () => {
@@ -422,13 +443,15 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const move = (direction) => {
-    animateTo(viewport.scrollLeft + direction * getStep());
+    const currentIndex = getActiveIndex();
+    const nextIndex = Math.max(0, Math.min(currentIndex + direction, slides.length - 1));
+    animateTo(getSlideTarget(nextIndex));
     resetRotation();
     status.setAttribute('aria-live', 'polite');
   };
 
   function moveTo(index) {
-    animateTo(index * getStep());
+    animateTo(getSlideTarget(Math.max(0, Math.min(index, slides.length - 1))));
     resetRotation();
     status.setAttribute('aria-live', 'polite');
   }
