@@ -61,6 +61,7 @@ document.querySelectorAll('.mobile-nav').forEach((menu) => {
 
 const siteHeader = document.querySelector('.site-header');
 const casesRealAnchor = document.querySelector('#casos-reais');
+const headerPin = document.querySelector('[data-header-pin]');
 
 if (siteHeader && casesRealAnchor) {
   const directionLockMs = 2000;
@@ -70,6 +71,7 @@ if (siteHeader && casesRealAnchor) {
   let pendingVisibility = null;
   let pendingTimer = null;
   let headerHidden = false;
+  let headerPinned = false;
 
   const applyVisibility = (visible) => {
     headerHidden = !visible;
@@ -113,6 +115,7 @@ if (siteHeader && casesRealAnchor) {
     const scrollDirection = Math.sign(currentScrollY - lastScrollY);
     lastScrollY = currentScrollY;
     if (scrollDirection === 0) return;
+    if (headerPinned) return;
 
     if (currentScrollY <= 16 || scrollDirection < 0) {
       requestVisibility(true);
@@ -127,6 +130,24 @@ if (siteHeader && casesRealAnchor) {
     if (scrollFrame) return;
     scrollFrame = window.requestAnimationFrame(updateHeaderOnScroll);
   }, { passive: true });
+
+  headerPin?.addEventListener('click', () => {
+    headerPinned = !headerPinned;
+    const label = headerPinned ? 'Desafixar cabeçalho' : 'Fixar cabeçalho';
+    headerPin.setAttribute('aria-pressed', String(headerPinned));
+    headerPin.setAttribute('aria-label', label);
+    headerPin.setAttribute('title', label);
+    if (headerPinned) {
+      pendingVisibility = null;
+      window.clearTimeout(pendingTimer);
+      pendingTimer = null;
+      applyVisibility(true);
+      return;
+    }
+
+    lastScrollY = window.scrollY;
+    lastTransitionAt = performance.now() - directionLockMs;
+  });
 }
 
 const aboutVisual = document.querySelector('.about__visual');
