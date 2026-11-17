@@ -1687,12 +1687,6 @@ body:has(.mobile-nav[open]) {
   resize: vertical;
 }
 
-.faq-question__fallback {
-  width: fit-content;
-  color: var(--color-primary-dark);
-  font-size: 0.8rem;
-}
-
 @media (min-width: 60rem) {
   html {
     scroll-padding-top: 11rem;
