@@ -26,6 +26,10 @@ Capturas da versão atual, feitas localmente em 17/11/2026:
 - Perguntas frequentes, chamada final, localização e canais de contato.
 - Navegação acessível por teclado, menu móvel e controles do carrossel de depoimentos.
 
+### Links do rodapé
+
+Os sete links do rodapé permanecem em uma linha quando há espaço suficiente. Em telas médias, eles se distribuem em duas linhas equilibradas; em telas menores, usam três linhas centralizadas (3 + 2 + 2). Os ícones compartilham o mesmo tamanho e os links mantêm uma área de toque confortável.
+
 ## Tecnologias e estrutura
 
 Projeto sem framework ou dependências de runtime. O HTML é semântico, os estilos são escritos em SCSS e servidos pelo CSS compilado; o JavaScript vanilla é usado para interações progressivas.
@@ -67,7 +71,7 @@ npm ci
 npm run build:css
 ```
 
-O `index.html` referencia `css/style.css`; mudanças apenas no SCSS não aparecem no navegador até a compilação. Sass é dependência apenas de desenvolvimento; a página publicada é estática e não precisa de npm ou Node em runtime.
+O compilador Sass `1.108.2` requer **Node.js 20.19.0 ou superior**. O `index.html` referencia `css/style.css`; mudanças apenas no SCSS não aparecem no navegador até a compilação. Sass é dependência apenas de desenvolvimento; a página publicada é estática e não precisa de npm ou Node em runtime.
 
 ### SEO e publicação
 
