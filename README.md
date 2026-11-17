@@ -77,7 +77,59 @@ O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na 
 
 Em telas abaixo de 60 rem, o botão de fixar cabeçalho fica oculto para manter a marca e o menu dentro da largura disponível. Ele aparece apenas em desktop com ponteiro preciso; a navegação móvel segue sem esse controle.
 
-Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. Analytics permanece desligado sem um Measurement ID real e decisão de privacidade/consentimento.
+Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. O Measurement ID real está configurado, mas o GA4 permanece desativado até haver uma decisão de consentimento aprovada e conectada.
+
+## Mensuração com Google Analytics 4
+
+### Arquitetura e estado padrão
+
+A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém o Measurement ID real confirmado para o fluxo Web: `G-YVS4N0BZ9S` (Stream ID `16362293759`). `js/analytics.js`, carregado antes de `js/privacy.js` e `js/main.js`, só solicita o Google tag depois de consentimento afirmativo. `js/privacy.js` chama `setConsent(true)` apenas quando restaura uma escolha aceita ou quando a pessoa aciona Aceitar. Em primeira visita sem escolha, recusa ou revogação, não cria `dataLayer`, não carrega script remoto nem envia eventos.
+
+O fluxo usa o modo básico de Consent Mode: o tag não carrega antes da escolha afirmativa. Após aceitar, o código define todos os estados como `denied`, atualiza apenas `analytics_storage` para `granted` e mantém os estados de publicidade negados. Google Signals e personalização de anúncios ficam desativados. Recusa ou revogação bloqueiam eventos próprios, atualizam o Consent Mode para `denied` e ativam `ga-disable-<ID>` para interromper novas transmissões.
+
+### Componente de privacidade
+
+`js/privacy.js` apresenta o painel na primeira visita sem decisão, oferece Aceitar e Recusar e mantém o controle Privacidade disponível para alterar a escolha. A escolha é persistida no `localStorage` sob `bruna-analytics-consent-v1`; apenas os valores `accepted` ou `rejected` são armazenados. Não há opção pré-selecionada e a ausência de escolha mantém a coleta desligada. Se o navegador impedir armazenamento local, a decisão explícita vale somente até o fim daquela página e o pedido reaparece na próxima visita.
+
+Ao recusar ou revogar depois de aceitar, o código desativa o Google tag, bloqueia novos eventos e tenta remover cookies GA acessíveis (`_ga`, `_ga_*` e famílias relacionadas) no domínio/caminho atual. Isso não apaga dados já transmitidos aos servidores do Google; pedidos de eliminação/retention e dados históricos exigem controles da propriedade GA4. Acessar Privacidade reabre as opções sem presumir que a pessoa manteve a decisão anterior.
+
+O componente é uma interface técnica mínima, não uma política de privacidade nem garantia de conformidade legal. Antes de ativar a coleta, a responsável deve validar a base legal, transparência e documentação aplicáveis, incluindo quem controla os dados, finalidades, dados/cookies tratados, destinatários (incluindo Google), retenção, transferências aplicáveis, canal de contato e direitos/revogação. A ANPD recomenda informação clara e procedimento gratuito/facilitado para revogar o consentimento; avaliar com orientação jurídica ou de privacidade a necessidade e o conteúdo de um aviso/política de privacidade e cookies. Consulte o [Guia orientativo da ANPD sobre cookies](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia_orientativo_cookies_e_protecao_de_dados_pessoais) e a página de [direitos dos titulares](https://www.gov.br/anpd/pt-br/assuntos/titular-de-dados/direito-dos-titulares).
+
+O código configura `send_page_view: false` e envia um `page_view` manual após consentimento, evitando a pageview padrão do comando `config`. A Mensuração otimizada da propriedade também pode enviar pageviews em alterações do histórico do navegador, independentemente dessa opção; como o site navega por âncoras, desative a medição de mudanças por histórico na propriedade antes de ativar a coleta. `page_location` é limitado à origem e ao caminho; `page_referrer`, quando disponível, é limitado à origem. Query string e fragmento não são enviados por esses parâmetros. Isso preserva indicação de origem por domínio, mas não atribuição de campanhas UTM. Não incluir dados pessoais em URLs de entrada.
+
+### Eventos e parâmetros
+
+O listener delegado existente em `js/main.js` continua sendo o único listener de cliques analíticos. `js/analytics.js` valida uma lista fechada de eventos e parâmetros e normaliza os atributos `data-analytics-*` existentes:
+
+| Evento enviado ao GA4 | Origem no HTML | Parâmetros permitidos | O que mede |
+| --- | --- | --- | --- |
+| `page_view` | Configuração GA4 | página sem query/fragmento; origem do referrer | Página carregada após consentimento; métricas de usuários, sessões e aquisição são calculadas pelo GA4. |
+| `contact_intent` | `whatsapp_booking_click` e `contact_channel_click` com `channel=whatsapp` | `channel=whatsapp`, `cta_location`, `service_name` opcional | Clique para iniciar contato pelo WhatsApp. É intenção, não agendamento ou lead concluído. Cliques em CTAs de serviço permitem comparar o interesse por slug de serviço. |
+| `contact_channel_click` | `contact_channel_click`, `testimonial_source_click` e `review_request_click` | `channel` (`phone`, `google_maps`, `instagram` ou `google`), `cta_location` | Clique em canal ou fonte externa. Maps e Instagram são distinguidos por `channel`; acessos ao Google para avaliações usam `google`. |
+| `faq_open` | `faq_open` | `faq_id` (`faq_01` a `faq_06`) | Abertura de pergunta frequente, sem enviar o texto da pergunta. |
+
+`generate_lead` não é enviado: um clique no WhatsApp não comprova que uma conversa, lead ou agendamento foi concluído. O código não envia URL de destino, texto do link, telefone, conteúdo da avaliação, pergunta, mensagem do WhatsApp, nome de cliente ou texto digitado. Os parâmetros `channel`, `cta_location`, `service_name` e `faq_id` são filtrados por valores permitidos. Para consultar parâmetros personalizados nos relatórios padrão, registre-os como dimensões personalizadas na propriedade GA4.
+
+### Configuração e ativação
+
+1. O Measurement ID real já está configurado: `G-YVS4N0BZ9S`; não substituir por outro sem confirmação da propriedade.
+2. A interface de primeira camada está implementada. Aprove o comportamento e providencie a revisão do aviso/política de privacidade e cookies; confirme que as informações de controlador, finalidade, base legal, compartilhamento, retenção e direitos são suficientes para o caso concreto.
+3. A Mensuração otimizada está ativada na propriedade. Antes da coleta, desligue **cliques de saída** ou aprove explicitamente a coleta sobreposta: os cliques personalizados `contact_intent`/`contact_channel_click` coexistiriam com o evento automático `click`, que inclui `link_url` (potencialmente URL de WhatsApp com telefone e mensagem pré-preenchida). Recomendamos desligar cliques de saída para reduzir duplicação e exposição de dados.
+4. Desative também mudanças de pageview baseadas em histórico do navegador, evitando pageviews extras em navegação interna; mantenha o `page_view` manual único. Revise as demais opções antes de ativar: `scroll` não duplica evento próprio; `form_start`/`form_submit` podem registrar interação com o formulário de dúvidas do WhatsApp (sem evento personalizado equivalente); não foram encontrados links para downloads. Desative a pesquisa de site automática ou confirme que URLs nunca usarão `q`, `s`, `search`, `query` ou `keyword` com valores pessoais, pois esses parâmetros podem gerar evento e termo de pesquisa automáticos.
+5. Após publicar com autorização, valide a tag no Tag Assistant e no DebugView. Só afirmar recebimento quando houver evidência real nesses produtos.
+
+Referências oficiais: [instalação do Google tag](https://support.google.com/analytics/answer/14183469?hl=pt-BR), [eventos recomendados GA4](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [Consent Mode para sites](https://developers.google.com/tag-platform/security/guides/consent), [eventos de Mensuração otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR), [pageviews e mudanças de histórico](https://developers.google.com/analytics/devguides/collection/ga4/views), [parâmetros e dimensões personalizadas](https://developers.google.com/analytics/devguides/collection/ga4/event-parameters).
+
+### Testes locais
+
+```bash
+node --check js/analytics.js
+node --check js/privacy.js
+node --check js/main.js
+node --test scripts/analytics.test.mjs scripts/privacy.test.mjs
+```
+
+Os testes usam IDs fixture somente no contexto Node isolado. A página contém o ID real, mas em primeira visita, recusa ou revogação não carrega a tag remota. Os testes verificam consentimento, persistência, restauração, revogação, remoção de cookies acessíveis, atributos/estrutura acessível e regras responsivas. O envio real deve ser confirmado no Tag Assistant/DebugView após revisão e decisão; os testes locais não simulam dados recebidos pelo GA4.
 
 Para reverter um deploy defeituoso, crie um novo commit com `git revert <sha-do-commit-de-publicação>` e confirme o novo workflow de Pages. A tag `backup-2026-11-16` é uma referência histórica anterior a alterações aprovadas depois de 16/11; não mova `master` diretamente para ela nem use force-push.
 

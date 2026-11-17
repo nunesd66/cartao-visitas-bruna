@@ -34,5 +34,14 @@ jobs:
       - name: Check JavaScript syntax
         run: node --check js/main.js
 
+      - name: Check analytics JavaScript syntax
+        run: node --check js/analytics.js
+
+      - name: Check privacy JavaScript syntax
+        run: node --check js/privacy.js
+
+      - name: Test analytics consent and event filtering
+        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs

@@ -1,7 +1,8 @@
 document.addEventListener('click', (event) => {
   const target = event.target instanceof Element ? event.target : event.target.parentElement;
   const trigger = target?.closest('[data-analytics-event]');
-  if (!trigger || typeof window.gtag !== 'function') return;
+  const analytics = window.BrunaAnalytics;
+  if (!trigger || typeof analytics?.track !== 'function') return;
 
   const eventName = trigger.dataset.analyticsEvent;
   if (eventName === 'faq_open' && trigger.closest('details')?.open) return;
@@ -12,7 +13,7 @@ document.addEventListener('click', (event) => {
   if (trigger.dataset.analyticsChannel) parameters.channel = trigger.dataset.analyticsChannel;
   if (trigger.dataset.analyticsQuestion) parameters.faq_id = trigger.dataset.analyticsQuestion;
 
-  window.gtag('event', eventName, parameters);
+  analytics.track(eventName, parameters);
 }, true);
 
 document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
