@@ -544,7 +544,7 @@ document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
     event.preventDefault();
     const question = new FormData(form).get('question')?.toString().trim();
     if (!question) return;
-    const message = `Ol\u00e1, tenho uma d\u00favida espec\u00edfica: ${question}`;
+    const message = `Ol\u00e1! Vim pelo site e enviei uma d\u00favida pela se\u00e7\u00e3o de d\u00favidas frequentes: ${question}`;
     const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   });
