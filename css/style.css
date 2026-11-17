@@ -609,6 +609,22 @@ h3 {
   content: "";
 }
 
+.about__visual::after {
+  position: absolute;
+  z-index: 0;
+  top: -1rem;
+  left: -1rem;
+  width: 42%;
+  aspect-ratio: 1;
+  border: 0.0625rem solid rgba(168, 95, 91, 0.28);
+  border-radius: 50%;
+  content: "";
+  opacity: 0.75;
+  pointer-events: none;
+  transform: translateY(var(--about-orbit-shift, 0px));
+  transition: transform 180ms ease-out;
+}
+
 .about__visual img {
   position: relative;
   z-index: 1;
@@ -616,6 +632,13 @@ h3 {
   aspect-ratio: 4/5;
   border-radius: var(--radius-lg);
   object-fit: cover;
+  transform: translateY(var(--about-image-shift, 0px));
+  transition: transform 180ms ease-out;
+}
+
+.about__visual::before {
+  transform: translateY(var(--about-frame-shift, 0px));
+  transition: transform 180ms ease-out;
 }
 
 .about__visual span {
