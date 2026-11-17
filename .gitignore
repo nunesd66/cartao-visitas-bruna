@@ -24,9 +24,11 @@
 
 /js/*
 !/js/main.js
+!/js/analytics.js
 
 /scripts/*
 !/scripts/check-local-assets.mjs
+!/scripts/analytics.test.mjs
 
 /images/*
 !/images/bruna-profissional.jpg

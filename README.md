@@ -77,7 +77,52 @@ O HTML define canonical, Open Graph e JSON-LD com informações já exibidas na 
 
 Em telas abaixo de 60 rem, o botão de fixar cabeçalho fica oculto para manter a marca e o menu dentro da largura disponível. Ele aparece apenas em desktop com ponteiro preciso; a navegação móvel segue sem esse controle.
 
-Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. Analytics permanece desligado sem um Measurement ID real e decisão de privacidade/consentimento.
+Antes de publicar, revise os arquivos do diff, execute `npm run build:css`, confira os links/URLs e acompanhe o workflow **pages build and deployment** em GitHub Actions. Após o deploy, valide HTTP 200 para a página, CSS, JS, imagens, robots e sitemap; repita Lighthouse mobile/desktop. O GA4 permanece desativado até haver um Measurement ID real e uma decisão de consentimento conectada.
+
+## Mensuração com Google Analytics 4
+
+### Arquitetura e estado padrão
+
+A implementação usa `gtag.js` sem bibliotecas adicionais. O `index.html` contém `meta[name="ga4-measurement-id"]` com valor vazio; este não é um ID fictício. `js/analytics.js`, carregado antes de `js/main.js`, só solicita o Google tag quando encontra um ID válido `G-...` e recebe consentimento explícito por `window.BrunaAnalytics.setConsent(true)`. Sem qualquer uma dessas condições, não cria `dataLayer`, não carrega script remoto, não define cookies e descarta eventos.
+
+O fluxo usa o modo básico de Consent Mode: o tag não carrega antes da escolha de consentimento. Após a concessão, o código define todos os estados como `denied`, atualiza apenas `analytics_storage` para `granted` e mantém os estados de publicidade negados. Google Signals e personalização de anúncios ficam desativados. Ao negar ou revogar, o código bloqueia os eventos próprios e, se o tag já tiver sido iniciado, atualiza os estados para `denied`.
+
+Não existe banner, texto de consentimento nem armazenamento da escolha neste projeto. Uma CMP ou solução aprovada deve chamar `window.BrunaAnalytics.setConsent(true)` após a pessoa autorizar Analytics e `window.BrunaAnalytics.setConsent(false)` ao negar ou revogar. Ela também precisa restaurar a escolha previamente registrada em cada carregamento. A redação e a solução de consentimento continuam dependências externas; não ativar o ID antes disso.
+
+O `page_view` é enviado uma vez após a concessão, com `send_page_view: false` na configuração para evitar duplicidade. `page_location` é limitado à origem e ao caminho; `page_referrer`, quando disponível, é limitado à origem. Query string e fragmento não são enviados por esses parâmetros. Isso preserva indicação de origem por domínio, mas não atribuição de campanhas UTM. Não incluir dados pessoais em URLs de entrada.
+
+### Eventos e parâmetros
+
+O listener delegado existente em `js/main.js` continua sendo o único listener de cliques analíticos. `js/analytics.js` valida uma lista fechada de eventos e parâmetros e normaliza os atributos `data-analytics-*` existentes:
+
+| Evento enviado ao GA4 | Origem no HTML | Parâmetros permitidos | O que mede |
+| --- | --- | --- | --- |
+| `page_view` | Configuração GA4 | página sem query/fragmento; origem do referrer | Página carregada após consentimento; métricas de usuários, sessões e aquisição são calculadas pelo GA4. |
+| `contact_intent` | `whatsapp_booking_click` e `contact_channel_click` com `channel=whatsapp` | `channel=whatsapp`, `cta_location`, `service_name` opcional | Clique para iniciar contato pelo WhatsApp. É intenção, não agendamento ou lead concluído. Cliques em CTAs de serviço permitem comparar o interesse por slug de serviço. |
+| `contact_channel_click` | `contact_channel_click`, `testimonial_source_click` e `review_request_click` | `channel` (`phone`, `google_maps`, `instagram` ou `google`), `cta_location` | Clique em canal ou fonte externa. Maps e Instagram são distinguidos por `channel`; acessos ao Google para avaliações usam `google`. |
+| `faq_open` | `faq_open` | `faq_id` (`faq_01` a `faq_06`) | Abertura de pergunta frequente, sem enviar o texto da pergunta. |
+
+`generate_lead` não é enviado: um clique no WhatsApp não comprova que uma conversa, lead ou agendamento foi concluído. O código não envia URL de destino, texto do link, telefone, conteúdo da avaliação, pergunta, mensagem do WhatsApp, nome de cliente ou texto digitado. Os parâmetros `channel`, `cta_location`, `service_name` e `faq_id` são filtrados por valores permitidos. Para consultar parâmetros personalizados nos relatórios padrão, registre-os como dimensões personalizadas na propriedade GA4.
+
+### Configuração e ativação
+
+1. No fluxo Web da propriedade GA4, copie o Measurement ID real iniciado por `G-`.
+2. Depois da decisão de consentimento e da integração com a solução aprovada, preencha somente o `content` de `meta[name="ga4-measurement-id"]` em `index.html`.
+3. Conecte a CMP/solução aprovada à API `window.BrunaAnalytics.setConsent`. Não persista a escolha neste código; a solução de consentimento é responsável por guardar e restaurar a escolha.
+4. Na propriedade GA4, revise a Mensuração otimizada: desative cliques de saída para evitar um segundo evento automático `click` e coleta de `link_url` (os canais relevantes já têm eventos próprios); desative mudanças de página baseadas no histórico do navegador para não tratar âncoras/hash da landing page como novas páginas. Revise também quaisquer outras medições automáticas antes de ativar.
+5. Após publicar com autorização, valide a tag no Tag Assistant e no DebugView. Só afirmar recebimento quando houver evidência real nesses produtos.
+
+Referências oficiais: [instalação do Google tag](https://support.google.com/analytics/answer/14183469?hl=pt-BR), [eventos recomendados GA4](https://developers.google.com/analytics/devguides/collection/ga4/reference/events), [Consent Mode para sites](https://developers.google.com/tag-platform/security/guides/consent), [eventos de Mensuração otimizada](https://support.google.com/analytics/answer/9216061?hl=pt-BR), [parâmetros e dimensões personalizadas](https://developers.google.com/analytics/devguides/collection/ga4/event-parameters).
+
+### Testes locais
+
+```bash
+node --check js/analytics.js
+node --check js/main.js
+node --test scripts/analytics.test.mjs
+```
+
+Os testes usam um ID de fixture somente no contexto Node isolado; o HTML público permanece sem Measurement ID. Eles verificam ausência de script/fila sem configuração, consentimento obrigatório, uma única inicialização, normalização de eventos, filtragem de parâmetros e revogação. O envio real deve ser confirmado no Tag Assistant/DebugView após configuração e autorização; os testes locais não simulam dados recebidos pelo GA4.
 
 Para reverter um deploy defeituoso, crie um novo commit com `git revert <sha-do-commit-de-publicação>` e confirme o novo workflow de Pages. A tag `backup-2026-11-16` é uma referência histórica anterior a alterações aprovadas depois de 16/11; não mova `master` diretamente para ela nem use force-push.
 
