@@ -150,6 +150,39 @@ if (siteHeader && casesRealAnchor) {
   });
 }
 
+const accessibilityHelp = document.querySelector('.accessibility-help');
+const accessibilityShortcutTargets = {
+  Digit0: 'hero-title',
+  Digit1: 'casos-reais',
+  Digit2: 'about-eyebrow',
+  Digit3: 'depoimentos',
+  Digit4: 'faq',
+  Digit5: 'contato',
+};
+
+document.addEventListener('keydown', (event) => {
+  const target = event.target instanceof Element ? event.target : null;
+  if (!target || target.closest('input, textarea, select, [contenteditable="true"]')) return;
+  const windowsOrLinux = event.ctrlKey && event.altKey && event.shiftKey && !event.metaKey;
+  const mac = event.metaKey && event.altKey && event.shiftKey && !event.ctrlKey;
+  if ((!windowsOrLinux && !mac) || event.repeat) return;
+
+  const targetId = accessibilityShortcutTargets[event.code];
+  if (!targetId) return;
+
+  const heading = document.getElementById(targetId);
+  if (!heading) return;
+
+  event.preventDefault();
+  if (accessibilityHelp) accessibilityHelp.open = false;
+  heading.tabIndex = -1;
+  heading.focus({ preventScroll: true });
+  heading.scrollIntoView({
+    behavior: motionPreference.matches ? 'auto' : 'smooth',
+    block: 'start',
+  });
+});
+
 const aboutVisual = document.querySelector('.about__visual');
 
 if (aboutVisual && !reduceMotion) {
@@ -185,11 +218,14 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const previous = carousel.querySelector('[data-carousel-prev]');
   const next = carousel.querySelector('[data-carousel-next]');
   const status = carousel.querySelector('[data-carousel-status]');
+  const rotationToggle = carousel.querySelector('[data-carousel-rotation]');
 
-  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status) return;
+  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status || !rotationToggle) return;
 
   controls.hidden = false;
   let statusFrame = 0;
+  let rotationTimer = null;
+  let rotationPaused = reduceMotion;
 
   const getStep = () => {
     const gap = Number.parseFloat(window.getComputedStyle(track).gap) || 0;
@@ -206,15 +242,66 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     status.textContent = (Math.min(activeIndex + 1, slides.length)) + ' de ' + slides.length;
   };
 
+  const updateRotationControl = () => {
+    rotationToggle.setAttribute('aria-pressed', String(rotationPaused));
+    rotationToggle.textContent = rotationPaused ? 'Retomar depoimentos' : 'Pausar depoimentos';
+    rotationToggle.hidden = motionPreference.matches;
+  };
+
+  const stopRotation = () => {
+    if (rotationTimer === null) return;
+    window.clearInterval(rotationTimer);
+    rotationTimer = null;
+  };
+
+  const advance = () => {
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    const atEnd = viewport.scrollLeft >= maxScroll - 1;
+    status.setAttribute('aria-live', 'off');
+    viewport.scrollTo({
+      left: atEnd ? 0 : viewport.scrollLeft + getStep(),
+      behavior: 'smooth',
+    });
+  };
+
+  const startRotation = () => {
+    if (rotationTimer !== null || rotationPaused || motionPreference.matches) return;
+    rotationTimer = window.setInterval(advance, 6000);
+  };
+
+  const resetRotation = () => {
+    stopRotation();
+    startRotation();
+  };
+
+  const pauseRotationForInteraction = () => {
+    if (rotationPaused) return;
+    rotationPaused = true;
+    stopRotation();
+    updateRotationControl();
+    status.setAttribute('aria-live', 'polite');
+  };
+
   const move = (direction) => {
     viewport.scrollBy({
       left: direction * getStep(),
-      behavior: reduceMotion ? 'auto' : 'smooth',
+      behavior: motionPreference.matches ? 'auto' : 'smooth',
     });
+    resetRotation();
+    status.setAttribute('aria-live', 'polite');
   };
 
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
+  carousel.addEventListener('focusin', pauseRotationForInteraction);
+  viewport.addEventListener('pointerdown', pauseRotationForInteraction);
+  rotationToggle.addEventListener('click', () => {
+    rotationPaused = !rotationPaused;
+    if (rotationPaused) stopRotation();
+    else startRotation();
+    updateRotationControl();
+    status.setAttribute('aria-live', 'polite');
+  });
 
   viewport.addEventListener('scroll', () => {
     if (statusFrame) return;
@@ -225,7 +312,19 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   }, { passive: true });
 
   window.addEventListener('resize', updateControls);
+  motionPreference.addEventListener('change', (event) => {
+    rotationPaused = event.matches;
+    if (rotationPaused) stopRotation();
+    else startRotation();
+    updateRotationControl();
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) stopRotation();
+    else startRotation();
+  });
   updateControls();
+  updateRotationControl();
+  startRotation();
 });
 
 faqAnswers.forEach((details) => {
@@ -291,6 +390,8 @@ document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
   });
 });
 const imageRotators = [];
+const galleryRotationToggle = document.querySelector('[data-rotation-toggle]');
+let galleriesPaused = false;
 
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
@@ -316,7 +417,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches) return;
+    if (timer !== null || motionPreference.matches || galleriesPaused) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -330,6 +431,24 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   start();
 });
 
+const updateGalleryRotationToggle = () => {
+  if (!galleryRotationToggle) return;
+  galleryRotationToggle.setAttribute('aria-pressed', String(galleriesPaused));
+  galleryRotationToggle.textContent = galleriesPaused
+    ? 'Retomar a troca das imagens'
+    : 'Pausar a troca das imagens';
+  galleryRotationToggle.hidden = motionPreference.matches || imageRotators.length === 0;
+};
+
+galleryRotationToggle?.addEventListener('click', () => {
+  galleriesPaused = !galleriesPaused;
+  imageRotators.forEach((rotator) => (galleriesPaused ? rotator.stop() : rotator.start()));
+  updateGalleryRotationToggle();
+});
+updateGalleryRotationToggle();
+
 motionPreference.addEventListener('change', (event) => {
+  galleriesPaused = false;
   imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
+  updateGalleryRotationToggle();
 });

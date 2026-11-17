@@ -677,6 +677,31 @@ body:has(.mobile-nav[open]) {
   opacity: 1;
 }
 
+.gallery-rotation-toggle {
+  display: block;
+  min-height: 2.75rem;
+  margin: 1rem auto 0;
+  padding: 0.6rem 0.95rem;
+  border: 0.0625rem solid var(--color-primary-dark);
+  border-radius: 999px;
+  color: var(--color-primary-dark);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease;
+}
+
+.gallery-rotation-toggle[aria-pressed="true"] {
+  color: #fff;
+  background: var(--color-primary-dark);
+}
+
+.gallery-rotation-toggle[hidden] {
+  display: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .service-card__gallery img {
     transition: none;
@@ -921,6 +946,7 @@ body:has(.mobile-nav[open]) {
 
 .testimonials__controls {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 0.65rem;
@@ -972,6 +998,34 @@ body:has(.mobile-nav[open]) {
   font-size: 0.8rem;
   font-variant-numeric: tabular-nums;
   text-align: center;
+}
+
+.testimonials__rotation {
+  min-height: 2.75rem;
+  padding: 0.55rem 0.9rem;
+  border: 0.0625rem solid var(--color-border);
+  border-radius: 999px;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: 0.82rem;
+  cursor: pointer;
+  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
+}
+
+.testimonials__rotation:hover {
+  border-color: var(--color-primary);
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.testimonials__rotation:focus-visible {
+  outline: 0.18rem solid var(--color-primary);
+  outline-offset: 0.18rem;
+}
+
+.testimonials__rotation[hidden] {
+  display: none;
 }
 
 .testimonials__viewport {
@@ -1520,6 +1574,113 @@ body:has(.mobile-nav[open]) {
   margin-bottom: 0;
   color: rgb(255 255 255 / 0.57);
   font-size: 0.68rem;
+}
+
+.accessibility-help {
+  position: fixed;
+  z-index: 89;
+  bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  left: 1rem;
+}
+
+.accessibility-help > summary {
+  display: grid;
+  width: 2.9rem;
+  height: 2.9rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 0.14);
+  cursor: pointer;
+  list-style: none;
+}
+
+.accessibility-help > summary::-webkit-details-marker {
+  display: none;
+}
+
+.accessibility-help > summary svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.accessibility-help > summary:focus-visible {
+  outline: 0.18rem solid var(--color-primary);
+  outline-offset: 0.18rem;
+}
+
+.accessibility-help__panel {
+  position: absolute;
+  bottom: calc(100% + 0.65rem);
+  left: 0;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(26rem, calc(100vh - 6rem));
+  overflow: auto;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: 0 0.6rem 2rem rgb(0 0 0 / 0.18);
+}
+
+.accessibility-help__panel h2 {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.accessibility-help__panel ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.accessibility-help__panel h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 0.9rem;
+}
+
+.accessibility-help__shortcuts {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.accessibility-help__shortcuts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.18rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.78rem;
+}
+
+.accessibility-help__shortcuts kbd {
+  width: fit-content;
+  padding: 0.08rem 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  background: var(--color-surface-soft);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.accessibility-help__note {
+  margin: 0.65rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
 }
 
 .whatsapp-float {
