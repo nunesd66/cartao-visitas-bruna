@@ -992,7 +992,7 @@ h3 {
   overflow: hidden;
   padding-block: clamp(4rem, 11vw, 6.5rem);
   color: #fff;
-  background: var(--color-primary-dark);
+  background: var(--color-primary);
 }
 
 .final-cta::before,
@@ -1026,6 +1026,11 @@ h3 {
 .final-cta .eyebrow,
 .final-cta h2 {
   color: #fff;
+}
+
+.final-cta .button--light,
+.final-cta .button--light:hover {
+  color: var(--color-primary);
 }
 
 .final-cta h2 {
