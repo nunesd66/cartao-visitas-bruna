@@ -1,3 +1,20 @@
+document.addEventListener('click', (event) => {
+  const target = event.target instanceof Element ? event.target : event.target.parentElement;
+  const trigger = target?.closest('[data-analytics-event]');
+  if (!trigger || typeof window.gtag !== 'function') return;
+
+  const eventName = trigger.dataset.analyticsEvent;
+  if (eventName === 'faq_open' && trigger.closest('details')?.open) return;
+
+  const parameters = {};
+  if (trigger.dataset.analyticsLocation) parameters.cta_location = trigger.dataset.analyticsLocation;
+  if (trigger.dataset.analyticsService) parameters.service_name = trigger.dataset.analyticsService;
+  if (trigger.dataset.analyticsChannel) parameters.channel = trigger.dataset.analyticsChannel;
+  if (trigger.dataset.analyticsQuestion) parameters.faq_id = trigger.dataset.analyticsQuestion;
+
+  window.gtag('event', eventName, parameters);
+}, true);
+
 document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
   brand.addEventListener('click', (event) => {
     event.preventDefault();

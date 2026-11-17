@@ -7,6 +7,10 @@
 !/images/
 !/docs/
 !/docs/**
+!/package.json
+!/package-lock.json
+!/robots.txt
+!/sitemap.xml
 
 /css/*
 !/css/style.css
@@ -34,3 +38,4 @@
 !/images/feedback-monstera-bg.jpg
 !/images/micropigmentacao.jpg
 !/images/primeira-foto.jpg
+!/images/primeira-foto-optimized.webp
