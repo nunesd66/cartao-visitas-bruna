@@ -152,6 +152,78 @@ if (siteHeader && casesRealAnchor) {
 }
 
 const accessibilityHelp = document.querySelector('.accessibility-help');
+const accessibilityTools = document.querySelector('.accessibility-tools');
+const accessibilityToolsToggle = accessibilityTools?.querySelector(':scope > summary');
+const siteFooter = document.querySelector('.site-footer');
+
+if (accessibilityTools && siteFooter && 'IntersectionObserver' in window) {
+  const positionToolsBeforeFooter = () => {
+    if (!accessibilityTools.classList.contains('is-footer-visible')) return;
+    const footerTop = siteFooter.getBoundingClientRect().top;
+    const toggleHeight = accessibilityToolsToggle?.getBoundingClientRect().height || 48;
+    const top = Math.max(8, Math.min(
+      footerTop - toggleHeight - 4,
+      window.innerHeight - toggleHeight - 84,
+    ));
+    accessibilityTools.style.setProperty('--accessibility-tools-top', `${top}px`);
+  };
+
+  const footerObserver = new IntersectionObserver(([entry]) => {
+    accessibilityTools.classList.toggle('is-footer-visible', entry.isIntersecting);
+    if (entry.isIntersecting) positionToolsBeforeFooter();
+    else accessibilityTools.style.removeProperty('--accessibility-tools-top');
+  });
+  footerObserver.observe(siteFooter);
+
+  let footerPositionFrame = 0;
+  window.addEventListener('scroll', () => {
+    if (footerPositionFrame || !accessibilityTools.classList.contains('is-footer-visible')) return;
+    footerPositionFrame = window.requestAnimationFrame(() => {
+      footerPositionFrame = 0;
+      positionToolsBeforeFooter();
+    });
+  }, { passive: true });
+
+  window.addEventListener('resize', positionToolsBeforeFooter);
+}
+
+accessibilityTools?.addEventListener('toggle', () => {
+  accessibilityToolsToggle?.setAttribute('aria-expanded', String(accessibilityTools.open));
+  if (!accessibilityTools.open && accessibilityHelp) accessibilityHelp.open = false;
+});
+
+accessibilityTools?.addEventListener('keydown', (event) => {
+  if (event.key !== 'Escape' || !accessibilityTools.open) return;
+  event.preventDefault();
+
+  if (accessibilityHelp?.open) {
+    accessibilityHelp.open = false;
+    accessibilityHelp.querySelector('summary')?.focus();
+    return;
+  }
+
+  accessibilityTools.open = false;
+  accessibilityToolsToggle?.focus();
+});
+
+document.addEventListener('pointerdown', (event) => {
+  if (accessibilityTools?.open && event.target instanceof Node && !accessibilityTools.contains(event.target)) {
+    accessibilityTools.open = false;
+  }
+});
+
+document.querySelectorAll('[data-page-scroll]').forEach((button) => {
+  button.addEventListener('click', () => {
+    const destination = button.dataset.pageScroll === 'bottom'
+      ? document.documentElement.scrollHeight
+      : 0;
+    window.scrollTo({ top: destination, behavior: reduceMotion ? 'auto' : 'smooth' });
+    if (destination === 0) siteHeader?.classList.remove('is-hidden');
+    accessibilityTools.open = false;
+    accessibilityToolsToggle?.focus();
+  });
+});
+
 const accessibilityShortcutTargets = {
   Digit0: 'hero-title',
   Digit1: 'casos-reais',
@@ -160,8 +232,11 @@ const accessibilityShortcutTargets = {
   Digit4: 'faq',
   Digit5: 'contato',
 };
+const isTouchDevice = navigator.maxTouchPoints > 0
+  || window.matchMedia('(hover: none) and (pointer: coarse)').matches;
 
 document.addEventListener('keydown', (event) => {
+  if (isTouchDevice) return;
   const target = event.target instanceof Element ? event.target : null;
   if (!target || target.closest('input, textarea, select, [contenteditable="true"]')) return;
   const windowsOrLinux = event.ctrlKey && event.altKey && event.shiftKey && !event.metaKey;
@@ -176,6 +251,7 @@ document.addEventListener('keydown', (event) => {
 
   event.preventDefault();
   if (accessibilityHelp) accessibilityHelp.open = false;
+  if (accessibilityTools) accessibilityTools.open = false;
   heading.tabIndex = -1;
   heading.focus({ preventScroll: true });
   heading.scrollIntoView({
@@ -220,12 +296,26 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const next = carousel.querySelector('[data-carousel-next]');
   const status = carousel.querySelector('[data-carousel-status]');
   const rotationToggle = carousel.querySelector('[data-carousel-rotation]');
+  const pagination = carousel.querySelector('[data-carousel-pagination]');
 
-  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status || !rotationToggle) return;
+  if (!viewport || !track || !slides.length || !controls || !previous || !next || !status || !rotationToggle || !pagination) return;
+
+  const dots = slides.map((slide, index) => {
+    const dot = document.createElement('button');
+    dot.className = 'testimonials__dot';
+    dot.type = 'button';
+    dot.setAttribute('aria-label', 'Ir para avaliação ' + (index + 1));
+    dot.setAttribute('aria-controls', viewport.id);
+    dot.setAttribute('aria-current', index === 0 ? 'true' : 'false');
+    dot.addEventListener('click', () => moveTo(index));
+    pagination.append(dot);
+    return dot;
+  });
 
   controls.hidden = false;
   let statusFrame = 0;
   let rotationTimer = null;
+  let scrollAnimationFrame = 0;
   let rotationPaused = reduceMotion;
 
   const getStep = () => {
@@ -240,12 +330,16 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
     previous.disabled = viewport.scrollLeft <= 1;
     next.disabled = viewport.scrollLeft >= maxScroll - 1;
-    status.textContent = (Math.min(activeIndex + 1, slides.length)) + ' de ' + slides.length;
+    const currentIndex = Math.min(activeIndex, slides.length - 1);
+    status.textContent = (currentIndex + 1) + ' de ' + slides.length;
+    dots.forEach((dot, index) => {
+      dot.setAttribute('aria-current', String(index === currentIndex));
+    });
   };
 
   const updateRotationControl = () => {
     rotationToggle.setAttribute('aria-pressed', String(rotationPaused));
-    rotationToggle.textContent = rotationPaused ? 'Retomar depoimentos' : 'Pausar depoimentos';
+    rotationToggle.textContent = rotationPaused ? 'Retomar rotação' : 'Parar rotação';
     rotationToggle.hidden = motionPreference.matches;
   };
 
@@ -255,19 +349,63 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     rotationTimer = null;
   };
 
+  const cancelCarouselAnimation = () => {
+    if (!scrollAnimationFrame) return;
+    window.cancelAnimationFrame(scrollAnimationFrame);
+    scrollAnimationFrame = 0;
+    viewport.classList.remove('is-animating');
+  };
+
+  const animateTo = (requestedLeft) => {
+    const maxScroll = viewport.scrollWidth - viewport.clientWidth;
+    const targetLeft = Math.max(0, Math.min(requestedLeft, maxScroll));
+    cancelCarouselAnimation();
+
+    if (motionPreference.matches) {
+      viewport.scrollLeft = targetLeft;
+      return;
+    }
+
+    const startLeft = viewport.scrollLeft;
+    const distance = targetLeft - startLeft;
+    if (Math.abs(distance) < 1) return;
+
+    const duration = 1000;
+    const startTime = performance.now();
+    const easeInOutCubic = (progress) => (
+      progress < 0.5
+        ? 4 * progress * progress * progress
+        : 1 - Math.pow(-2 * progress + 2, 3) / 2
+    );
+
+    viewport.classList.add('is-animating');
+    const animateFrame = (time) => {
+      const progress = Math.min((time - startTime) / duration, 1);
+      viewport.scrollLeft = startLeft + distance * easeInOutCubic(progress);
+
+      if (progress < 1) {
+        scrollAnimationFrame = window.requestAnimationFrame(animateFrame);
+        return;
+      }
+
+      scrollAnimationFrame = 0;
+      viewport.scrollLeft = targetLeft;
+      window.requestAnimationFrame(() => viewport.classList.remove('is-animating'));
+    };
+
+    scrollAnimationFrame = window.requestAnimationFrame(animateFrame);
+  };
+
   const advance = () => {
     const maxScroll = viewport.scrollWidth - viewport.clientWidth;
     const atEnd = viewport.scrollLeft >= maxScroll - 1;
     status.setAttribute('aria-live', 'off');
-    viewport.scrollTo({
-      left: atEnd ? 0 : viewport.scrollLeft + getStep(),
-      behavior: 'smooth',
-    });
+    animateTo(atEnd ? 0 : viewport.scrollLeft + getStep());
   };
 
   const startRotation = () => {
     if (rotationTimer !== null || rotationPaused || motionPreference.matches) return;
-    rotationTimer = window.setInterval(advance, 6000);
+    rotationTimer = window.setInterval(advance, 2000);
   };
 
   const resetRotation = () => {
@@ -284,18 +422,24 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const move = (direction) => {
-    viewport.scrollBy({
-      left: direction * getStep(),
-      behavior: motionPreference.matches ? 'auto' : 'smooth',
-    });
+    animateTo(viewport.scrollLeft + direction * getStep());
     resetRotation();
     status.setAttribute('aria-live', 'polite');
   };
 
+  function moveTo(index) {
+    animateTo(index * getStep());
+    resetRotation();
+    status.setAttribute('aria-live', 'polite');
+  }
+
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
   carousel.addEventListener('focusin', pauseRotationForInteraction);
-  viewport.addEventListener('pointerdown', pauseRotationForInteraction);
+  viewport.addEventListener('pointerdown', () => {
+    cancelCarouselAnimation();
+    pauseRotationForInteraction();
+  });
   rotationToggle.addEventListener('click', () => {
     rotationPaused = !rotationPaused;
     if (rotationPaused) stopRotation();
@@ -314,13 +458,17 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   window.addEventListener('resize', updateControls);
   motionPreference.addEventListener('change', (event) => {
+    if (event.matches) cancelCarouselAnimation();
     rotationPaused = event.matches;
     if (rotationPaused) stopRotation();
     else startRotation();
     updateRotationControl();
   });
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) stopRotation();
+    if (document.hidden) {
+      stopRotation();
+      cancelCarouselAnimation();
+    }
     else startRotation();
   });
   updateControls();
@@ -381,18 +529,27 @@ faqAnswers.forEach((details) => {
 });
 
 document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
+  const questionField = form.querySelector('textarea[name="question"]');
+  if (questionField) {
+    const resizeQuestionField = () => {
+      questionField.style.height = 'auto';
+      questionField.style.height = `${questionField.scrollHeight}px`;
+    };
+
+    questionField.addEventListener('input', resizeQuestionField);
+    resizeQuestionField();
+  }
+
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const question = new FormData(form).get('question')?.toString().trim();
     if (!question) return;
-    const message = `Ol\u00e1, tenho uma d\u00favida espec\u00edfica: ${question}`;
+    const message = `Ol\u00e1! Vim pelo site e enviei uma d\u00favida pela se\u00e7\u00e3o de d\u00favidas frequentes: ${question}`;
     const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   });
 });
 const imageRotators = [];
-const galleryRotationToggle = document.querySelector('[data-rotation-toggle]');
-let galleriesPaused = false;
 
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
@@ -418,7 +575,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches || galleriesPaused) return;
+    if (timer !== null || motionPreference.matches) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -432,24 +589,6 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   start();
 });
 
-const updateGalleryRotationToggle = () => {
-  if (!galleryRotationToggle) return;
-  galleryRotationToggle.setAttribute('aria-pressed', String(galleriesPaused));
-  galleryRotationToggle.textContent = galleriesPaused
-    ? 'Retomar a troca das imagens'
-    : 'Pausar a troca das imagens';
-  galleryRotationToggle.hidden = motionPreference.matches || imageRotators.length === 0;
-};
-
-galleryRotationToggle?.addEventListener('click', () => {
-  galleriesPaused = !galleriesPaused;
-  imageRotators.forEach((rotator) => (galleriesPaused ? rotator.stop() : rotator.start()));
-  updateGalleryRotationToggle();
-});
-updateGalleryRotationToggle();
-
 motionPreference.addEventListener('change', (event) => {
-  galleriesPaused = false;
   imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
-  updateGalleryRotationToggle();
 });
