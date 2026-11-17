@@ -96,3 +96,7 @@ O gráfico abaixo resume os **19 commits** existentes no histórico local até 1
 ## Conteúdo a revisar antes de publicar
 
 Confirme textos, telefone e links de agendamento, endereço e horário de atendimento. As informações de contato ficam no `index.html`; imagens e textos também podem ser substituídos diretamente no HTML. A publicação em domínio ou serviço de hospedagem ainda não faz parte deste projeto.
+
+## Preserva??o obrigat?ria do conte?do textual
+
+Nenhum texto existente no site pode ser alterado sem autoriza??o expl?cita do respons?vel pelo projeto. Isso inclui t?tulos, subt?tulos, par?grafos, CTAs, menus, servi?os, FAQ, avalia??es, dados comerciais e de contato, mensagens de WhatsApp, textos alternativos (alt), r?tulos acess?veis (ARIA) e metadados textuais de SEO. Altera??es estruturais, de estilo, acessibilidade, desempenho e intera??o s?o permitidas desde que preservem integralmente esses textos. Se uma melhoria exigir mudan?a textual, apresente a proposta e aguarde autoriza??o espec?fica. Antes de cada commit, compare o conte?do textual antes e depois e rejeite qualquer diferen?a n?o autorizada.
