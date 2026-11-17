@@ -26,8 +26,20 @@ const faqAnswers = document.querySelectorAll('.faq details');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 document.querySelectorAll('.mobile-nav').forEach((menu) => {
+  const summary = menu.querySelector('summary');
+  summary?.addEventListener('click', () => {
+    window.requestAnimationFrame(() => {
+      summary.setAttribute('aria-label', menu.open ? 'Fechar menu de navegação' : 'Abrir menu de navegação');
+      if (menu.open) menu.querySelector('nav a')?.focus();
+    });
+  });
   menu.addEventListener('click', (event) => {
     if (event.target.closest('a[href^="#"]')) menu.open = false;
+  });
+  menu.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape' || !menu.open) return;
+    menu.open = false;
+    summary?.focus();
   });
 });
 
@@ -159,4 +171,30 @@ faqAnswers.forEach((details) => {
       delete details.dataset.animating;
     }
   });
+});
+
+document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const question = new FormData(form).get('question')?.toString().trim();
+    if (!question) return;
+    const message = `Ol\u00e1, tenho uma d\u00favida espec\u00edfica: ${question}`;
+    const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  });
+});
+document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
+  const images = [...gallery.querySelectorAll('img')];
+  if (images.length < 2 || reduceMotion) return;
+
+  let activeIndex = images.findIndex((image) => image.classList.contains('is-active'));
+  if (activeIndex < 0) activeIndex = 0;
+
+  window.setInterval(() => {
+    images[activeIndex].classList.remove('is-active');
+    images[activeIndex].setAttribute('aria-hidden', 'true');
+    activeIndex = (activeIndex + 1) % images.length;
+    images[activeIndex].classList.add('is-active');
+    images[activeIndex].removeAttribute('aria-hidden');
+  }, 5000);
 });
