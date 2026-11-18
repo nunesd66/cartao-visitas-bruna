@@ -70,6 +70,7 @@ document.querySelectorAll('.mobile-nav').forEach((menu) => {
 const siteHeader = document.querySelector('.site-header');
 const casesRealAnchor = document.querySelector('#casos-reais');
 const headerPin = document.querySelector('[data-header-pin]');
+let revealSiteHeader = () => {};
 
 if (siteHeader && casesRealAnchor) {
   const directionLockMs = 2000;
@@ -87,6 +88,13 @@ if (siteHeader && casesRealAnchor) {
     siteHeader.classList.toggle('is-hidden', headerHidden);
     siteHeader.inert = headerHidden;
     lastTransitionAt = performance.now();
+  };
+
+  revealSiteHeader = () => {
+    pendingVisibility = null;
+    window.clearTimeout(pendingTimer);
+    pendingTimer = null;
+    applyVisibility(true);
   };
 
   const requestVisibility = (visible) => {
@@ -228,7 +236,7 @@ document.querySelectorAll('[data-page-scroll]').forEach((button) => {
       ? document.documentElement.scrollHeight
       : 0;
     window.scrollTo({ top: destination, behavior: motionPreference.matches ? 'auto' : 'smooth' });
-    if (destination === 0) siteHeader?.classList.remove('is-hidden');
+    if (destination === 0) revealSiteHeader();
     accessibilityTools.open = false;
     accessibilityToolsToggle?.focus();
   });
