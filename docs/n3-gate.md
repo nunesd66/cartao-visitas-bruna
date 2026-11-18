@@ -13,7 +13,8 @@
 ### Publicação e indexabilidade
 - [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `5750028`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44327342837) concluiu com êxito.
 - [x] Validar recursos públicos. A verificação de conteúdo confirmou 30/30 arquivos idênticos a `5750028` antes e depois do [Lighthouse](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44328020671).
-- [ ] Confirmar propriedade do Search Console, sitemap enviado/processado e resultado da inspeção da URL. **Código indexável não equivale a indexação confirmada.**
+- [x] Confirmar indexação da página inicial na aba Índice do Google do Search Console.
+- [ ] Confirmar envio e processamento do sitemap no relatório Sitemaps.
 
 Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](https://nunesd66.github.io/robots.txt), que respondeu HTTP 404 na verificação do deploy `35528da`. Nesse estado, o Google considera o host sem regras de `robots.txt`. O [arquivo no caminho do projeto](https://nunesd66.github.io/cartao-visitas-bruna/robots.txt) respondeu HTTP 200 e permanece no smoke de artefatos. Envie o [sitemap do projeto](https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml) à propriedade correspondente no Search Console. Veja as referências do Google sobre [localização](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt) e [códigos HTTP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec?hl=pt-br).
 
@@ -21,7 +22,7 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [ ] Aprovar política/aviso, base e procedimento de consentimento/revogação com responsável.
 - [x] Verificar em Network ausência de solicitações de analytics antes de aceite e após recusa em Chromium com integrações interceptadas.
 - [x] Verificar tecnicamente a revogação entre abas, a persistência da recusa e a remoção de cookies sintéticos acessíveis.
-- [ ] Revisar Mensuração otimizada na propriedade GA4 para impedir eventos redundantes e vazamento de parâmetros de URL.
+- [x] Confirmar Métrica otimizada desativada no fluxo Web do GA4. A verificação de duplicidades e parâmetros em eventos reais segue abaixo.
 - [ ] Confirmar eventos em Tag Assistant / DebugView depois de autorização; **clique no WhatsApp não significa lead ou agendamento concluído**.
 - [x] Verificar Maps sob demanda com o destino interceptado em Chromium. A solicitação do iframe começou após ativação explícita.
 
