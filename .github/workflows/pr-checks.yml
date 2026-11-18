@@ -28,8 +28,10 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Build SCSS
-        run: npm run build:css
+      - name: Verify committed CSS matches SCSS
+        run: |
+          npm run build:css
+          git diff --exit-code -- css/style.css
 
       - name: Check JavaScript syntax
         run: node --check js/main.js
