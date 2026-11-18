@@ -23,7 +23,8 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [x] Verificar em Network ausência de solicitações de analytics antes de aceite e após recusa em Chromium com integrações interceptadas.
 - [x] Verificar tecnicamente a revogação entre abas, a persistência da recusa e a remoção de cookies sintéticos acessíveis.
 - [x] Confirmar Métrica otimizada desativada no fluxo Web do GA4. A verificação de duplicidades e parâmetros em eventos reais segue abaixo.
-- [ ] Confirmar eventos em Tag Assistant / DebugView depois de autorização; **clique no WhatsApp não significa lead ou agendamento concluído**.
+- [x] Confirmar o evento de intenção de contato no DebugView e uma única visualização em uma abertura da revisão publicada após o aceite. Ver a limitação da interceptação no [roteiro](n3-homologacao-execucao.md#evidências-da-publicação-em-18112026).
+- [x] Confirmar o link do WhatsApp no aviso publicado e registrar a retenção configurada no GA4.
 - [x] Verificar Maps sob demanda com o destino interceptado em Chromium. A solicitação do iframe começou após ativação explícita.
 
 ### UX, acessibilidade e performance
