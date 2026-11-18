@@ -50,3 +50,24 @@ test('componentes de privacidade e carrossel possuem controles nomeados', () => 
   assert.match(html, /data-carousel-rotation/);
   assert.match(html, /data-carousel-status/);
 });
+
+
+test('tokens de texto mantêm contraste WCAG AA sobre superfícies padrão', () => {
+  const scss = readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../css/style.scss'), 'utf8');
+  const palette = Object.fromEntries([...scss.matchAll(/\$(color-[\w-]+):\s*(#[0-9a-f]{6});/gi)]
+    .map(([, name, color]) => [name, color]));
+  const luminance = (color) => {
+    const channels = [1, 3, 5].map((position) => parseInt(color.slice(position, position + 2), 16) / 255)
+      .map((value) => value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4);
+    return channels[0] * 0.2126 + channels[1] * 0.7152 + channels[2] * 0.0722;
+  };
+  for (const foreground of ['color-text', 'color-text-muted']) {
+    for (const background of ['color-bg', 'color-surface', 'color-surface-soft']) {
+      assert.ok(palette[foreground] && palette[background], 'token de cor ausente');
+      const light = Math.max(luminance(palette[foreground]), luminance(palette[background]));
+      const dark = Math.min(luminance(palette[foreground]), luminance(palette[background]));
+      const ratio = (light + 0.05) / (dark + 0.05);
+      assert.ok(ratio >= 4.5, foreground + ' sobre ' + background + ': contraste ' + ratio.toFixed(2) + ' < 4.5');
+    }
+  }
+});
