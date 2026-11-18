@@ -50,3 +50,21 @@ test('componentes de privacidade e carrossel possuem controles nomeados', () => 
   assert.match(html, /data-carousel-rotation/);
   assert.match(html, /data-carousel-status/);
 });
+
+
+test('links navegáveis usam somente protocolos e destinos esperados', () => {
+  const links = [...html.matchAll(/<a\b[^>]*>/gi)].map(([tag]) => attrs(tag));
+  assert.ok(links.length > 0);
+  for (const link of links) {
+    assert.ok(link.href, 'link sem href');
+    const href = link.href.trim();
+    if (href.startsWith('#')) {
+      assert.ok(href.length > 1, 'âncora vazia');
+      continue;
+    }
+    const url = new URL(href);
+    assert.ok(['https:', 'tel:'].includes(url.protocol), 'protocolo inseguro: ' + url.protocol);
+    if (url.protocol === 'https:') assert.ok(url.hostname, 'URL HTTPS sem domínio');
+    if (url.protocol === 'tel:') assert.match(url.pathname, /^\+\d{10,15}$/, 'número de telefone inválido');
+  }
+});
