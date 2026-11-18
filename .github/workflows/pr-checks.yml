@@ -54,6 +54,9 @@ jobs:
       - name: Test third-party privacy guards
         run: node --test scripts/third-party-guards.test.mjs
 
+      - name: Test live reduced-motion interactions
+        run: node --test scripts/reduced-motion-live.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
