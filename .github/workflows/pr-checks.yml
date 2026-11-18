@@ -66,6 +66,10 @@ jobs:
       - name: Test hidden-tab service gallery behavior
         run: node --test scripts/gallery-visibility.test.mjs
 
+      - name: Report asset weights
+        shell: bash
+        run: node scripts/report-asset-sizes.mjs >> "$GITHUB_STEP_SUMMARY"
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
