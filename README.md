@@ -45,7 +45,7 @@ O workflow `Pull request checks` valida build, sintaxe, testes Node e referênci
 
 ## SEO e publicação
 
-A branch protegida `master` publica no GitHub Pages por workflow. O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`; `robots.txt` e `sitemap.xml` ficam na raiz. O favicon de marca ainda depende de aprovação: não adicionar ícone provisório. Verifique recursos HTTP 200, URLs, Search Console e Lighthouse após o deploy. **Indexabilidade técnica não confirma indexação no Google.**
+A branch protegida `master` publica no GitHub Pages por workflow. O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon de marca depende de aprovação. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
 
 ## Analytics e privacidade
 
