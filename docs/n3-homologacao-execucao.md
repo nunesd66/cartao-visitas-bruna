@@ -51,6 +51,12 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 - A verificação de contraste por pixels nos casos inconclusivos do hero e dos 11 rótulos de depoimentos encontrou mínimos de 5,10:1 para a linha introdutória, 6,13:1 para o título, 5,41:1 para a descrição, 7,82:1 para a legenda da foto e 10,53:1 para os rótulos de origem.
 - O teste manual com leitor de tela permanece pendente. As inspeções de árvore e do axe registram a evidência disponível no navegador.
 
+### Search Console e autorização de imagens
+
+- Em 18/11/2026 às 14h51, o print da Inspeção de URL para a página inicial mostrou, na aba Teste em tempo real, que a página estava disponível para o Google e podia ser indexada.
+- O `sitemap.xml` abriu no navegador e listou a página inicial. O estado no Índice do Google e o processamento no relatório Sitemaps aguardam evidência do Search Console.
+- Daniel informou que a Bruna aprovou o uso de todas as fotos e imagens. A aprovação do aviso de privacidade e o canal de contato para esse assunto aguardam confirmação.
+
 ### Revisão do aviso com a responsável
 
 | Ponto | Evidência ou decisão |
