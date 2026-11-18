@@ -24,7 +24,25 @@ function setup({ hidden = false, reducedMotion = false, observeViewport = false 
     setAttribute() {},
     removeAttribute() {},
   }));
-  const gallery = { querySelectorAll: (selector) => selector === 'img' ? images : [] };
+  const createButton = () => ({
+    hidden: true,
+    textContent: '',
+    attrs: new Map(),
+    listeners: new Map(),
+    setAttribute(name, value) { this.attrs.set(name, String(value)); },
+    getAttribute(name) { return this.attrs.get(name); },
+    addEventListener(name, handler) { this.listeners.set(name, handler); },
+    click() { this.listeners.get('click')?.(); },
+    focus() { document.activeElement = this; },
+  });
+  const nextButton = createButton();
+  const pauseButton = createButton();
+  const gallery = {
+    querySelectorAll: (selector) => selector === 'img' ? images : [],
+    querySelector: (selector) => selector === '[data-gallery-next]' ? nextButton
+      : selector === '[data-gallery-toggle]' ? pauseButton : null,
+    getAttribute: () => 'Resultados de exemplo',
+  };
   const document = {
     hidden,
     querySelectorAll: (selector) => selector === '[data-image-rotator]' ? [gallery] : [],
@@ -50,6 +68,8 @@ function setup({ hidden = false, reducedMotion = false, observeViewport = false 
     isRotating: () => intervals.size > 0,
     setHidden(next) { document.hidden = next; handlers.get('visibilitychange')?.(); },
     setReducedMotion(next) { motionPreference.matches = next; motionHandlers.get('change')?.({ matches: next }); },
+    pauseButton,
+    nextButton,
     setViewportVisible(next) {
       assert.equal(observedGallery, gallery, 'observer deve monitorar galeria');
       visibilityCallback?.([{ isIntersecting: next }]);
@@ -102,4 +122,37 @@ test('retornar à aba não inicia rotação enquanto galeria segue fora da tela'
   assert.equal(view.isRotating(), false);
   view.setViewportVisible(true);
   assert.equal(view.isRotating(), true);
+});
+
+
+test('pausa manual permanece ativa após alternar aba e rolagem', () => {
+  const view = setup({ observeViewport: true });
+  view.setViewportVisible(true);
+  assert.equal(view.isRotating(), true);
+  assert.equal(view.pauseButton.hidden, false);
+  view.pauseButton.click();
+  assert.equal(view.isRotating(), false);
+  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'true');
+  view.setHidden(true);
+  view.setHidden(false);
+  view.setViewportVisible(false);
+  view.setViewportVisible(true);
+  assert.equal(view.isRotating(), false);
+  view.pauseButton.click();
+  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'false');
+  assert.equal(view.isRotating(), true);
+});
+
+test('próxima foto funciona sem iniciar rotação e movimento reduzido mantém controle manual', () => {
+  const view = setup({ reducedMotion: true });
+  assert.equal(view.isRotating(), false);
+  assert.equal(view.pauseButton.hidden, true);
+  assert.equal(view.nextButton.hidden, false);
+  view.nextButton.click();
+  assert.equal(view.isRotating(), false);
+  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'true');
+  view.setReducedMotion(false);
+  assert.equal(view.pauseButton.hidden, false);
+  assert.equal(view.isRotating(), false);
+  assert.equal(view.pauseButton.textContent, 'Retomar');
 });
