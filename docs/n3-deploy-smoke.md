@@ -3,13 +3,15 @@
 Este smoke test verifica disponibilidade HTTP **no ambiente apontado**; não certifica desempenho, renderização, indexação, consentimento nem conversão.
 
 ```bash
-node scripts/smoke-public.mjs
-# ou ambiente local:
+node scripts/smoke-public.mjs --published-sha "$PAGES_DEPLOY_SHA"
+# Disponibilidade local sem SHA de publicação
 node scripts/smoke-public.mjs http://localhost:8080/
 ```
 
+Obtenha o SHA completo nos detalhes do deploy bem-sucedido do GitHub Pages e use esse valor em `PAGES_DEPLOY_SHA`. O relatório registra o SHA informado, o horário UTC e o ambiente. A opção associa a evidência HTTP ao SHA confirmado pelo operador. Para uma consulta de disponibilidade sem essa confirmação, execute o comando sem `--published-sha`. Redirecionamentos nos recursos testados são tratados como falhas.
+
 ## Microtarefas e subtarefas
-- [x] Verificar HTML, CSS, JS, robots e sitemap por HTTP 200 e Content-Type esperado.
+- [x] Verificar HTML, CSS, JS, robots, sitemap, imagem social e foto de apresentação por HTTP 200 e Content-Type esperado.
 - [x] Retornar erro de processo quando um recurso não responder como esperado.
 - [ ] Relacionar execução ao SHA real publicado e manter saída no relatório de deploy.
   - [ ] Guardar data, URL, commit, relatório HTTP e responsável.
