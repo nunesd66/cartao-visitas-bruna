@@ -208,7 +208,8 @@ accessibilityTools?.addEventListener('keydown', (event) => {
 });
 
 document.addEventListener('pointerdown', (event) => {
-  if (accessibilityTools?.open && event.target instanceof Node && !accessibilityTools.contains(event.target)) {
+  if (accessibilityTools?.open && event.target instanceof Element
+      && !accessibilityTools.contains(event.target) && !event.target.closest('[data-privacy-panel]')) {
     accessibilityTools.open = false;
   }
 });
