@@ -57,6 +57,9 @@ jobs:
       - name: Validate contact journey and analytics metadata
         run: node --test scripts/n4-contact-journey.test.mjs
 
+      - name: Test live reduced-motion interactions
+        run: node --test scripts/reduced-motion-live.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 

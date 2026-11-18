@@ -225,7 +225,7 @@ document.querySelectorAll('[data-page-scroll]').forEach((button) => {
     const destination = button.dataset.pageScroll === 'bottom'
       ? document.documentElement.scrollHeight
       : 0;
-    window.scrollTo({ top: destination, behavior: reduceMotion ? 'auto' : 'smooth' });
+    window.scrollTo({ top: destination, behavior: motionPreference.matches ? 'auto' : 'smooth' });
     if (destination === 0) siteHeader?.classList.remove('is-hidden');
     accessibilityTools.open = false;
     accessibilityToolsToggle?.focus();
@@ -516,7 +516,16 @@ faqAnswers.forEach((details) => {
   if (!summary || !answer) return;
 
   answer.style.overflow = 'hidden';
-  answer.style.transition = reduceMotion ? 'none' : 'height 400ms ease';
+  answer.style.transition = motionPreference.matches ? 'none' : 'height 400ms ease';
+  motionPreference.addEventListener('change', (event) => {
+    answer.style.transition = event.matches ? 'none' : 'height 400ms ease';
+    if (!event.matches || details.dataset.animating !== 'true') return;
+    const closing = details.dataset.closing === 'true';
+    details.open = !closing;
+    answer.style.height = closing ? '0px' : 'auto';
+    delete details.dataset.closing;
+    delete details.dataset.animating;
+  });
   if (!details.open) answer.style.height = '0px';
 
   summary.addEventListener('click', (event) => {
@@ -527,7 +536,7 @@ faqAnswers.forEach((details) => {
       delete details.dataset.closing;
       details.open = true;
       answer.style.height = '0px';
-      if (reduceMotion) {
+      if (motionPreference.matches) {
         answer.style.height = 'auto';
         return;
       }
@@ -535,7 +544,7 @@ faqAnswers.forEach((details) => {
       answer.style.height = `${answer.scrollHeight}px`;
       details.dataset.animating = 'true';
     } else {
-      if (reduceMotion) {
+      if (motionPreference.matches) {
         details.open = false;
         answer.style.height = '0px';
         return;
