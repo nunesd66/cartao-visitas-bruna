@@ -325,6 +325,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   let rotationTimer = null;
   let scrollAnimationFrame = 0;
   let rotationPaused = reduceMotion;
+  let pausedBeforeReducedMotion = false;
 
   const getActiveIndex = () => {
     const viewportRect = viewport.getBoundingClientRect();
@@ -493,7 +494,12 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   window.addEventListener('resize', updateControls);
   motionPreference.addEventListener('change', (event) => {
     if (event.matches) cancelCarouselAnimation();
-    rotationPaused = event.matches;
+    if (event.matches) {
+      pausedBeforeReducedMotion = rotationPaused;
+      rotationPaused = true;
+    } else {
+      rotationPaused = pausedBeforeReducedMotion;
+    }
     if (rotationPaused) stopRotation();
     else startRotation();
     updateRotationControl();
