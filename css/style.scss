@@ -2041,6 +2041,7 @@ body:has(.mobile-nav[open]) {
 
   .privacy-control__toggle--footer {
     display: grid;
+    margin-inline-start: auto;
     width: 2.75rem;
     height: 2.75rem;
     place-items: center;
