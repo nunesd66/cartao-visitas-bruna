@@ -40,8 +40,11 @@ jobs:
       - name: Check privacy JavaScript syntax
         run: node --check js/privacy.js
 
+      - name: Check map JavaScript syntax
+        run: node --check js/map.js
+
       - name: Test analytics consent and event filtering
-        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs
+        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs scripts/map.test.mjs
 
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs

@@ -175,3 +175,47 @@ Não foi executado Lighthouse atual nem teste manual com leitor de tela. Os base
 ### Correção do carrossel de depoimentos
 
 Em 17/11/2026 foi relatado que a rotação pulava a décima avaliação após a nona. A navegação foi ajustada para selecionar o slide mais próximo do centro do viewport e alinhar o próximo/índice escolhido pela posição real do elemento, em vez de acumular deslocamentos de pixels no `scrollLeft`. Foram adicionados testes automatizados que percorrem os 11 itens até 9→10→11, verificam a volta ao primeiro e navegam diretamente ao item 10. O teste foi incluído no workflow de Pull Request. A confirmação visual em navegador e Lighthouse após a correção continuam pendentes.
+
+## TODO — Auditoria técnica de 17/11/2026
+
+Este backlog separa **achados confirmados por leitura do código** de **riscos e validações pendentes**. Não é uma lista de vulnerabilidades exploráveis comprovadas. Priorizar proteção de visitantes, funcionamento do agendamento e validação em produção. O site público permanece inalterado até o merge e deploy do PR.
+
+### P0 — Privacidade e dependências externas
+
+- [x] **Correção proposta neste PR:** substituir o carregamento automático do iframe de Google Maps por carregamento sob demanda, com escolha explícita do visitante e `referrerpolicy="no-referrer"` (`index.html`, `js/map.js`); adicionar teste automatizado.
+- [ ] **Homologar em navegador:** confirmar na aba Network que o Maps não faz solicitações antes do clique e carrega corretamente depois, inclusive em mobile e sem JavaScript (link alternativo externo).
+- [ ] Inspecionar todas as solicitações a terceiros em primeira visita, após recusar, aceitar e revogar consentimento. Registrar domínio, finalidade e evidência.
+- [ ] Revisar a transparência de privacidade/cookies e a autorização para ativação do GA4; **o aceite no painel atual já pode solicitar a tag**. Caso a coleta não esteja aprovada, implantar um bloqueio operacional global antes de publicar essa funcionalidade.
+- [ ] Conferir na propriedade GA4 as opções de Mensuração otimizada: cliques externos, histórico, pesquisa de site e formulários. Evitar duplicidade e URLs com mensagens ou dados pessoais.
+- [ ] Verificar a revogação em Network e Tag Assistant; limpeza de cookies acessíveis não implica exclusão de dados já transmitidos.
+- [ ] Avaliar política de segurança de conteúdo (CSP) e cabeçalhos aplicáveis à hospedagem GitHub Pages, documentando limitações reais sem prometer controles que a plataforma não oferece.
+
+### P1 — Funcionamento e acessibilidade
+
+- [ ] Homologar CTAs de WhatsApp, telefone, Instagram, avaliações e localização em desktop/mobile; confirmar abertura correta de links externos.
+- [ ] Testar navegação por teclado, foco, menu mobile, cabeçalho que recolhe/fixa, FAQ e painel de privacidade.
+- [ ] Testar com leitor de tela e contraste, incluindo nomes acessíveis de controles e anúncios de status do carrossel.
+- [ ] Validar carrossel das 11 avaliações em navegador: avanço 9→10→11→1, seleção direta da décima, pausa/retomada e movimento reduzido.
+- [ ] Verificar comportamento com JavaScript indisponível e em conexões lentas: links principais e localização devem permanecer acessíveis.
+- [ ] Avaliar incorporação de scripts externos futuros: restringir origens e impedir conteúdo misto e inclusão de código de origem desconhecida.
+
+### P1 — Testes, build e publicação
+
+- [ ] Executar Lighthouse mobile/desktop após o merge, registrando URL, commit, data, métricas e diferenças em relação ao baseline histórico.
+- [ ] Adicionar validações automatizadas de navegação/UX em navegador real; os testes Node atuais não substituem E2E.
+- [ ] Verificar build SCSS em checkout limpo e garantir que CSS compilado publicado corresponda ao SCSS versionado.
+- [ ] Validar URLs relativas, `robots.txt`, `sitemap.xml`, canonical, Open Graph e JSON-LD após cada deploy relevante.
+- [ ] Registrar gate de homologação por commit e ambiente: aprovado, falhou, pendente ou não executado, com evidências.
+- [ ] Avaliar automação de verificação de dependências e atualização controlada de GitHub Actions/Sass.
+
+### P2 — Documentação e manutenção
+
+- [ ] Atualizar árvore do README para incluir `js/analytics.js`, `js/privacy.js`, `js/map.js`, `scripts/`, arquivos npm, `robots.txt` e `sitemap.xml`.
+- [ ] Separar guias permanentes (execução, analytics, privacidade e deploy) de auditorias históricas com PRs, commits e workflows.
+- [ ] Identificar commit, ambiente e origem das capturas; diferenciar capturas existentes de auditorias visuais não executadas.
+- [ ] Formalizar aprovação de mudanças textuais técnicas em `alt`, ARIA e SEO, preservando a exigência de autorização para conteúdo comercial.
+- [ ] Revisar métricas de conversão: clique no WhatsApp indica intenção de contato, **não** agendamento concluído.
+- [ ] Revisar tamanho e formato de imagens, `loading`, dimensões declaradas e prioridades de carregamento por meio de medições reais.
+- [ ] Revisar se todos os testes locais relevantes estão incluídos no workflow de PR.
+
+**Critérios para encerrar esta auditoria:** correções revisadas e mescladas; testes verdes; proteção de terceiros verificada em Network; uso de GA4 legal e operacionalmente aprovado; UX e performance homologadas; evidências associadas ao commit publicado.
