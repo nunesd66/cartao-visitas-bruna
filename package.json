@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build:css": "sass --no-source-map --style=expanded css/style.scss css/style.css",
-    "test": "node --test scripts/*.test.mjs"
+    "test": "node --test"
   },
   "devDependencies": {
     "sass": "1.108.2"
