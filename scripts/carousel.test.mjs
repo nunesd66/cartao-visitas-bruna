@@ -42,6 +42,10 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
       this.listeners.set(name, callback);
     }
 
+    focus() {
+      document.activeElement = this;
+    }
+
     setAttribute(name, value) {
       this.attributes.set(name, String(value));
     }
@@ -122,6 +126,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   const documentListeners = new Map();
   const document = {
     hidden: initiallyHidden,
+    activeElement: null,
     createElement(name) { return new Element(name); },
     querySelectorAll(selector) { return selector === '[data-carousel]' ? [carousel] : []; },
     addEventListener(type, callback) { documentListeners.set(type, callback); },
@@ -172,6 +177,8 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
 
   return { slides, viewport, status, next, previous, pagination, rotationToggle,
     focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames,
+    focusToggle() { rotationToggle.focus(); },
+    focusedElement: () => document.activeElement,
     setTabHidden(hidden) { document.hidden = hidden; documentListeners.get('visibilitychange')?.(); },
     setReducedMotion(matches) { motionPreference.matches = matches; mediaListeners.get('change')?.({ matches }); },
     setViewportVisible(visible) {
@@ -292,4 +299,25 @@ test('visibility and reduced motion never restart a paused off-screen carousel',
   carousel.setViewportVisible(false);
   carousel.setTabHidden(false);
   assert.equal(carousel.isRotating(), false);
+});
+
+test('when reduced motion hides focused rotation toggle, focus moves to enabled next button', () => {
+  const carousel = createCarouselHarness();
+  carousel.focusToggle();
+  assert.equal(carousel.focusedElement(), carousel.rotationToggle);
+  carousel.setReducedMotion(true);
+  assert.equal(carousel.rotationToggle.hidden, true);
+  assert.equal(carousel.focusedElement(), carousel.next);
+  assert.equal(carousel.isRotating(), false);
+});
+
+test('at final testimonial, focus moves to enabled previous button', () => {
+  const carousel = createCarouselHarness();
+  carousel.pagination.children[10].listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.next.disabled, true);
+  assert.equal(carousel.previous.disabled, false);
+  carousel.focusToggle();
+  carousel.setReducedMotion(true);
+  assert.equal(carousel.focusedElement(), carousel.previous);
 });
