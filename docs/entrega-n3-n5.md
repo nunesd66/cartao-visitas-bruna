@@ -46,8 +46,22 @@ Meta desta rodada: segunda-feira, 23 de novembro de 2026, no horário de Brasíl
 ## Protocolo de publicação e recuperação
 
 1. Registre o SHA de `master` aprovado no PR e o último SHA estável já servido. Localize a execução de publicação em GitHub Actions, registre o link e confirme a conclusão.
-2. Execute `node scripts/smoke-public.mjs`. Confira HTML e recursos públicos contra os arquivos esperados do SHA publicado. Registre horário, URL, SHA, saída do comando e problemas observados.
+2. Siga a [verificação de release](verificacao-release.md) para comparar os bytes públicos com o SHA do deploy e conferir HTTP e tipos de mídia. Registre URL, horário, SHA, link da execução e resultados de ambas as verificações.
 3. Se houver regressão, reproduza e avalie o impacto. Crie uma branch a partir de `master` atualizada para reverter o commit responsável ou restaurar os arquivos afetados. Valide a proposta e abra PR de recuperação, mantendo o histórico.
-4. Após o deploy corretivo, repita o smoke e o cenário que falhou. Registre o encerramento, a revisão restaurada e o teste de regressão associado.
+4. Após o deploy corretivo, repita a verificação de release e o cenário que falhou. Registre o encerramento, a revisão restaurada e o teste de regressão associado.
+
+## Manutenção e responsáveis
+
+Cada PR registra quem executou as verificações e quem validou a mudança. A responsável pelo negócio valida os dados e materiais comerciais. Daniel aprova as PRs. A pessoa indicada para a manutenção executa a validação técnica e acompanha o deploy e a recuperação.
+
+| Mudança | Onde editar | O que validar antes da revisão |
+| --- | --- | --- |
+| Serviços, FAQ, horário e fotos | [`index.html`](../index.html) e [`images/`](../images/) | Aprovação da responsável, texto alternativo, ativos publicados e apresentação em celular e desktop |
+| Telefone, WhatsApp, endereço e Maps | [`index.html`](../index.html) e o envio de dúvidas em [`js/main.js`](../js/main.js) | Consistência entre contato visível, CTAs, ficha do Maps e dados estruturados. Conferir o link direto e o mapa sob demanda |
+| Layout e interações | [`css/style.scss`](../css/style.scss) e [`js/main.js`](../js/main.js) | Gerar `css/style.css`, rodar `npm test` e conferir teclado, foco e movimento reduzido no navegador |
+| URL pública, sitemap e metadados | [`index.html`](../index.html), [`sitemap.xml`](../sitemap.xml) e [`robots.txt`](../robots.txt) | Rodar `npm test`, conferir a URL publicada e registrar a inspeção no Search Console com o titular da propriedade |
+| Consentimento e eventos | [`js/privacy.js`](../js/privacy.js) e [`js/analytics.js`](../js/analytics.js) | Revisão de privacidade e evidências do [gate N3](n3-gate.md), incluindo Network e validação autorizada na propriedade GA4 |
+
+Em cada revisão de operação, confira o histórico do [smoke de produção](n5-production-smoke.md). No primeiro erro, registre o horário, a execução e o recurso afetado. Compare com o último deploy verificado e siga o protocolo de recuperação se confirmar regressão. Na revisão de indicadores, use as definições e os limites da [estratégia de conversão](n4-conversao.md).
 
 A revisão técnica pode avançar em paralelo. Aprovação de identidade, revisão de privacidade, acesso ao GA4/Search Console e dados reais continuam com seus respectivos responsáveis.
