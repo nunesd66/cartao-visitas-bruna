@@ -49,5 +49,8 @@ jobs:
       - name: Check SEO metadata consistency
         run: node --test scripts/seo.test.mjs
 
+      - name: Test third-party privacy guards
+        run: node --test scripts/third-party-guards.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
