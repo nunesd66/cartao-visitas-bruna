@@ -80,6 +80,9 @@ jobs:
       - name: Test asset checker fixtures
         run: node --test scripts/check-local-assets.test.mjs
 
+      - name: Test asset path casing and symlink integrity
+        run: node --test scripts/asset-path-integrity.test.mjs
+
       - name: Test accessibility structure and safe links
         run: node --test scripts/a11y-structure.test.mjs
 
