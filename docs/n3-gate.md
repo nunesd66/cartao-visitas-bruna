@@ -19,7 +19,7 @@
 Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](https://nunesd66.github.io/robots.txt), que respondeu HTTP 404 na verificação do deploy `35528da`. Nesse estado, o Google considera o host sem regras de `robots.txt`. O [arquivo no caminho do projeto](https://nunesd66.github.io/cartao-visitas-bruna/robots.txt) respondeu HTTP 200 e permanece no smoke de artefatos. Envie o [sitemap do projeto](https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml) à propriedade correspondente no Search Console. Veja as referências do Google sobre [localização](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt) e [códigos HTTP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec?hl=pt-br).
 
 ### Analytics e privacidade
-- [ ] Aprovar política/aviso, base e procedimento de consentimento/revogação com responsável.
+- [x] Registrar a aprovação do aviso publicado, incluindo aceite, recusa e canal de contato. O comportamento técnico da revogação está verificado nos testes abaixo.
 - [x] Verificar em Network ausência de solicitações de analytics antes de aceite e após recusa em Chromium com integrações interceptadas.
 - [x] Verificar tecnicamente a revogação entre abas, a persistência da recusa e a remoção de cookies sintéticos acessíveis.
 - [x] Confirmar Métrica otimizada desativada no fluxo Web do GA4. A verificação de duplicidades e parâmetros em eventos reais segue abaixo.
