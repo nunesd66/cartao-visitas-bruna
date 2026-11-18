@@ -1544,6 +1544,10 @@ body:has(.mobile-nav[open]) {
   transform: translate(-50%, -50%);
 }
 
+.map-embed__load[hidden] {
+  display: none;
+}
+
 .google-maps-icon {
   width: 1.2em;
   height: 1.2em;
