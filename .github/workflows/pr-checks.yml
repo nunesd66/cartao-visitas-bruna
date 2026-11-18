@@ -60,6 +60,9 @@ jobs:
       - name: Test live reduced-motion interactions
         run: node --test scripts/reduced-motion-live.test.mjs
 
+      - name: Test image dimensions and loading priorities
+        run: node --test scripts/image-loading.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
