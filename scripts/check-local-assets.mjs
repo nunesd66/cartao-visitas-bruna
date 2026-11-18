@@ -8,7 +8,14 @@ const addReference = (sourceFile, value) => {
   const reference = value.trim();
   if (!reference || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(reference)) return;
 
-  const pathname = decodeURIComponent(reference.split(/[?#]/, 1)[0]);
+  let pathname;
+  try {
+    pathname = decodeURIComponent(reference.split(/[?#]/, 1)[0]);
+  } catch (error) {
+    if (!(error instanceof URIError)) throw error;
+    references.push({ sourceFile, reference, error: 'invalid percent-encoding in local asset URL' });
+    return;
+  }
   const target = path.resolve(path.dirname(sourceFile), pathname);
   const relativeTarget = path.relative(root, target);
 
