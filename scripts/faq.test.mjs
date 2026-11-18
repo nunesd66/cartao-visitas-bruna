@@ -18,8 +18,7 @@ test('formulário de dúvidas permanece oculto sem JS e não serializa o texto',
 test('pergunta via WhatsApp é codificada e não é enviada quando está vazia', () => {
   const source = readFileSync(new URL('../js/main.js', import.meta.url), 'utf8');
   const start = source.indexOf("document.querySelectorAll('[data-whatsapp-form]')");
-  const end = source.indexOf('\nconst imageRotators =', start);
-  assert.ok(start >= 0 && end > start, 'formulário de WhatsApp encontrado');
+  assert.ok(start >= 0, 'formulário de WhatsApp encontrado');
   const submissions = [];
   const questionField = {
     value: '',
@@ -37,7 +36,7 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
     querySelectorAll: (selector) => selector === '[data-whatsapp-form]' ? [form] : [],
   };
   const window = { open(...args) { submissions.push(args); } };
-  vm.runInNewContext(source.slice(start, end), { document, window, encodeURIComponent });
+  vm.runInNewContext(source.slice(start), { document, window, encodeURIComponent });
   assert.equal(form.hidden, false);
   let prevented = 0;
   const submit = () => handlers.get('submit')({ preventDefault() { prevented++; } });
