@@ -1,8 +1,22 @@
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readFileSync, readdirSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 
 const root = process.cwd();
 const references = [];
+const realRoot = realpathSync(root);
+
+const hasExactCase = (relative) => {
+  let current = root;
+  for (const segment of relative.split(path.sep).filter(Boolean)) {
+    try {
+      if (!readdirSync(current).includes(segment)) return false;
+    } catch {
+      return false;
+    }
+    current = path.join(current, segment);
+  }
+  return true;
+};
 
 const addReference = (sourceFile, value) => {
   const reference = value.trim();
@@ -21,8 +35,14 @@ const addReference = (sourceFile, value) => {
 
   if (relativeTarget.startsWith('..') || path.isAbsolute(relativeTarget)) {
     references.push({ sourceFile, reference, error: 'path escapes the project root' });
-  } else if (!existsSync(target)) {
+  } else if (!existsSync(target) || !hasExactCase(relativeTarget)) {
     references.push({ sourceFile, reference, error: 'file does not exist (or its case differs)' });
+  } else {
+    const resolvedTarget = realpathSync(target);
+    const realRelative = path.relative(realRoot, resolvedTarget);
+    if (realRelative.startsWith('..') || path.isAbsolute(realRelative)) {
+      references.push({ sourceFile, reference, error: 'asset symlink escapes the project root' });
+    }
   }
 };
 
