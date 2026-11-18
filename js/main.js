@@ -433,7 +433,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const startRotation = () => {
-    if (rotationTimer !== null || rotationPaused || motionPreference.matches) return;
+    if (rotationTimer !== null || rotationPaused || motionPreference.matches || document.hidden) return;
     rotationTimer = window.setInterval(advance, 2000);
   };
 
