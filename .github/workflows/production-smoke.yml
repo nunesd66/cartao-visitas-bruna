@@ -1,0 +1,55 @@
+name: Production smoke (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-smoke-manual
+  cancel-in-progress: false
+
+jobs:
+  smoke:
+    name: Validate published assets
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.0
+
+      - name: Check public site
+        run: |
+          node scripts/smoke-public.mjs https://nunesd66.github.io/cartao-visitas-bruna/ | tee smoke-result.txt
+
+      - name: Publish run summary
+        if: always()
+        run: |
+          {
+            echo '## Production smoke (manual)'
+            echo ''
+            echo '- URL: https://nunesd66.github.io/cartao-visitas-bruna/'
+            echo "- Repository revision checked out: \`$GITHUB_SHA\`"
+            echo '- Note: repository revision does not prove which commit GitHub Pages published.'
+            echo '- This smoke checks HTTP status and media types, not asset byte equality or UX.'
+            echo ''
+            echo '### Output'
+            echo '\`\`\`text'
+            if [ -f smoke-result.txt ]; then cat smoke-result.txt; else echo 'Smoke did not produce output.'; fi
+            echo '\`\`\`'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-smoke-result
+          path: smoke-result.txt
+          if-no-files-found: warn
+          retention-days: 14
