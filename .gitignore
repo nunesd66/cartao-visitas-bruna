@@ -30,6 +30,7 @@
 
 /scripts/*
 !/scripts/faq.test.mjs
+!/scripts/smoke-public.test.mjs
 !/scripts/check-local-assets.mjs
 !/scripts/analytics.test.mjs
 !/scripts/privacy.test.mjs

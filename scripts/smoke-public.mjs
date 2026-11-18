@@ -13,24 +13,33 @@ if (publishedSha !== undefined) {
   assert.match(publishedSha, /^[a-f0-9]{40}$/i, 'Informe o SHA completo do deploy');
 }
 
-const base = new URL(positionals[0] || 'https://nunesd66.github.io/cartao-visitas-bruna/');
+let base;
+try {
+  base = new URL(positionals[0] || 'https://nunesd66.github.io/cartao-visitas-bruna/');
+} catch {
+  throw new Error('Informe uma URL base válida');
+}
+if (base.username || base.password || base.search || base.hash) {
+  throw new Error('Informe a URL base sem credenciais, parâmetros ou fragmento');
+}
 const isLocalHttp = base.protocol === 'http:' &&
   ['localhost', '127.0.0.1', '[::1]'].includes(base.hostname);
 if (base.protocol !== 'https:' && !isLocalHttp) {
   throw new Error('Use HTTPS ou HTTP em localhost');
 }
 if (!base.pathname.endsWith('/')) base.pathname += '/';
+const javascriptTypes = ['text/javascript', 'application/javascript', 'application/x-javascript'];
 const resources = [
-  ['HTML', './', 'text/html'],
-  ['CSS', 'css/style.css', 'text/css'],
-  ['JS principal', 'js/main.js', 'javascript'],
-  ['JS analytics', 'js/analytics.js', 'javascript'],
-  ['JS privacidade', 'js/privacy.js', 'javascript'],
-  ['JS mapa', 'js/map.js', 'javascript'],
-  ['robots', 'robots.txt', 'text/plain'],
-  ['sitemap', 'sitemap.xml', 'xml'],
-  ['imagem social', 'images/primeira-foto.jpg', 'image/jpeg'],
-  ['foto de apresentação', 'images/bruna-profissional.jpg', 'image/jpeg'],
+  ['HTML', './', ['text/html']],
+  ['CSS', 'css/style.css', ['text/css']],
+  ['JS principal', 'js/main.js', javascriptTypes],
+  ['JS analytics', 'js/analytics.js', javascriptTypes],
+  ['JS privacidade', 'js/privacy.js', javascriptTypes],
+  ['JS mapa', 'js/map.js', javascriptTypes],
+  ['robots', 'robots.txt', ['text/plain']],
+  ['sitemap', 'sitemap.xml', ['application/xml', 'text/xml']],
+  ['imagem social', 'images/primeira-foto.jpg', ['image/jpeg']],
+  ['foto de apresentação', 'images/bruna-profissional.jpg', ['image/jpeg']],
 ];
 
 console.log(`Data UTC: ${new Date().toISOString()}`);
@@ -38,13 +47,14 @@ console.log(`Ambiente: ${base.href}`);
 console.log(`SHA publicado informado: ${publishedSha ?? 'não informado'}`);
 
 const results = [];
-for (const [name, relative, mime] of resources) {
+for (const [name, relative, mediaTypes] of resources) {
   const url = new URL(relative, base);
   const started = Date.now();
   try {
-    const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(12000) });
+    const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(12000) });
     const type = response.headers.get('content-type') || '';
-    const ok = response.status === 200 && type.toLowerCase().includes(mime);
+    const mediaType = type.split(';', 1)[0].trim().toLowerCase();
+    const ok = response.status === 200 && mediaTypes.includes(mediaType);
     await response.body?.cancel();
     results.push({ name, url: url.href, status: response.status, contentType: type, ms: Date.now() - started, ok });
   } catch (error) {
