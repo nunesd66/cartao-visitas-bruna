@@ -37,6 +37,8 @@
   let tagRequested = false;
   let tagFailed = false;
   let tagConfigured = false;
+  let tagLoaded = false;
+  let pendingScript = null;
   let pageViewSentForCurrentGrant = false;
 
   const readMeasurementId = () => {
@@ -81,6 +83,22 @@
     });
   };
 
+  const discardPendingTag = () => {
+    if (!pendingScript) return;
+    pendingScript.onload = null;
+    pendingScript.onerror = null;
+    pendingScript.remove?.();
+    pendingScript = null;
+    tagRequested = false;
+    tagFailed = false;
+    tagLoaded = false;
+    tagConfigured = false;
+    pageViewSentForCurrentGrant = false;
+    // A failed or aborted tag never processed its queued config/events.
+    // Do not replay those commands if the visitor accepts again.
+    if (Array.isArray(window.dataLayer)) window.dataLayer.length = 0;
+  };
+
   const queueGoogleTag = () => {
     if (!Array.isArray(window.dataLayer)) window.dataLayer = [];
     if (typeof window.gtag !== 'function') {
@@ -122,13 +140,19 @@
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
+    script.onload = () => {
+      if (pendingScript !== script) return;
+      tagLoaded = true;
+      pendingScript = null;
+    };
     script.onerror = () => {
+      if (pendingScript !== script) return;
+      discardPendingTag();
       tagFailed = true;
-      tagRequested = false;
-      script.remove?.();
     };
     tagFailed = false;
     tagRequested = true;
+    pendingScript = script;
     document.head.appendChild(script);
     return true;
   };
@@ -138,6 +162,8 @@
       consentGranted = false;
       pageViewSentForCurrentGrant = false;
       setGoogleCollectionDisabled(true);
+      // Revoke before download completion: cancel script and queued pageview.
+      if (!tagLoaded) discardPendingTag();
       if (tagRequested && typeof window.gtag === 'function') {
         window.gtag('consent', 'update', { ...deniedConsent });
       }
