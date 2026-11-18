@@ -68,6 +68,20 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 | Outros canais | O iframe de Maps depende de solicitação explícita. Os links externos vão ao respectivo serviço. O FAQ monta localmente a mensagem que é encaminhada ao WhatsApp. |
 | Informação ao visitante | Confirmar quem responde pelo tratamento, canal de contato, finalidades, fornecedores e retenção antes de aprovar ou atualizar o aviso. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
 
+## Verificação complementar em 18/11/2026
+
+| Critério | Evidência e limite |
+| --- | --- |
+| Revisão e PRs | `master` em [`112c625`](https://github.com/nunesd66/cartao-visitas-bruna/commit/112c62597b3bf476303cae0d20f27879db9a76e0), com #86–88 integrados. Não foi possível associar a última publicação a um SHA nesta rodada. |
+| Testes locais | No checkout `3e65411`, que contém o ajuste visual do #87, `npm test` passou 94/94 e a checagem de referências locais passou. Os blobs de `index.html` e `js/analytics.js` correspondem à `master`. A suíte simula a tag localmente. |
+| GA4: agendamento | O DebugView mostrou um `contact_intent`, com `channel=whatsapp` e `cta_location=header_desktop`. A lista exibida não trouxe texto da mensagem ou campo de URL do WhatsApp. Evidência fornecida por Daniel. |
+| GA4: visualizações | Uma única abertura relatada por Daniel resultou em dois `page_view` no DebugView. Outro par mostrou o mesmo `batch_page_id`. O resumo do Tag Assistant apresentou seis visualizações na mesma tag de GA4. Na captura de Config, `send_page_view:false` está presente e o destino exibido tem prefixo `GTM-`, enquanto o HTML da `master` configura um ID `G-`. A captura também lista uma alteração do histórico, sem mostrar os hits atribuídos a ela. A origem do segundo envio segue em investigação. |
+| Search Console | Página inicial indexada. O relatório Sitemaps mostrou falha de busca e zero páginas. O teste em tempo real conseguiu buscar o XML e o reenvio foi confirmado. A leitura posterior com status Processado e uma página ainda não foi confirmada. |
+| Canais em navegador | Na verificação anterior em produção, agendamento e FAQ abriram o WhatsApp com destino e mensagem esperados. O Maps abriu o perfil da empresa no endereço aprovado. Nenhuma mensagem foi enviada. O `tel:` corresponde ao número publicado, sem discagem. O Instagram pediu login. O teste em navegador sem JavaScript não foi concluído. |
+| Lighthouse e leitor de tela | As notas de produção 98 mobile e 100 desktop continuam vinculadas a `5750028`. A nova inspeção da produção no navegador foi bloqueada por limite do ambiente. O teste manual com leitor de tela real permanece pendente. |
+
+Para isolar a duplicidade, comparar os hits de Config, da chamada manual `page_view` e de Alteração do histórico dentro da mesma abertura registrada. Se for necessário reproduzir, bloquear os destinos de coleta antes de carregar a tag ou usar um fluxo de testes. Esta rodada não enviou dados sintéticos à propriedade real. O [guia de pageviews do Google](https://developers.google.com/analytics/devguides/collection/ga4/views) distingue os disparos de Config dos baseados em alterações do histórico.
+
 ## Verificação local
 
 ```sh
@@ -97,14 +111,15 @@ Usar aba anônima sem dados anteriores; em Network ativar Preserve log. Filtrar 
 | Alterar consentimento em outra aba | NÃO EXECUTADO | Estado das duas abas |
 | Maps: iframe apenas após clique | NÃO EXECUTADO | Network antes/depois |
 | GA4: verificar configuração da Métrica otimizada | PASS | Chave desativada no fluxo Web |
-| GA4: verificar duplicidades e parâmetros | NÃO EXECUTADO | DebugView |
+| GA4: clique de agendamento sem texto da mensagem nos parâmetros | PASS | DebugView, capturas de Daniel |
+| GA4: uma visualização por abertura | FAIL | Dois `page_view` no DebugView para uma abertura; origem em investigação |
 | Viewports 320, 390, 768, 1440 px | NÃO EXECUTADO | Capturas, overflow e CTAs |
 | Teclado, menu, FAQ, carrossel, zoom 200%, leitor de tela | NÃO EXECUTADO | Passos e resultado |
 | Movimento reduzido | NÃO EXECUTADO | Configuração e observação |
 | Lighthouse mobile e desktop | NÃO EXECUTADO | Relatório, SHA, LCP, CLS |
 | WhatsApp, Instagram, telefone, Maps externos | NÃO EXECUTADO | Destino real de cada link |
 | Search Console: indexação da página inicial | PASS | Inspeção de URL, aba Índice do Google |
-| Search Console: processamento do sitemap | NÃO EXECUTADO | Status no relatório Sitemaps |
+| Search Console: processamento do sitemap | PENDENTE | Busca ao vivo e reenvio confirmados; aguardar leitura posterior |
 
 Registrar PASS, FAIL, BLOQUEADO ou NÃO EXECUTADO por cenário, com justificativa. A revogação não apaga dados já transmitidos. Clique no WhatsApp não confirma lead/agendamento. INP real depende de dados de campo: não inferir de um Lighthouse isolado.
 
