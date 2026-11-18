@@ -11,9 +11,11 @@
 ## Critérios externos para fechar N3
 
 ### Publicação e indexabilidade
-- [ ] Confirmar `master` e commit publicado no GitHub Pages.
-- [ ] Validar HTTP 200 de HTML, CSS, JS, imagens, robots e sitemap no site público.
+- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `35528da`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44275241213) concluiu com êxito.
+- [x] Validar HTTP 200 de HTML, CSS, JS, imagens, robots e sitemap no site público. A verificação de release confirmou 30/30 arquivos idênticos ao commit `35528da`.
 - [ ] Confirmar propriedade do Search Console, sitemap enviado/processado e resultado da inspeção da URL. **Código indexável não equivale a indexação confirmada.**
+
+Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](https://nunesd66.github.io/robots.txt), que respondeu HTTP 404 na verificação do deploy `35528da`. Nesse estado, o Google considera o host sem regras de `robots.txt`. O [arquivo no caminho do projeto](https://nunesd66.github.io/cartao-visitas-bruna/robots.txt) respondeu HTTP 200 e permanece no smoke de artefatos. Envie o [sitemap do projeto](https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml) à propriedade correspondente no Search Console. Veja as referências do Google sobre [localização](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt) e [códigos HTTP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec?hl=pt-br).
 
 ### Analytics e privacidade
 - [ ] Aprovar política/aviso, base e procedimento de consentimento/revogação com responsável.
