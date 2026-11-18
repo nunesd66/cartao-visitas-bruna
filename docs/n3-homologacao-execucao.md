@@ -66,7 +66,7 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 | Preferência | O navegador guarda a opção em `localStorage` e permite alterá-la pelo escudo de Privacidade. |
 | Analytics | O código aguarda Aceitar e limita eventos próprios a categorias e parâmetros definidos. Métrica otimizada desativada na propriedade GA4. Confirmar coleta real e retenção. |
 | Outros canais | O iframe de Maps depende de solicitação explícita. Os links externos vão ao respectivo serviço. O FAQ monta localmente a mensagem que é encaminhada ao WhatsApp. |
-| Informação ao visitante | O aviso informa que o Google Analytics depende de aceite e indica como recusar, mudar a escolha e contatar a Bruna pelo WhatsApp. Está em aberto a validação do texto final e da retenção na propriedade. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
+| Informação ao visitante | O aviso informa que o Google Analytics depende de aceite e indica como recusar, mudar a escolha e contatar a Bruna pelo WhatsApp. Daniel confirmou a aprovação do aviso publicado e informou os valores de retenção configurados. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
 
 ## Verificação complementar em 18/11/2026
 
@@ -100,7 +100,7 @@ O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tr
 - Após o aceite em uma abertura, a aba Network mostrou `page_view` em duas tentativas com o mesmo ID de página, sequência e parâmetros do evento. A requisição para `www.google-analytics.com` foi bloqueada, e a tentativa alternativa para `www.google.com/g/collect` obteve HTTP 204. Isso sustenta um único evento lógico e um único envio com resposta de sucesso na abertura observada. A tentativa alternativa passou pelo bloqueio. Em novas reproduções, interceptar todos os destinos de coleta, inclusive o alternativo, ou usar um fluxo de testes.
 - O aviso publicado mostrou o link para falar com a Bruna pelo WhatsApp. A configuração de retenção exibiu 2 meses para eventos, 14 meses para dados do usuário e redefinição por nova atividade ativada. A consulta não alterou as configurações.
 - O relatório Sitemaps ainda mostrou falha, zero páginas e última leitura em 18/11, sem horário nem motivo específico. O XML público lista a página inicial indexada. A leitura posterior ao reenvio continua sem confirmação.
-- A revisão do aviso com a responsável, o leitor de tela e a abertura dos canais restantes seguem pendentes.
+- Daniel confirmou a aprovação do aviso publicado. O teste com leitor de tela e a abertura dos canais restantes seguem pendentes.
 
 ## Verificação local
 
