@@ -32,6 +32,7 @@ jobs:
         env:
           PUBLISHED_SHA: ${{ inputs.published_sha }}
         run: |
+          set -euo pipefail
           if [[ ! "$PUBLISHED_SHA" =~ ^[a-f0-9]{40}$ ]]; then
             echo "Provide the full Pages deployment SHA."
             exit 2
