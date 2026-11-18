@@ -603,6 +603,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   if (activeIndex < 0) activeIndex = 0;
 
   let timer = null;
+  let visible = !('IntersectionObserver' in window);
 
   const rotate = () => {
     images[activeIndex].classList.remove('is-active');
@@ -619,7 +620,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches || document.hidden) return;
+    if (timer !== null || motionPreference.matches || document.hidden || !visible) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -630,6 +631,14 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
 
   const controller = { start, stop };
   imageRotators.push(controller);
+  if ('IntersectionObserver' in window) {
+    const observer = new window.IntersectionObserver(([entry]) => {
+      visible = Boolean(entry?.isIntersecting);
+      if (visible) start();
+      else stop();
+    });
+    observer.observe(gallery);
+  }
   start();
 });
 
