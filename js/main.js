@@ -617,6 +617,10 @@ const imageRotators = [];
 document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const images = [...gallery.querySelectorAll('img')];
   if (images.length < 2) return;
+  const nextButton = gallery.querySelector?.('[data-gallery-next]');
+  const pauseButton = gallery.querySelector?.('[data-gallery-toggle]');
+  let manuallyPaused = false;
+
 
   let activeIndex = images.findIndex((image) => image.classList.contains('is-active'));
   if (activeIndex < 0) activeIndex = 0;
@@ -639,7 +643,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches || document.hidden || !visible) return;
+    if (timer !== null || manuallyPaused || motionPreference.matches || document.hidden || !visible) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -648,8 +652,33 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
     else image.setAttribute('aria-hidden', 'true');
   });
 
-  const controller = { start, stop };
+  const updateGalleryControls = () => {
+    if (nextButton) nextButton.hidden = false;
+    if (!pauseButton) return;
+    pauseButton.hidden = motionPreference.matches;
+    pauseButton.setAttribute('aria-pressed', String(manuallyPaused));
+    pauseButton.textContent = manuallyPaused ? 'Retomar' : 'Pausar';
+    const label = gallery.getAttribute?.('aria-label') || 'galeria';
+    pauseButton.setAttribute('aria-label',
+      (manuallyPaused ? 'Retomar' : 'Pausar') + ' troca automática de fotos — ' + label);
+    if (pauseButton.hidden && document.activeElement === pauseButton) nextButton?.focus();
+  };
+
+  nextButton?.addEventListener('click', () => {
+    stop();
+    manuallyPaused = true;
+    rotate();
+    updateGalleryControls();
+  });
+  pauseButton?.addEventListener('click', () => {
+    manuallyPaused = !manuallyPaused;
+    if (manuallyPaused) stop();
+    else start();
+    updateGalleryControls();
+  });
+  const controller = { start, stop, updateGalleryControls };
   imageRotators.push(controller);
+  updateGalleryControls();
   if ('IntersectionObserver' in window) {
     const observer = new window.IntersectionObserver(([entry]) => {
       visible = Boolean(entry?.isIntersecting);
@@ -662,7 +691,11 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
 });
 
 motionPreference.addEventListener('change', (event) => {
-  imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
+  imageRotators.forEach((rotator) => {
+    if (event.matches) rotator.stop();
+    else rotator.start();
+    rotator.updateGalleryControls();
+  });
 });
 
 document.addEventListener('visibilitychange', () => {
