@@ -365,11 +365,11 @@ h3 {
   transition: transform 180ms ease;
 }
 
-.header-pin[aria-pressed="true"] svg {
+.header-pin[data-pinned="true"] svg {
   transform: rotate(45deg);
 }
 
-.header-pin[aria-pressed="true"] {
+.header-pin[data-pinned="true"] {
   border-color: var(--color-primary-dark);
   color: #fff;
   background: var(--color-primary-dark);
