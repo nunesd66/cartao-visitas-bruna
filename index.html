@@ -459,10 +459,12 @@
           <div class="map-placeholder map-embed">
             <iframe
               title="Mapa de localização de Bruna Eduarda Beauty em Coromandel, Minas Gerais"
-              src="https://maps.google.com/maps?q=Avenida%20Israel%20Pinheiro%2C%2082%2C%20sala%2001%2C%20Centro%2C%20Coromandel%2C%20MG&amp;output=embed"
-              referrerpolicy="no-referrer-when-downgrade"
+              data-map-src="https://maps.google.com/maps?q=Avenida%20Israel%20Pinheiro%2C%2082%2C%20sala%2001%2C%20Centro%2C%20Coromandel%2C%20MG&amp;output=embed"
+              referrerpolicy="no-referrer"
+              loading="lazy"
               allowfullscreen
             ></iframe>
+            <button type="button" class="map-embed__load" data-map-load>Carregar mapa interativo do Google</button>
             <a
               class="button button--small"
               data-analytics-event="contact_channel_click" data-analytics-channel="google_maps" href="https://www.google.com/maps/search/?api=1&amp;query=Avenida+Israel+Pinheiro%2C+82%2C+sala+01%2C+Centro%2C+Coromandel%2C+MG"
