@@ -12,8 +12,7 @@ const sitemap = read('sitemap.xml');
 
 function tagContent(kind, key) {
   const tags = html.match(/<meta\b[^>]*>/gi) || [];
-  const tag = tags.find((value) =>
-    new RegExp('\\b' + kind + '=["\\x27]' + key.replace(/[.*+?^$()|[\]{}\\]/g, '\\$&') + '["\\x27]', 'i').test(value));
+  const tag = tags.find((value) => value.includes(kind + '="' + key + '"'));
   assert.ok(tag, 'Missing meta ' + kind + '=' + key);
   const value = tag.match(/\bcontent=["']([^"']+)["']/i)?.[1];
   assert.ok(value, 'Empty meta content for ' + key);
