@@ -1,0 +1,94 @@
+name: Lighthouse on published Pages
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - .github/workflows/n3-published-lighthouse.yml
+  workflow_dispatch:
+    inputs:
+      published_sha:
+        description: Full SHA of the successful GitHub Pages deployment
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    name: Lighthouse ${{ matrix.form_factor }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        form_factor: [mobile, desktop]
+
+    env:
+      PAGES_URL: https://nunesd66.github.io/cartao-visitas-bruna/
+      PUBLISHED_SHA: ${{ inputs.published_sha || github.event.pull_request.base.sha }}
+      FORM_FACTOR: ${{ matrix.form_factor }}
+
+    steps:
+      - name: Check out release verifier
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24.11.1
+
+      - name: Confirm published content
+        shell: bash
+        run: |
+          [[ "$PUBLISHED_SHA" =~ ^[a-f0-9]{40}$ ]]
+          node scripts/verify-release.mjs "$PUBLISHED_SHA" "$PAGES_URL"
+
+      - name: Measure with Chrome and Lighthouse
+        shell: bash
+        run: |
+          export CHROME_PATH="$(command -v google-chrome)"
+          args=()
+          if [[ "$FORM_FACTOR" == desktop ]]; then
+            args=(--preset=desktop)
+          fi
+          npm exec --yes --package=lighthouse@13.6.0 -- lighthouse "$PAGES_URL" \
+            "${args[@]}" --chrome-flags="--headless" --quiet \
+            --output=json --output=html --output-path=./lighthouse-report
+
+      - name: Confirm the revision again and summarize
+        shell: bash
+        run: |
+          node scripts/verify-release.mjs "$PUBLISHED_SHA" "$PAGES_URL"
+          node --input-type=module <<'JS' >> "$GITHUB_STEP_SUMMARY"
+          import { readFileSync } from 'node:fs';
+          const result = JSON.parse(readFileSync('lighthouse-report.report.json', 'utf8'));
+          const metric = name => result.audits[name]?.numericValue;
+          const performance = result.categories.performance?.score;
+          if (!Number.isFinite(performance) || result.runtimeError) {
+            throw new Error(result.runtimeError?.message || 'Lighthouse did not score Performance');
+          }
+          console.log('## Lighthouse ' + process.env.FORM_FACTOR);
+          console.log('- Expected Pages revision: ' + process.env.PUBLISHED_SHA);
+          console.log('- Final URL: ' + result.finalDisplayedUrl);
+          console.log('- Timestamp: ' + result.fetchTime);
+          console.log('- Lighthouse: ' + result.lighthouseVersion + ' (' + result.environment.hostUserAgent + ')');
+          console.log('- Performance: ' + Math.round(performance * 100));
+          console.log('- LCP: ' + (metric('largest-contentful-paint') / 1000).toFixed(3) + ' s');
+          console.log('- CLS: ' + metric('cumulative-layout-shift').toFixed(3));
+          console.log('- TBT: ' + Math.round(metric('total-blocking-time')) + ' ms');
+          JS
+
+      - name: Preserve Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ matrix.form_factor }}
+          path: lighthouse-report.report.*
+          if-no-files-found: warn
+          retention-days: 14
