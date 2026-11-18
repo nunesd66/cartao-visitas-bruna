@@ -515,15 +515,16 @@
         </div>
       </section>
       <button
-        class="privacy-control__toggle"
+        class="privacy-control__toggle privacy-control__toggle--footer"
         type="button"
         data-privacy-toggle
         aria-controls="privacy-panel"
         aria-expanded="false"
+        aria-label="Privacidade"
+        title="Privacidade"
         hidden
       >
         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3.5 19 6v5.1c0 4.1-2.8 7.8-7 9.4-4.2-1.6-7-5.3-7-9.4V6l7-2.5Z"/><rect x="9" y="10.5" width="6" height="5" rx="1"/><path d="M10.5 10.5V9a1.5 1.5 0 0 1 3 0v1.5"/></svg>
-        <span class="privacy-control__label">Privacidade</span>
       </button>
     </div>
       </div>
@@ -569,6 +570,9 @@
         </button>
         <button class="accessibility-tools__action" type="button" data-page-scroll="bottom" aria-label="Ir para o final da p&#225;gina" title="Ir para o final da p&#225;gina">
           <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 5v14m7-7-7 7-7-7"/></svg>
+        </button>
+        <button class="accessibility-tools__action privacy-control__toggle" type="button" data-privacy-toggle aria-controls="privacy-panel" aria-expanded="false" aria-label="Privacidade" title="Privacidade" hidden>
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3.5 19 6v5.1c0 4.1-2.8 7.8-7 9.4-4.2-1.6-7-5.3-7-9.4V6l7-2.5Z"/><rect x="9" y="10.5" width="6" height="5" rx="1"/><path d="M10.5 10.5V9a1.5 1.5 0 0 1 3 0v1.5"/></svg>
         </button>
       </div>
     </details>

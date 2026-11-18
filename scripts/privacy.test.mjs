@@ -36,6 +36,10 @@ class FakeElement {
     return element === this || Object.values(this.selectorMap).includes(element);
   }
 
+  getClientRects() {
+    return this.hidden ? [] : [{}];
+  }
+
   focus() {
     this.focused = true;
   }
@@ -57,13 +61,16 @@ function createPrivacy(storage = new Map()) {
     },
   });
   const toggle = new FakeElement({ hidden: true });
+  const secondaryToggle = new FakeElement({ hidden: true });
   const calls = [];
   const analytics = { setConsent: (granted) => calls.push(granted) };
   const document = {
     querySelector(selector) {
       if (selector === '[data-privacy-panel]') return panel;
-      if (selector === '[data-privacy-toggle]') return toggle;
       return null;
+    },
+    querySelectorAll(selector) {
+      return selector === '[data-privacy-toggle]' ? [toggle, secondaryToggle] : [];
     },
   };
   const localStorage = {
@@ -84,7 +91,7 @@ function createPrivacy(storage = new Map()) {
     storageListeners.get('storage')?.({ key, storageArea });
   }
 
-  return { panel, toggle, acceptButton, rejectButton, calls, storage, document, receiveStorageChange };
+  return { panel, toggle, secondaryToggle, acceptButton, rejectButton, calls, storage, document, receiveStorageChange };
 }
 
 test('primeira visita abre o aviso sem consentir e permite recusar', () => {
@@ -127,14 +134,16 @@ test('recusa persistida nao habilita analytics e controle permanente sincroniza 
   assert.equal(visit.panel.hidden, true);
   assert.equal(visit.toggle.hidden, false);
 
-  visit.toggle.click();
+  visit.secondaryToggle.click();
   assert.equal(visit.panel.hidden, false);
   assert.equal(visit.toggle.getAttribute('aria-expanded'), 'true');
+  assert.equal(visit.secondaryToggle.getAttribute('aria-expanded'), 'true');
   assert.equal(visit.acceptButton.focused, true);
 
   visit.acceptButton.click();
   assert.equal(storage.get('bruna-analytics-consent-v1'), 'accepted');
   assert.deepEqual(visit.calls, [false, true]);
+  assert.equal(visit.secondaryToggle.focused, true);
 });
 
 test('revogar e voltar a aceitar em outra aba atualiza o consentimento sem mover o foco externo', () => {
@@ -201,12 +210,12 @@ test('markup acessivel, textos autorizados e layout fluido para telas estreitas'
   assert.match(htmlSource, /data-privacy-choice="rejected">Recusar<\/button>/);
   assert.match(htmlSource, /<button class="privacy-control__accept" type="button"/);
   assert.match(htmlSource, /<button class="privacy-control__reject" type="button"/);
-  assert.match(htmlSource, /aria-controls="privacy-panel"[\s\S]*aria-expanded="false"[\s\S]*<span class="privacy-control__label">Privacidade<\/span>[\s\S]*<\/button>/);
+  assert.match(htmlSource, /aria-controls="privacy-panel"[\s\S]*aria-expanded="false"[\s\S]*aria-label="Privacidade"[\s\S]*<\/button>/);
   assert.match(scssSource, /width: min\(28rem, calc\(100vw - 2rem\)\)/);
   assert.match(scssSource, /min-height: 2\.75rem/);
-  assert.match(scssSource, /@media \(min-width: 60rem\)[\s\S]*\.privacy-control__panel,[\s\S]*bottom: 1rem/);
-  assert.match(scssSource, /\.privacy-control__toggle svg\s*\{\s*display: none;/);
-  assert.match(scssSource, /\.privacy-control__toggle\s*\{\s*position: static;/);
+  assert.match(scssSource, /@media \(min-width: 60rem\)[\s\S]*\.privacy-control__panel[\s\S]*bottom: 1rem/);
+  assert.match(htmlSource, /class="accessibility-tools__action privacy-control__toggle"/);
+  assert.match(scssSource, /\.privacy-control__toggle--footer\s*\{\s*display: none;/);
   assert.match(scssSource, /\.accessibility-tools,[\s\S]*\.whatsapp-float\s*\{\s*display: none;/);
   assert.doesNotMatch(scssSource.slice(scssSource.indexOf('.privacy-control__panel {'), scssSource.indexOf('.whatsapp-float {')), /transition:/);
 });
