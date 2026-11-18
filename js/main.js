@@ -341,6 +341,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   let scrollAnimationFrame = 0;
   let rotationPaused = reduceMotion;
   let pausedBeforeReducedMotion = false;
+  let inViewport = !('IntersectionObserver' in window);
 
   const getActiveIndex = () => {
     const viewportRect = viewport.getBoundingClientRect();
@@ -449,7 +450,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const startRotation = () => {
-    if (rotationTimer !== null || rotationPaused || motionPreference.matches || document.hidden) return;
+    if (rotationTimer !== null || rotationPaused || motionPreference.matches || document.hidden || !inViewport) return;
     rotationTimer = window.setInterval(advance, 2000);
   };
 
@@ -528,6 +529,17 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   });
   updateControls();
   updateRotationControl();
+  if ('IntersectionObserver' in window) {
+    const observer = new window.IntersectionObserver(([entry]) => {
+      inViewport = Boolean(entry?.isIntersecting);
+      if (inViewport) startRotation();
+      else {
+        stopRotation();
+        cancelCarouselAnimation();
+      }
+    });
+    observer.observe(carousel);
+  }
   startRotation();
 });
 
