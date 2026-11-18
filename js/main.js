@@ -510,10 +510,52 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     // Let the rotation button apply the action shown before the user activated it.
     if (event.target !== rotationToggle) pauseRotationForInteraction();
   });
-  viewport.addEventListener('pointerdown', () => {
+  let mouseDrag = null;
+  let suppressDragClick = false;
+
+  viewport.addEventListener('pointerdown', (event) => {
     cancelCarouselAnimation();
     pauseRotationForInteraction();
+    suppressDragClick = false;
+
+    if (event.pointerType !== 'mouse' || event.button !== 0
+        || viewport.scrollWidth <= viewport.clientWidth) return;
+    mouseDrag = { id: event.pointerId, startX: event.clientX, startLeft: viewport.scrollLeft, moved: false };
   });
+
+  document.addEventListener('pointermove', (event) => {
+    if (!mouseDrag || event.pointerId !== mouseDrag.id) return;
+    const distance = event.clientX - mouseDrag.startX;
+    if (!mouseDrag.moved) {
+      if (Math.abs(distance) < 5) return;
+      mouseDrag.moved = true;
+      viewport.setPointerCapture(event.pointerId);
+      viewport.classList.add('is-dragging');
+    }
+    viewport.scrollLeft = mouseDrag.startLeft - distance;
+  });
+
+  const finishMouseDrag = (event) => {
+    if (!mouseDrag || event.pointerId !== mouseDrag.id) return;
+    const target = mouseDrag.moved ? getSlideTarget(getActiveIndex()) : null;
+    suppressDragClick = mouseDrag.moved;
+    mouseDrag = null;
+    viewport.classList.remove('is-dragging');
+    if (target !== null) animateTo(target);
+  };
+
+  document.addEventListener('pointerup', finishMouseDrag);
+  document.addEventListener('pointercancel', finishMouseDrag);
+  viewport.addEventListener('lostpointercapture', finishMouseDrag);
+  viewport.addEventListener('dragstart', (event) => {
+    if (mouseDrag) event.preventDefault();
+  });
+  viewport.addEventListener('click', (event) => {
+    if (!suppressDragClick || event.detail === 0) return;
+    suppressDragClick = false;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
   rotationToggle.addEventListener('click', () => {
     rotationPaused = !rotationPaused;
     if (rotationPaused) stopRotation();
