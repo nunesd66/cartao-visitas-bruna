@@ -15,17 +15,17 @@ const attributes = (tag) => Object.fromEntries(
 
 test('scripts locais necessários preservam ordem de execução e não usam async', () => {
   const local = scripts
-    .map(attributes)
-    .filter((attrs) => /^js\/(analytics|privacy|main|map)\.js$/.test(attrs.src || ''));
-  const sources = local.map((attrs) => attrs.src);
+    .map((tag) => ({ tag, attrs: attributes(tag) }))
+    .filter(({ attrs }) => /^js\/(analytics|privacy|main|map)\.js$/.test(attrs.src || ''));
+  const sources = local.map(({ attrs }) => attrs.src);
   for (const required of ['js/analytics.js', 'js/privacy.js', 'js/main.js']) {
     assert.equal(sources.filter((source) => source === required).length, 1, required);
   }
   assert.ok(sources.indexOf('js/analytics.js') < sources.indexOf('js/privacy.js'));
   assert.ok(sources.indexOf('js/privacy.js') < sources.indexOf('js/main.js'));
-  for (const attrs of local) {
-    assert.ok(Object.hasOwn(attrs, 'defer'), 'script sem defer: ' + attrs.src);
-    assert.ok(!Object.hasOwn(attrs, 'async'), 'script async pode romper ordem: ' + attrs.src);
+  for (const { tag, attrs } of local) {
+    assert.match(tag, /\sdefer(?:\s|>)/i, 'script sem defer: ' + attrs.src);
+    assert.doesNotMatch(tag, /\sasync(?:\s|>)/i, 'script async pode romper ordem: ' + attrs.src);
   }
 });
 
