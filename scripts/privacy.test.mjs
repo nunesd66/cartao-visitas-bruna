@@ -230,7 +230,14 @@ test('Escape fecha a reabertura e devolve o foco sem alterar a escolha salva', (
 test('markup acessivel, textos autorizados e layout fluido para telas estreitas', () => {
   assert.match(htmlSource, /role="region"[\s\S]*aria-labelledby="privacy-title"[\s\S]*aria-describedby="privacy-description"/);
   assert.match(htmlSource, /<h2 id="privacy-title">Privacidade e análise de visitas<\/h2>/);
-  assert.match(htmlSource, /Usamos dados de navegação, com sua autorização, para entender o uso do site e melhorar sua experiência\. Você pode mudar sua escolha a qualquer momento\./);
+  assert.match(htmlSource, /<p id="privacy-description">Se você aceitar, usamos o Google Analytics/);
+  assert.match(htmlSource, /mudar sua escolha a qualquer momento pelo ícone de Privacidade/);
+  const privacyPanel = htmlSource.match(/<section\b[^>]*\bid="privacy-panel"[\s\S]*?<\/section>/)?.[0];
+  assert.ok(privacyPanel, 'Aviso de privacidade encontrado');
+  const privacyLink = privacyPanel.match(/<a\b[^>]*href="([^"]+)"[^>]*>fale com a Bruna pelo WhatsApp<\/a>/)?.[1];
+  const publicPhone = htmlSource.match(/href="tel:\+(\d+)"/)?.[1];
+  assert.ok(publicPhone, 'Telefone público encontrado');
+  assert.equal(privacyLink, 'https://wa.me/' + publicPhone);
   assert.match(htmlSource, /data-privacy-choice="accepted">Aceitar<\/button>/);
   assert.match(htmlSource, /data-privacy-choice="rejected">Recusar<\/button>/);
   assert.match(htmlSource, /<button class="privacy-control__accept" type="button"/);

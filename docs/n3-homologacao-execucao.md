@@ -57,7 +57,7 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 - Em 18/11/2026, a aba Índice do Google confirmou que a página inicial está indexada. Um print separado mostrou a página inicial como resultado orgânico para `Bruna Eduarda Beauty`.
 - O `sitemap.xml` abriu no navegador e listou a página inicial. A inspeção indicou que nenhum sitemap de referência foi detectado para a URL. O processamento no relatório Sitemaps permanece sem evidência.
 - Em 18/11/2026, o print do fluxo Web do GA4 mostrou a Métrica otimizada ativada, incluindo visualizações de página, rolagens, cliques de saída, pesquisa no site e interações com formulário. Uma nova captura do mesmo dia confirmou a chave desativada. O painel continuou exibindo o indicador padrão de visualizações de página. A validação dos eventos recebidos pelo DebugView permanece pendente.
-- Daniel informou que a Bruna aprovou o uso de todas as fotos e imagens. A aprovação do aviso de privacidade e o canal de contato para esse assunto aguardam confirmação.
+- Daniel informou que a Bruna aprovou o uso de todas as fotos e imagens. Daniel confirmou o WhatsApp já publicado como canal para dúvidas e solicitações sobre dados e autorizou o ajuste do aviso no site.
 
 ### Revisão do aviso com a responsável
 
@@ -66,7 +66,7 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 | Preferência | O navegador guarda a opção em `localStorage` e permite alterá-la pelo escudo de Privacidade. |
 | Analytics | O código aguarda Aceitar e limita eventos próprios a categorias e parâmetros definidos. Métrica otimizada desativada na propriedade GA4. Confirmar coleta real e retenção. |
 | Outros canais | O iframe de Maps depende de solicitação explícita. Os links externos vão ao respectivo serviço. O FAQ monta localmente a mensagem que é encaminhada ao WhatsApp. |
-| Informação ao visitante | Confirmar quem responde pelo tratamento, canal de contato, finalidades, fornecedores e retenção antes de aprovar ou atualizar o aviso. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
+| Informação ao visitante | O aviso informa que o Google Analytics depende de aceite e indica como recusar, mudar a escolha e contatar a Bruna pelo WhatsApp. Está em aberto a validação do texto final e da retenção na propriedade. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
 
 ## Verificação complementar em 18/11/2026
 
@@ -75,12 +75,18 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 | Revisão e PRs | `master` em [`112c625`](https://github.com/nunesd66/cartao-visitas-bruna/commit/112c62597b3bf476303cae0d20f27879db9a76e0), com #86–88 integrados. Não foi possível associar a última publicação a um SHA nesta rodada. |
 | Testes locais | No checkout `3e65411`, que contém o ajuste visual do #87, `npm test` passou 94/94 e a checagem de referências locais passou. Os blobs de `index.html` e `js/analytics.js` correspondem à `master`. A suíte simula a tag localmente. |
 | GA4: agendamento | O DebugView mostrou um `contact_intent`, com `channel=whatsapp` e `cta_location=header_desktop`. A lista exibida não trouxe texto da mensagem ou campo de URL do WhatsApp. Evidência fornecida por Daniel. |
-| GA4: visualizações | Uma única abertura relatada por Daniel resultou em dois `page_view` no DebugView. Outro par mostrou o mesmo `batch_page_id`. O resumo do Tag Assistant apresentou seis visualizações na mesma tag de GA4. Na captura de Config, `send_page_view:false` está presente e o destino exibido tem prefixo `GTM-`, enquanto o HTML da `master` configura um ID `G-`. A captura também lista uma alteração do histórico, sem mostrar os hits atribuídos a ela. A origem do segundo envio segue em investigação. |
+| GA4: visualizações | Uma única abertura relatada por Daniel resultou em dois `page_view` no DebugView. Outro par mostrou o mesmo `batch_page_id`. O resumo do Tag Assistant apresentou seis visualizações na mesma tag de GA4. Na captura de Config, `send_page_view:false` está presente e o destino exibido tem prefixo `GTM-`, enquanto o HTML da `master` configura um ID `G-`. As capturas posteriores mostram o mesmo identificador de página para dois envios: o hit nº 1 foi atribuído a Inicialização, e o nº 2 à chamada explícita `gtag('event', 'page_view', {})`, exibida como Alteração do histórico. Config e Contêiner carregado não mostraram hits. O estado da tag de destino e do acionador de Inicialização na interface do Google ainda precisa ser conferido. |
 | Search Console | Página inicial indexada. O relatório Sitemaps mostrou falha de busca e zero páginas. O teste em tempo real conseguiu buscar o XML e o reenvio foi confirmado. A leitura posterior com status Processado e uma página ainda não foi confirmada. |
 | Canais em navegador | Na verificação anterior em produção, agendamento e FAQ abriram o WhatsApp com destino e mensagem esperados. O Maps abriu o perfil da empresa no endereço aprovado. Nenhuma mensagem foi enviada. O `tel:` corresponde ao número publicado, sem discagem. O Instagram pediu login. O teste em navegador sem JavaScript não foi concluído. |
 | Lighthouse e leitor de tela | As notas de produção 98 mobile e 100 desktop continuam vinculadas a `5750028`. A nova inspeção da produção no navegador foi bloqueada por limite do ambiente. O teste manual com leitor de tela real permanece pendente. |
 
-Para isolar a duplicidade, comparar os hits de Config, da chamada manual `page_view` e de Alteração do histórico dentro da mesma abertura registrada. Se for necessário reproduzir, bloquear os destinos de coleta antes de carregar a tag ou usar um fluxo de testes. Esta rodada não enviou dados sintéticos à propriedade real. O [guia de pageviews do Google](https://developers.google.com/analytics/devguides/collection/ga4/views) distingue os disparos de Config dos baseados em alterações do histórico.
+Para corrigir a duplicidade, conferir a configuração da tag de destino e do acionador de Inicialização no contêiner antes de mudar o JavaScript. O [guia de compatibilidade do Google](https://support.google.com/tagmanager/answer/18411054?hl=pt-BR) explica quando a tag aguarda o `gtag('config')` e quando os parâmetros da interface têm precedência. Se for necessário reproduzir, bloquear os destinos de coleta antes de carregar a tag ou usar um fluxo de testes. Esta rodada não enviou dados sintéticos à propriedade real. O [guia de pageviews do Google](https://developers.google.com/analytics/devguides/collection/ga4/views) distingue os disparos de Config dos baseados em alterações do histórico.
+
+## Rodada de privacidade em 18/11/2026
+
+- Base: `master` em `372d45729af623ed48c2ba7900cdaa8c3c273c7b`, com os PRs #91–94 mesclados. O aviso inclui o WhatsApp já publicado, sem preencher nem enviar uma mensagem.
+- A cópia de trabalho dos ajustes do N3 passou 88 testes, checagem de referências e comparação byte a byte do CSS recompilado. O teste confere o destino do link contra o telefone publicado. Não houve coleta de dados sintéticos na propriedade de produção.
+- Seguem pendentes a configuração que gerou o `page_view` em Inicialização, o status Processado do sitemap, a confirmação da publicação mais recente e a rodada manual de acessibilidade e canais.
 
 ## Verificação local
 
