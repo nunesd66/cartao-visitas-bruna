@@ -144,6 +144,7 @@ if (siteHeader && casesRealAnchor) {
   headerPin?.addEventListener('click', () => {
     headerPinned = !headerPinned;
     const label = headerPinned ? 'Desafixar cabeçalho' : 'Fixar cabeçalho';
+    headerPin.setAttribute('data-pinned', String(headerPinned));
     headerPin.setAttribute('aria-label', label);
     headerPin.setAttribute('title', label);
     if (headerPinned) {
