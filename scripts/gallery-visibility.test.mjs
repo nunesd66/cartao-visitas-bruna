@@ -132,14 +132,14 @@ test('pausa manual permanece ativa após alternar aba e rolagem', () => {
   assert.equal(view.pauseButton.hidden, false);
   view.pauseButton.click();
   assert.equal(view.isRotating(), false);
-  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'true');
+  assert.equal(view.pauseButton.getAttribute('aria-label'), 'Retomar troca automática de fotos — Resultados de exemplo');
   view.setHidden(true);
   view.setHidden(false);
   view.setViewportVisible(false);
   view.setViewportVisible(true);
   assert.equal(view.isRotating(), false);
   view.pauseButton.click();
-  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'false');
+  assert.equal(view.pauseButton.getAttribute('aria-label'), 'Pausar troca automática de fotos — Resultados de exemplo');
   assert.equal(view.isRotating(), true);
 });
 
@@ -154,5 +154,17 @@ test('próxima foto funciona sem iniciar rotação e movimento reduzido mantém 
   view.setReducedMotion(false);
   assert.equal(view.pauseButton.hidden, false);
   assert.equal(view.isRotating(), false);
+  assert.equal(view.pauseButton.textContent, 'Retomar');
+});
+
+
+test('botão de galeria com rótulo de ação não declara estado toggle', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const controls = [...html.matchAll(/<button[^>]*data-gallery-toggle[^>]*>/g)];
+  assert.equal(controls.length, 2);
+  controls.forEach(([tag]) => assert.doesNotMatch(tag, /aria-pressed=/));
+  const view = setup();
+  view.pauseButton.click();
+  assert.equal(view.pauseButton.getAttribute('aria-pressed'), undefined);
   assert.equal(view.pauseButton.textContent, 'Retomar');
 });
