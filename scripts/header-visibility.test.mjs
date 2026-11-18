@@ -104,6 +104,8 @@ test('header pin changes action label without declaring toggle state', () => {
   view.pin();
   assert.equal(view.headerPin.getAttribute('aria-label'), 'Desafixar cabeçalho');
   assert.equal(view.headerPin.getAttribute('aria-pressed'), undefined);
+  assert.equal(view.headerPin.getAttribute('data-pinned'), 'true');
   view.pin();
   assert.equal(view.headerPin.getAttribute('aria-label'), 'Fixar cabeçalho');
+  assert.equal(view.headerPin.getAttribute('data-pinned'), 'false');
 });
