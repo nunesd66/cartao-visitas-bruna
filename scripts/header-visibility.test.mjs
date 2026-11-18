@@ -8,6 +8,8 @@ const start = source.indexOf("const siteHeader = document.querySelector('.site-h
 const end = source.indexOf('const accessibilityHelp', start);
 assert.ok(start >= 0 && end > start, 'header controller found');
 const controller = source.slice(start, end);
+const brandLinks = source.slice(source.indexOf("document.querySelectorAll('.brand"), source.indexOf('const faqAnswers'));
+const keyboardShortcuts = source.slice(source.indexOf('const accessibilityShortcutTargets'), source.indexOf('const aboutVisual'));
 
 function setup() {
   const classes = new Set();
@@ -17,6 +19,7 @@ function setup() {
   let clock = 0;
   let nextFrame = 1;
   let nextTimer = 1;
+  const brand = { addEventListener(type, callback) { callbacks.set('brand:' + type, callback); } };
   const headerPin = {
     attrs: new Map(),
     addEventListener(event, callback) { callbacks.set('pin:' + event, callback); },
@@ -32,7 +35,12 @@ function setup() {
     contains(element) { return element === headerPin; },
   };
   const anchor = { getBoundingClientRect() { return { top: 0 }; } };
+  const heading = { focus() {}, scrollIntoView() {} };
+  class ShortcutTarget { closest() { return null; } }
   const document = {
+    querySelectorAll() { return [brand]; },
+    addEventListener(type, callback) { callbacks.set('document:' + type, callback); },
+    getElementById() { return heading; },
     activeElement: null,
     querySelector(selector) {
       if (selector === '.site-header') return header;
@@ -43,6 +51,8 @@ function setup() {
   };
   const window = {
     scrollY: 0,
+    scrollTo() {},
+    matchMedia() { return { matches: false }; },
     addEventListener(type, callback) { callbacks.set(type, callback); },
     requestAnimationFrame(callback) {
       const id = nextFrame++;
@@ -56,8 +66,15 @@ function setup() {
       return id;
     },
   };
-  const context = { window, document, performance: { now: () => clock }, Math };
-  vm.runInNewContext(controller + '\nthis.testRevealSiteHeader = revealSiteHeader;', context);
+  const context = {
+    window, document, performance: { now: () => clock },
+    Element: ShortcutTarget,
+    motionPreference: { matches: false },
+    navigator: { maxTouchPoints: 0 },
+    accessibilityHelp: null,
+    accessibilityTools: null,
+  };
+  vm.runInNewContext(brandLinks + controller + keyboardShortcuts + '\nthis.testRevealSiteHeader = revealSiteHeader;', context);
   return {
     header, headerPin, document,
     revealHeader() { context.testRevealSiteHeader(); },
@@ -70,6 +87,13 @@ function setup() {
     },
     advance() { clock += 2100; },
     pin() { callbacks.get('pin:click')?.(); },
+    clickBrand() { callbacks.get('brand:click')({ preventDefault() {} }); },
+    pressShortcut(code) {
+      callbacks.get('document:keydown')({
+        code, target: new ShortcutTarget(), ctrlKey: true, altKey: true, shiftKey: true,
+        preventDefault() {},
+      });
+    },
   };
 }
 
@@ -78,8 +102,10 @@ test('hidden header becomes inert and is re-enabled on upward scroll', () => {
   view.scrollTo(500);
   assert.equal(view.hidden(), true);
   assert.equal(view.header.inert, true);
-  view.advance();
   view.scrollTo(450);
+  assert.equal(view.header.inert, true);
+  view.advance();
+  view.scrollTo(400);
   assert.equal(view.hidden(), false);
   assert.equal(view.header.inert, false);
 });
@@ -108,6 +134,17 @@ test('scroll-to-top restoration removes inert and synchronizes header state', ()
   view.advance();
   view.scrollTo(600);
   assert.equal(view.hidden(), true, 'next downward scroll must hide it again');
+});
+
+test('return to the start by brand or keyboard shortcut reveals the header without waiting', () => {
+  for (const returnToStart of [view => view.clickBrand(), view => view.pressShortcut('Digit0')]) {
+    const view = setup();
+    view.scrollTo(500);
+    assert.equal(view.header.inert, true);
+    returnToStart(view);
+    assert.equal(view.hidden(), false);
+    assert.equal(view.header.inert, false);
+  }
 });
 
 test('scroll-to-top controls use synchronized header restoration', () => {

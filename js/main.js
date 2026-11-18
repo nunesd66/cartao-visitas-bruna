@@ -23,6 +23,7 @@ document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
   brand.addEventListener('click', (event) => {
     event.preventDefault();
     window.scrollTo({ top: 0, behavior: motionPreference.matches ? 'auto' : 'smooth' });
+    revealSiteHeader();
   });
 });
 
@@ -276,6 +277,7 @@ document.addEventListener('keydown', (event) => {
     behavior: motionPreference.matches ? 'auto' : 'smooth',
     block: 'start',
   });
+  if (event.code === 'Digit0') revealSiteHeader();
 });
 
 const aboutVisual = document.querySelector('.about__visual');
