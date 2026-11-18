@@ -189,3 +189,22 @@ test('novo aceite após revogação registra uma nova visualização sem duplica
   assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 2);
   assert.equal(calls().filter(([kind, name]) => kind === 'consent' && name === 'default').length, 1);
 });
+
+
+test('erro de carregamento permite nova tentativa sem duplicar config e pageview', () => {
+  const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
+  assert.equal(analytics.setConsent(true), true);
+  assert.equal(scripts.length, 1);
+  scripts[0].onerror();
+  assert.equal(analytics.isEnabled(), false);
+  assert.equal(analytics.track('faq_open', { faq_id: 'faq_01' }), false);
+
+  assert.equal(analytics.setConsent(true), true);
+  assert.equal(scripts.length, 2, 'uma nova tentativa deve anexar script');
+  assert.equal(analytics.isEnabled(), true);
+  assert.equal(calls().filter(([kind]) => kind === 'config').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'consent' && name === 'default').length, 1);
+  assert.equal(analytics.setConsent(true), true);
+  assert.equal(scripts.length, 2, 'aceites repetidos não repetem download');
+});
