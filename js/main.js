@@ -82,8 +82,10 @@ if (siteHeader && casesRealAnchor) {
   let headerPinned = false;
 
   const applyVisibility = (visible) => {
+    if (!visible && siteHeader.contains(document.activeElement)) return;
     headerHidden = !visible;
     siteHeader.classList.toggle('is-hidden', headerHidden);
+    siteHeader.inert = headerHidden;
     lastTransitionAt = performance.now();
   };
 
