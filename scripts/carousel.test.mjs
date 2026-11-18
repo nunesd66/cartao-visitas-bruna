@@ -12,7 +12,7 @@ assert.notEqual(start, -1, 'carousel initializer exists in main.js');
 assert.notEqual(end, -1, 'carousel initializer has a closing boundary');
 const carouselInitializer = source.slice(start, end);
 
-function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false } = {}) {
+function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false, initiallyHidden = false } = {}) {
   const step = slideWidth + gap;
   const sidePadding = (viewportWidth - slideWidth) / 2;
   const frameQueue = new Map();
@@ -117,11 +117,12 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     addEventListener() {},
     matchMedia() { return { matches: false }; },
   };
+  const documentListeners = new Map();
   const document = {
-    hidden: false,
+    hidden: initiallyHidden,
     createElement(name) { return new Element(name); },
     querySelectorAll(selector) { return selector === '[data-carousel]' ? [carousel] : []; },
-    addEventListener() {},
+    addEventListener(type, callback) { documentListeners.set(type, callback); },
   };
   const motionPreference = {
     matches: reducedMotion,
@@ -161,7 +162,8 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   const clickRotation = () => rotationToggle.listeners.get('click')();
 
   return { slides, viewport, status, next, previous, pagination, rotationToggle,
-    focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames };
+    focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames,
+    setTabHidden(hidden) { document.hidden = hidden; documentListeners.get('visibilitychange')?.(); } };
 }
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
@@ -210,4 +212,16 @@ test('reduced motion keeps the rotation control hidden and automatic rotation of
 
   assert.equal(carousel.rotationToggle.hidden, true);
   assert.equal(carousel.isRotating(), false);
+});
+
+
+test('hidden tab never starts rotation until it becomes visible', () => {
+  const carousel = createCarouselHarness({ initiallyHidden: true });
+  assert.equal(carousel.isRotating(), false);
+  carousel.setTabHidden(false);
+  assert.equal(carousel.isRotating(), true);
+  carousel.setTabHidden(true);
+  assert.equal(carousel.isRotating(), false);
+  carousel.setTabHidden(false);
+  assert.equal(carousel.isRotating(), true);
 });
