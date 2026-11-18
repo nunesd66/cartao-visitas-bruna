@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
-import { execFileSync, spawnSync } from 'node:child_process';
+import { execFile, execFileSync } from 'node:child_process';
+import { promisify } from 'node:util';
 import { createServer } from 'node:http';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { once } from 'node:events';
@@ -54,26 +55,30 @@ async function fixture(t) {
   };
 }
 
-function run(root, sha, url) {
-  return spawnSync(process.execPath, ['scripts/verify-release.mjs', sha, url], {
-    cwd: root, encoding: 'utf8', timeout: 15000,
-  });
+const execFileAsync = promisify(execFile);
+async function run(root, sha, url) {
+  try {
+    const { stdout, stderr } = await execFileAsync(process.execPath, ['scripts/verify-release.mjs', sha, url], { cwd: root, encoding: 'utf8', timeout: 15000 });
+    return { status: 0, stdout, stderr };
+  } catch (error) {
+    return { status: error.code, stdout: error.stdout || '', stderr: error.stderr || '' };
+  }
 }
 
 test('verificação detecta diferenças de bytes e não confunde HTTP 200 com igualdade', async (t) => {
   const f = await fixture(t);
-  const success = run(f.root, f.sha, f.base);
+  const success = await run(f.root, f.sha, f.base);
   assert.equal(success.status, 0, success.stderr);
   assert.match(success.stdout, /6\/6 arquivos iguais/);
   f.responses.set('/site/js/main.js', 'different content');
-  const failure = run(f.root, f.sha, f.base);
+  const failure = await run(f.root, f.sha, f.base);
   assert.equal(failure.status, 1);
   assert.match(failure.stdout, /FAIL js\/main\.js.*conteúdo diverge/);
 });
 
 test('verificação rejeita base com credenciais ou query', async (t) => {
   const f = await fixture(t);
-  const invalid = run(f.root, f.sha, f.base + '?token=secret');
+  const invalid = await run(f.root, f.sha, f.base + '?token=secret');
   assert.notEqual(invalid.status, 0);
   assert.match(invalid.stderr, /sem parâmetros, fragmento ou credenciais/);
 });
