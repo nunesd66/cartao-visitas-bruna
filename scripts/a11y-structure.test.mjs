@@ -94,3 +94,20 @@ test('hierarquia de títulos mantém um H1 e não salta níveis', () => {
     assert.ok(headings[i] <= headings[i - 1] + 1, 'salto de nível entre títulos');
   }
 });
+
+test('links navegáveis usam somente protocolos e destinos esperados', () => {
+  const links = [...html.matchAll(/<a\b[^>]*>/gi)].map(([tag]) => attrs(tag));
+  assert.ok(links.length > 0);
+  for (const link of links) {
+    assert.ok(link.href, 'link sem href');
+    const href = link.href.trim();
+    if (href.startsWith('#')) {
+      assert.ok(href.length > 1, 'âncora vazia');
+      continue;
+    }
+    const url = new URL(href);
+    assert.ok(['https:', 'tel:'].includes(url.protocol), 'protocolo inseguro: ' + url.protocol);
+    if (url.protocol === 'https:') assert.ok(url.hostname, 'URL HTTPS sem domínio');
+    if (url.protocol === 'tel:') assert.match(url.pathname, /^\+\d{10,15}$/, 'número de telefone inválido');
+  }
+});
