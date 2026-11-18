@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { execFile } from 'node:child_process';
 import { once } from 'node:events';
+import { readFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import test from 'node:test';
 import { fileURLToPath } from 'node:url';
@@ -102,4 +103,14 @@ test('smoke reprova release com qualquer recurso obrigatório retornando 404', a
     assert.match(stdout, /Resultado: 9\/10/);
     return true;
   });
+});
+
+
+test('workflow de produção conserva execução manual, agendamento e permissões mínimas', () => {
+  const yaml = readFileSync(new URL('../.github/workflows/production-smoke.yml', import.meta.url), 'utf8');
+  assert.match(yaml, /on:\s*\n\s*workflow_dispatch:/);
+  assert.match(yaml, /schedule:\s*\n\s*- cron: '17 12 \* \* \*'/);
+  assert.match(yaml, /permissions:\s*\n\s*contents: read/);
+  assert.match(yaml, /set -o pipefail/);
+  assert.match(yaml, /node scripts\/smoke-public\.mjs/);
 });
