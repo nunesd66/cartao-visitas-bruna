@@ -34,6 +34,32 @@ Conferir o SHA do workflow de Pages: o HEAD de `master` pode não ser o deploy e
 - Em Chromium, duas abas da mesma origem sincronizaram o consentimento e a revogação. A recusa bloqueou eventos, removeu cookies sintéticos `_ga` na raiz e `_ga_TEST` no caminho do projeto, preservou um cookie de preferência e persistiu no retorno. A tag do GA4 foi interceptada; DebugView e Mensuração otimizada continuam pendentes.
 - A tentativa de medir o site publicado pela API PageSpeed em mobile retornou HTTP 429. O Lighthouse completo em produção e o leitor de tela real permanecem pendentes.
 
+## Medição em produção de 18/11/2026
+
+O [Lighthouse 13.6 no Chrome do GitHub Actions](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44328020671) auditou a URL pública por volta de 11h47, horário de Brasília. A comparação antes e depois confirmou 30 arquivos idênticos à revisão `575002861952a5e336adf3da527a5194e6a2a2e2`.
+
+| Perfil | Performance | Acessibilidade | Boas práticas | SEO | LCP | CLS | TBT |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mobile | 98 | 100 | 100 | 100 | 1,57 s | 0 | 157 ms |
+| Desktop | 100 | 100 | 100 | 100 | 0,54 s | 0,0055 | 42 ms |
+
+A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome, ambiente e parâmetros estão nos artefatos do run. O baseline histórico foi coletado em outro ambiente; diferenças entre as medições não isolam o efeito de uma mudança. INP de campo segue sem medição nesta rodada.
+
+### Acessibilidade no navegador
+
+- Em 320, 390, 768 e 1440 px, o axe não reportou violações automáticas nos estados de primeira visita e menu aberto. A árvore de acessibilidade do Chromium expôs o nome da região de privacidade, as duas escolhas e as setas de depoimentos.
+- A verificação de contraste por pixels nos casos inconclusivos do hero e dos 11 rótulos de depoimentos encontrou mínimos de 5,10:1 para a linha introdutória, 6,13:1 para o título, 5,41:1 para a descrição, 7,82:1 para a legenda da foto e 10,53:1 para os rótulos de origem.
+- O teste manual com leitor de tela permanece pendente. As inspeções de árvore e do axe registram a evidência disponível no navegador.
+
+### Revisão do aviso com a responsável
+
+| Ponto | Evidência ou decisão |
+| --- | --- |
+| Preferência | O navegador guarda a opção em `localStorage` e permite alterá-la pelo escudo de Privacidade. |
+| Analytics | O código aguarda Aceitar e limita eventos próprios a categorias e parâmetros definidos. Confirmar coleta real, retenção e Mensuração otimizada na propriedade GA4. |
+| Outros canais | O iframe de Maps depende de solicitação explícita. Os links externos vão ao respectivo serviço. O FAQ monta localmente a mensagem que é encaminhada ao WhatsApp. |
+| Informação ao visitante | Confirmar quem responde pelo tratamento, canal de contato, finalidades, fornecedores e retenção antes de aprovar ou atualizar o aviso. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
+
 ## Verificação local
 
 ```sh
