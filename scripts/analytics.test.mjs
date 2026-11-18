@@ -174,3 +174,18 @@ test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', (
   assert.equal(scripts.length, 1);
   assert.equal(calls().filter(([command]) => command === 'config').length, 1);
 });
+
+
+test('novo aceite após revogação registra uma nova visualização sem duplicar configuração', () => {
+  const { analytics, calls, scripts } = createAnalytics('G-TEST123456');
+  analytics.setConsent(true);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  analytics.setConsent(false);
+  assert.equal(analytics.track('faq_open', { faq_id: 'faq_01' }), false);
+  analytics.setConsent(true);
+  analytics.setConsent(true);
+  assert.equal(scripts.length, 1, 'a tag não deve ser anexada novamente');
+  assert.equal(calls().filter(([kind]) => kind === 'config').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 2);
+  assert.equal(calls().filter(([kind, name]) => kind === 'consent' && name === 'default').length, 1);
+});
