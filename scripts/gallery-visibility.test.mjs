@@ -150,7 +150,7 @@ test('próxima foto funciona sem iniciar rotação e movimento reduzido mantém 
   assert.equal(view.nextButton.hidden, false);
   view.nextButton.click();
   assert.equal(view.isRotating(), false);
-  assert.equal(view.pauseButton.getAttribute('aria-pressed'), 'true');
+  assert.equal(view.pauseButton.getAttribute('aria-label'), 'Retomar troca automática de fotos — Resultados de exemplo');
   view.setReducedMotion(false);
   assert.equal(view.pauseButton.hidden, false);
   assert.equal(view.isRotating(), false);
