@@ -660,6 +660,33 @@ body:has(.mobile-nav[open]) {
   background: var(--color-surface-soft);
 }
 
+.service-card__gallery-controls {
+  position: absolute;
+  z-index: 2;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.service-card__gallery-control {
+  min-height: 2.75rem;
+  padding: 0.5rem 0.75rem;
+  border: 0.0625rem solid var(--color-surface);
+  border-radius: var(--radius-sm);
+  color: var(--color-surface);
+  background: var(--color-primary);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+
+.service-card__gallery-control[hidden] {
+  display: none;
+}
+
 .service-card__gallery img {
   position: absolute;
   inset: 0;
