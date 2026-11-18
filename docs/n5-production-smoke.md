@@ -2,7 +2,11 @@
 
 Workflow: [Production smoke (manual)](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml).
 
-## Como executar
+## Execução automatizada
+
+O mesmo smoke será executado diariamente pelo GitHub Actions às **12:17 UTC (09:17 em Brasília)**. O agendamento é do tipo best-effort do GitHub: execuções podem atrasar ou ser desabilitadas pela plataforma em determinadas condições. Consulte o histórico de Actions para conferir se foi executado; falhas do job não fazem rollback e não enviam alertas externos por conta própria.
+
+## Como executar manualmente
 
 1. Após um deploy, abra **Actions → Production smoke (manual) → Run workflow**, escolhendo a branch `master`.
 2. Confira o resultado do job **Validate published assets**, o resumo e o artefato `production-smoke-result`.
