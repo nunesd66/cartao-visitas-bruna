@@ -89,5 +89,8 @@ jobs:
       - name: Test release byte equality verification
         run: node --test scripts/verify-release.test.mjs
 
+      - name: Check release workflow exit propagation
+        run: node --test scripts/release-workflow-safety.test.mjs
+
       - name: Test publication smoke checks
         run: node --test scripts/smoke-public.test.mjs
