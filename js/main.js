@@ -16,16 +16,17 @@ document.addEventListener('click', (event) => {
   analytics.track(eventName, parameters);
 }, true);
 
+const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+const reduceMotion = motionPreference.matches;
+
 document.querySelectorAll('.brand[href="#inicio"]').forEach((brand) => {
   brand.addEventListener('click', (event) => {
     event.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: motionPreference.matches ? 'auto' : 'smooth' });
   });
 });
 
 const faqAnswers = document.querySelectorAll('.faq details');
-const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-const reduceMotion = motionPreference.matches;
 
 document.querySelectorAll('.mobile-nav').forEach((menu) => {
   const summary = menu.querySelector('summary');
@@ -552,25 +553,26 @@ faqAnswers.forEach((details) => {
 });
 
 document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
-  const questionField = form.querySelector('textarea[name="question"]');
-  if (questionField) {
-    const resizeQuestionField = () => {
-      questionField.style.height = 'auto';
-      questionField.style.height = `${questionField.scrollHeight}px`;
-    };
+  const questionField = form.querySelector('textarea');
+  if (!questionField) return;
 
-    questionField.addEventListener('input', resizeQuestionField);
-    resizeQuestionField();
-  }
+  const resizeQuestionField = () => {
+    questionField.style.height = 'auto';
+    questionField.style.height = `${questionField.scrollHeight}px`;
+  };
+  questionField.addEventListener('input', resizeQuestionField);
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
-    const question = new FormData(form).get('question')?.toString().trim();
+    const question = questionField.value.trim();
     if (!question) return;
     const message = `Ol\u00e1! Vim pelo site e enviei uma d\u00favida pela se\u00e7\u00e3o de d\u00favidas frequentes: ${question}`;
     const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
   });
+
+  form.hidden = false;
+  resizeQuestionField();
 });
 const imageRotators = [];
 

@@ -47,15 +47,24 @@
   rejectButton.addEventListener('click', () => choose('rejected'));
   toggle.addEventListener('click', () => setPanelOpen(true, true));
 
-  const savedChoice = readChoice();
-  if (savedChoice === 'accepted') {
-    setPanelOpen(false);
-    analytics?.setConsent(true);
-  } else if (savedChoice === 'rejected') {
-    setPanelOpen(false);
-    analytics?.setConsent(false);
-  } else {
-    setPanelOpen(true);
-    analytics?.setConsent(false);
-  }
+  const restoreChoice = () => {
+    const choice = readChoice();
+    analytics?.setConsent(choice === 'accepted');
+    const controlToHide = choice ? panel : toggle;
+    setPanelOpen(!choice, controlToHide.contains(document.activeElement));
+  };
+
+  window.addEventListener('storage', (event) => {
+    if (event.key !== storageKey && event.key !== null) return;
+    try {
+      if (event.storageArea !== window.localStorage) return;
+    } catch {
+      return;
+    }
+
+    // Read the current choice in case another tab changed it again before this event arrived.
+    restoreChoice();
+  });
+
+  restoreChoice();
 })();

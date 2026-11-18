@@ -5,6 +5,8 @@
       const url = frame?.dataset.mapSrc;
       if (!url || !url.startsWith('https://maps.google.com/maps?')) return;
       frame.src = url;
+      frame.removeAttribute('tabindex');
+      if (document.activeElement === button) frame.focus();
       button.remove();
     });
   });

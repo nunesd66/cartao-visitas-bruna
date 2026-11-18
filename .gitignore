@@ -28,6 +28,7 @@
 !/js/privacy.js
 
 /scripts/*
+!/scripts/faq.test.mjs
 !/scripts/check-local-assets.mjs
 !/scripts/analytics.test.mjs
 !/scripts/privacy.test.mjs

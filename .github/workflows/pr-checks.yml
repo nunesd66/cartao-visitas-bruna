@@ -43,8 +43,8 @@ jobs:
       - name: Check map JavaScript syntax
         run: node --check js/map.js
 
-      - name: Test analytics consent and event filtering
-        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs scripts/map.test.mjs
+      - name: Test site interactions and analytics consent
+        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs scripts/map.test.mjs scripts/brand.test.mjs scripts/faq.test.mjs
 
       - name: Check SEO metadata consistency
         run: node --test scripts/seo.test.mjs

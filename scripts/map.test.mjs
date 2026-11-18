@@ -6,10 +6,15 @@ import vm from 'node:vm';
 const source = await readFile(new URL('../js/map.js', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
-function setup(mapUrl = 'https://maps.google.com/maps?q=Coromandel&output=embed') {
+function setup(mapUrl = 'https://maps.google.com/maps?q=Coromandel&output=embed', { keyboard = false } = {}) {
   let onClick;
   let removed = false;
-  const iframe = { dataset: { mapSrc: mapUrl } };
+  const frameAttributes = new Map([['tabindex', '-1']]);
+  const iframe = {
+    dataset: { mapSrc: mapUrl },
+    removeAttribute(name) { frameAttributes.delete(name); },
+    focus() { document.activeElement = iframe; },
+  };
   const button = {
     addEventListener(type, callback) {
       if (type === 'click') onClick = callback;
@@ -19,14 +24,17 @@ function setup(mapUrl = 'https://maps.google.com/maps?q=Coromandel&output=embed'
     },
     remove() { removed = true; },
   };
-  const document = { querySelectorAll: () => [button] };
+  const document = { querySelectorAll: () => [button], activeElement: keyboard ? button : null };
   vm.runInNewContext(source, { document });
-  return { iframe, click: () => onClick(), removed: () => removed };
+  return { iframe, frameAttributes, document, click: () => onClick(), removed: () => removed };
 }
 
 test('mapa nao faz solicitacao a terceiros antes da interacao', () => {
-  assert.match(html, /data-map-src="https:\/\/maps\.google\.com\/maps\?/);
-  assert.doesNotMatch(html, /<iframe[^>]+\ssrc="https:\/\/maps\.google\.com/s);
+  const mapFrame = html.match(/<iframe(?=[^>]+\bdata-map-src=)[^>]+>/)?.[0];
+  assert.ok(mapFrame, 'iframe do mapa presente');
+  assert.match(mapFrame, /data-map-src="https:\/\/maps\.google\.com\/maps\?/);
+  assert.match(mapFrame, /\stabindex="-1"/);
+  assert.doesNotMatch(mapFrame, /\ssrc=/);
   const map = setup();
   assert.equal(map.iframe.src, undefined);
   assert.equal(map.removed(), false);
@@ -37,6 +45,14 @@ test('mapa e carregado apenas apos clique explicito', () => {
   map.click();
   assert.equal(map.iframe.src, 'https://maps.google.com/maps?q=Coromandel&output=embed');
   assert.equal(map.removed(), true);
+  assert.equal(map.frameAttributes.has('tabindex'), false);
+  assert.equal(map.document.activeElement, null);
+});
+
+test('mapa recebe o foco quando o botão de carregar estava focado', () => {
+  const map = setup(undefined, { keyboard: true });
+  map.click();
+  assert.equal(map.document.activeElement, map.iframe);
 });
 
 test('mapa nao aceita URL arbitraria como origem', () => {
@@ -44,4 +60,5 @@ test('mapa nao aceita URL arbitraria como origem', () => {
   map.click();
   assert.equal(map.iframe.src, undefined);
   assert.equal(map.removed(), false);
+  assert.equal(map.frameAttributes.get('tabindex'), '-1');
 });
