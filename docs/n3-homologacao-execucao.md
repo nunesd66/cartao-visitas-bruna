@@ -51,10 +51,12 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 - A verificação de contraste por pixels nos casos inconclusivos do hero e dos 11 rótulos de depoimentos encontrou mínimos de 5,10:1 para a linha introdutória, 6,13:1 para o título, 5,41:1 para a descrição, 7,82:1 para a legenda da foto e 10,53:1 para os rótulos de origem.
 - O teste manual com leitor de tela permanece pendente. As inspeções de árvore e do axe registram a evidência disponível no navegador.
 
-### Search Console e autorização de imagens
+### Search Console, GA4 e autorização de imagens
 
 - Em 18/11/2026 às 14h51, o print da Inspeção de URL para a página inicial mostrou, na aba Teste em tempo real, que a página estava disponível para o Google e podia ser indexada.
-- O `sitemap.xml` abriu no navegador e listou a página inicial. O estado no Índice do Google e o processamento no relatório Sitemaps aguardam evidência do Search Console.
+- Em 18/11/2026, a aba Índice do Google confirmou que a página inicial está indexada. Um print separado mostrou a página inicial como resultado orgânico para `Bruna Eduarda Beauty`.
+- O `sitemap.xml` abriu no navegador e listou a página inicial. A inspeção indicou que nenhum sitemap de referência foi detectado para a URL. O processamento no relatório Sitemaps permanece sem evidência.
+- Em 18/11/2026, o print do fluxo Web do GA4 mostrou a Métrica otimizada ativada, incluindo visualizações de página, rolagens, cliques de saída, pesquisa no site e interações com formulário. A validação dos eventos recebidos pelo DebugView permanece pendente.
 - Daniel informou que a Bruna aprovou o uso de todas as fotos e imagens. A aprovação do aviso de privacidade e o canal de contato para esse assunto aguardam confirmação.
 
 ### Revisão do aviso com a responsável
@@ -100,7 +102,8 @@ Usar aba anônima sem dados anteriores; em Network ativar Preserve log. Filtrar 
 | Movimento reduzido | NÃO EXECUTADO | Configuração e observação |
 | Lighthouse mobile e desktop | NÃO EXECUTADO | Relatório, SHA, LCP, CLS |
 | WhatsApp, Instagram, telefone, Maps externos | NÃO EXECUTADO | Destino real de cada link |
-| Search Console, sitemap e inspeção de URL | NÃO EXECUTADO | Capturas da propriedade |
+| Search Console: indexação da página inicial | PASS | Inspeção de URL, aba Índice do Google |
+| Search Console: processamento do sitemap | NÃO EXECUTADO | Status no relatório Sitemaps |
 
 Registrar PASS, FAIL, BLOQUEADO ou NÃO EXECUTADO por cenário, com justificativa. A revogação não apaga dados já transmitidos. Clique no WhatsApp não confirma lead/agendamento. INP real depende de dados de campo: não inferir de um Lighthouse isolado.
 
