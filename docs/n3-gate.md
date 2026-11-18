@@ -1,18 +1,18 @@
 # Gate de aceite — Nível 3 (SEO, métricas e refinamentos)
 
-> Estado em 17/11/2026: **N2 consolidado, N3 em evolução**. Este documento define critérios verificáveis; não implica que a página esteja homologada. N4 (identidade e estratégia de conversão) não integra este gate.
+> Estado em 18/11/2026: **N2 consolidado, N3 com verificação técnica parcial**. Os resultados desta rodada estão no [roteiro de homologação](n3-homologacao-execucao.md).
 
 ## O que foi automatizado
 
 - [x] Checagem estática em PR de consistência entre canonical, Open Graph, sitemap, robots e JSON-LD.
 - [x] Checagem de existência local da imagem social e de metadados essenciais.
-- [ ] Confirmar execução verde do workflow deste PR.
+- [x] Confirmar CI da rodada auditada e executar a suíte no SHA publicado.
 
 ## Critérios externos para fechar N3
 
 ### Publicação e indexabilidade
-- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `35528da`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44275241213) concluiu com êxito.
-- [x] Validar HTTP 200 de HTML, CSS, JS, imagens, robots e sitemap no site público. A verificação de release confirmou 30/30 arquivos idênticos ao commit `35528da`.
+- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `e932c54`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44321742093) concluiu com êxito.
+- [x] Validar recursos públicos. O smoke passou 10/10 e a verificação de release confirmou 30/30 arquivos idênticos ao commit `e932c54`.
 - [ ] Confirmar propriedade do Search Console, sitemap enviado/processado e resultado da inspeção da URL. **Código indexável não equivale a indexação confirmada.**
 
 Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](https://nunesd66.github.io/robots.txt), que respondeu HTTP 404 na verificação do deploy `35528da`. Nesse estado, o Google considera o host sem regras de `robots.txt`. O [arquivo no caminho do projeto](https://nunesd66.github.io/cartao-visitas-bruna/robots.txt) respondeu HTTP 200 e permanece no smoke de artefatos. Envie o [sitemap do projeto](https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml) à propriedade correspondente no Search Console. Veja as referências do Google sobre [localização](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt) e [códigos HTTP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec?hl=pt-br).
