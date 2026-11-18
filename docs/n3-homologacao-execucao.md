@@ -14,6 +14,18 @@ Este roteiro complementa [o gate N3](n3-gate.md). Não comprova execução nem c
 
 Conferir o SHA do workflow de Pages: o HEAD de `master` pode não ser o deploy efetivo.
 
+## Verificação de 18/11/2026
+
+| Evidência | Resultado |
+| --- | --- |
+| Publicação | [GitHub Pages no SHA `e932c54f267a0c2cedec3921c1b3142c1e63814e`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44321742093) concluído com sucesso |
+| Arquivos públicos | 30/30 iguais aos da revisão esperada; smoke HTTP passou 10/10 |
+| Suíte da revisão | `npm test` passou 90/90; referências locais e comparação do CSS recompilado passaram |
+| Chromium em cópia local da revisão verificada | 320, 390, 768 e 1440 px: sem overflow horizontal; botão principal acionável; FAQ, carrossel e fotos navegáveis por teclado; transferência de foco em movimento reduzido nos depoimentos |
+| Network em Chromium com terceiros interceptados | Primeira visita e recusa sem requisições a terceiros; Maps solicitou o iframe somente após Enter. Aceite do GA4 solicitou uma tag simulada; revogação bloqueou evento e, no retorno, manteve a recusa |
+| Lighthouse em cópia local da mesma revisão | LCP mobile 3,83 s / desktop 0,77 s; CLS mobile 0 / desktop 0,005. A ferramenta sinalizou `NO_SCREENSHOTS`, então a categoria Performance ficou sem nota. A medição completa em produção permanece pendente |
+| Operação recorrente | Workflow diário configurado em #71. Na consulta desta rodada, sua primeira execução ainda não constava no GitHub Actions |
+
 ## Verificação local
 
 ```sh
