@@ -7,7 +7,12 @@ if (!ref) {
   process.exit(2);
 }
 
-const base = new URL(address);
+let base;
+try {
+  base = new URL(address);
+} catch {
+  throw new Error('Informe uma URL base válida');
+}
 const localHttp = base.protocol === 'http:' && ['localhost', '127.0.0.1'].includes(base.hostname);
 if (base.protocol !== 'https:' && !localHttp) {
   throw new Error('Informe uma URL HTTPS ou um servidor HTTP local');
