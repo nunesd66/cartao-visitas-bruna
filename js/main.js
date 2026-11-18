@@ -270,7 +270,7 @@ document.addEventListener('keydown', (event) => {
 
 const aboutVisual = document.querySelector('.about__visual');
 
-if (aboutVisual && !reduceMotion) {
+if (aboutVisual) {
   let parallaxFrame = 0;
 
   const updateAboutParallax = () => {
@@ -285,13 +285,26 @@ if (aboutVisual && !reduceMotion) {
     parallaxFrame = 0;
   };
 
+  const resetAboutParallax = () => {
+    if (parallaxFrame) window.cancelAnimationFrame(parallaxFrame);
+    parallaxFrame = 0;
+    for (const property of ['--about-image-shift', '--about-frame-shift', '--about-orbit-shift']) {
+      aboutVisual.style.removeProperty(property);
+    }
+  };
+
   const requestAboutParallaxUpdate = () => {
+    if (motionPreference.matches) {
+      resetAboutParallax();
+      return;
+    }
     if (parallaxFrame) return;
     parallaxFrame = window.requestAnimationFrame(updateAboutParallax);
   };
 
   window.addEventListener('scroll', requestAboutParallaxUpdate, { passive: true });
   window.addEventListener('resize', requestAboutParallaxUpdate);
+  motionPreference.addEventListener('change', requestAboutParallaxUpdate);
   requestAboutParallaxUpdate();
 }
 

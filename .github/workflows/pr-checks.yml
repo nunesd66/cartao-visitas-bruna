@@ -66,6 +66,9 @@ jobs:
       - name: Test hidden-tab service gallery behavior
         run: node --test scripts/gallery-visibility.test.mjs
 
+      - name: Test parallax motion preference
+        run: node --test scripts/parallax-motion.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
