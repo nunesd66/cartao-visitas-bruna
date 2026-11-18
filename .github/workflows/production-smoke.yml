@@ -36,7 +36,7 @@ jobs:
             echo '## Production smoke (manual)'
             echo ''
             echo '- URL: https://nunesd66.github.io/cartao-visitas-bruna/'
-            echo "- Repository revision checked out: `$GITHUB_SHA`"
+            echo "- Repository revision checked out: $GITHUB_SHA"
             echo '- Note: repository revision does not prove which commit GitHub Pages published.'
             echo '- This smoke checks HTTP status and media types, not asset byte equality or UX.'
             echo ''
