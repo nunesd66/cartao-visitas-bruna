@@ -394,6 +394,10 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   const updateRotationControl = () => {
     rotationToggle.setAttribute('data-paused', String(rotationPaused));
     rotationToggle.setAttribute('aria-label', rotationPaused ? 'Retomar rotação' : 'Parar rotação');
+    if (motionPreference.matches && document.activeElement === rotationToggle) {
+      const focusTarget = next.disabled ? previous : next;
+      if (!focusTarget.disabled) focusTarget.focus();
+    }
     rotationToggle.hidden = motionPreference.matches;
   };
 
