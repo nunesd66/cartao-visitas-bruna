@@ -39,7 +39,6 @@
   let tagConfigured = false;
   let tagLoaded = false;
   let pendingScript = null;
-  let pageViewSentForCurrentGrant = false;
 
   const readMeasurementId = () => {
     const meta = document.querySelector('meta[name="ga4-measurement-id"]');
@@ -93,7 +92,6 @@
     tagFailed = false;
     tagLoaded = false;
     tagConfigured = false;
-    pageViewSentForCurrentGrant = false;
     // A failed or aborted tag never processed its queued config/events.
     // Do not replay those commands if the visitor accepts again.
     if (Array.isArray(window.dataLayer)) window.dataLayer.length = 0;
@@ -132,8 +130,7 @@
         allow_google_signals: false,
         allow_ad_personalization_signals: false,
       });
-      window.gtag('event', 'page_view');
-      pageViewSentForCurrentGrant = true;
+      // The Analytics destination sends its initial page_view when the tag loads.
       tagConfigured = true;
     }
 
@@ -160,9 +157,8 @@
   const setConsent = (granted) => {
     if (granted !== true) {
       consentGranted = false;
-      pageViewSentForCurrentGrant = false;
       setGoogleCollectionDisabled(true);
-      // Revoke before download completion: cancel script and queued pageview.
+      // Revoke before download completion: cancel script and queued commands.
       if (!tagLoaded) discardPendingTag();
       if (tagRequested && typeof window.gtag === 'function') {
         window.gtag('consent', 'update', { ...deniedConsent });
@@ -176,10 +172,6 @@
     setGoogleCollectionDisabled(false);
     if (tagRequested) {
       window.gtag('consent', 'update', { ...grantedConsent });
-      if (!pageViewSentForCurrentGrant) {
-        window.gtag('event', 'page_view');
-        pageViewSentForCurrentGrant = true;
-      }
       return true;
     }
 

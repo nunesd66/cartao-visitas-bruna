@@ -88,6 +88,12 @@ Para corrigir a duplicidade, conferir a configuração da tag de destino e do ac
 - A cópia de trabalho dos ajustes do N3 passou 88 testes, checagem de referências e comparação byte a byte do CSS recompilado. O teste confere o destino do link contra o telefone publicado. Não houve coleta de dados sintéticos na propriedade de produção.
 - Seguem pendentes a configuração que gerou o `page_view` em Inicialização, o status Processado do sitemap, a confirmação da publicação mais recente e a rodada manual de acessibilidade e canais.
 
+## Correção da visualização duplicada
+
+O Tag Assistant mostrou dois hits à mesma URL e com o mesmo identificador de página. A tag Google Analytics usa Initialization – All Pages. O primeiro hit foi atribuído à Inicialização; o segundo veio da chamada manual do site. O [guia do Google sobre tags de destino](https://support.google.com/tagmanager/answer/17326492?hl=en) descreve o envio automático de visualizações.
+
+O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tratamento de revogação. A cópia local passou 88 testes e a checagem de referências. Nenhum dado sintético foi enviado ao fluxo real. O cenário de um único hit por abertura precisa ser verificado usando a tag carregada, com coleta interceptada ou fluxo de teste, após o deploy.
+
 ## Verificação local
 
 ```sh

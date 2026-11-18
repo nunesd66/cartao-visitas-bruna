@@ -109,8 +109,7 @@ test('exige consentimento, carrega uma tag e configura o consent mode uma vez', 
       allow_ad_personalization_signals: false,
     },
   ]);
-  assert.deepEqual(commands[4], ['event', 'page_view']);
-  assert.equal(commands.filter(([command, name]) => command === 'event' && name === 'page_view').length, 1);
+  assert.equal(commands.filter(([command, name]) => command === 'event' && name === 'page_view').length, 0);
   assert.doesNotMatch(JSON.stringify(commands), /visitor@example\.com/);
 
   analytics.setConsent(true);
@@ -177,23 +176,23 @@ test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', (
 });
 
 
-test('novo aceite após revogação registra uma nova visualização sem duplicar configuração', () => {
+test('novo aceite após revogação não duplica configuração nem envia pageview manual', () => {
   const { analytics, calls, scripts } = createAnalytics('G-TEST123456');
   analytics.setConsent(true);
   scripts[0].onload();
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   analytics.setConsent(false);
   assert.equal(analytics.track('faq_open', { faq_id: 'faq_01' }), false);
   analytics.setConsent(true);
   analytics.setConsent(true);
   assert.equal(scripts.length, 1, 'a tag não deve ser anexada novamente');
   assert.equal(calls().filter(([kind]) => kind === 'config').length, 1);
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 2);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   assert.equal(calls().filter(([kind, name]) => kind === 'consent' && name === 'default').length, 1);
 });
 
 
-test('erro de carregamento permite nova tentativa sem duplicar config e pageview', () => {
+test('erro de carregamento permite nova tentativa sem duplicar a configuração', () => {
   const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
   assert.equal(analytics.setConsent(true), true);
   assert.equal(scripts.length, 1);
@@ -205,7 +204,7 @@ test('erro de carregamento permite nova tentativa sem duplicar config e pageview
   assert.equal(scripts.length, 2, 'uma nova tentativa deve anexar script');
   assert.equal(analytics.isEnabled(), true);
   assert.equal(calls().filter(([kind]) => kind === 'config').length, 1);
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   assert.equal(calls().filter(([kind, name]) => kind === 'consent' && name === 'default').length, 1);
   assert.equal(analytics.setConsent(true), true);
   assert.equal(scripts.length, 2, 'aceites repetidos não repetem download');
@@ -215,7 +214,7 @@ test('erro de carregamento permite nova tentativa sem duplicar config e pageview
 test('revogação durante carregamento descarta comandos pendentes e cancela tag', () => {
   const { analytics, scripts, calls, isCollectionDisabled } = createAnalytics('G-TEST123456');
   assert.equal(analytics.setConsent(true), true);
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   assert.equal(typeof scripts[0].onload, 'function');
   analytics.setConsent(false);
   assert.equal(isCollectionDisabled(), true);
@@ -227,7 +226,7 @@ test('revogação durante carregamento descarta comandos pendentes e cancela tag
   assert.equal(analytics.setConsent(true), true);
   assert.equal(scripts.length, 2);
   assert.equal(calls().filter(([kind]) => kind === 'config').length, 1);
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
 });
 
 test('falha de carregamento descarta comandos antigos antes de tentar novamente', () => {
@@ -238,7 +237,7 @@ test('falha de carregamento descarta comandos antigos antes de tentar novamente'
   assert.deepEqual(calls(), []);
   assert.equal(analytics.setConsent(true), true);
   assert.equal(scripts.length, 2);
-  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 1);
+  assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   scripts[1].onload();
   analytics.setConsent(false);
   assert.equal(calls().at(-1)[1], 'update', 'após o carregamento deve negar consentimento');
