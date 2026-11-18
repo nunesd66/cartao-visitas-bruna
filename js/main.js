@@ -144,7 +144,6 @@ if (siteHeader && casesRealAnchor) {
   headerPin?.addEventListener('click', () => {
     headerPinned = !headerPinned;
     const label = headerPinned ? 'Desafixar cabeçalho' : 'Fixar cabeçalho';
-    headerPin.setAttribute('aria-pressed', String(headerPinned));
     headerPin.setAttribute('aria-label', label);
     headerPin.setAttribute('title', label);
     if (headerPinned) {
@@ -658,7 +657,6 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
     if (nextButton) nextButton.hidden = false;
     if (!pauseButton) return;
     pauseButton.hidden = motionPreference.matches;
-    pauseButton.setAttribute('aria-pressed', String(manuallyPaused));
     pauseButton.textContent = manuallyPaused ? 'Retomar' : 'Pausar';
     const label = gallery.getAttribute?.('aria-label') || 'galeria';
     pauseButton.setAttribute('aria-label',
