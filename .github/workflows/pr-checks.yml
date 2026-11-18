@@ -47,29 +47,8 @@ jobs:
       - name: Check map JavaScript syntax
         run: node --check js/map.js
 
-      - name: Test site interactions and analytics consent
-        run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs scripts/map.test.mjs scripts/brand.test.mjs scripts/faq.test.mjs
-
-      - name: Check SEO metadata consistency
-        run: node --test scripts/seo.test.mjs
-
-      - name: Test third-party privacy guards
-        run: node --test scripts/third-party-guards.test.mjs scripts/n3-invariants.test.mjs
-
-      - name: Validate contact journey and analytics metadata
-        run: node --test scripts/n4-contact-journey.test.mjs
-
-      - name: Test live reduced-motion interactions
-        run: node --test scripts/reduced-motion-live.test.mjs
-
-      - name: Test image dimensions and loading priorities
-        run: node --test scripts/image-loading.test.mjs
-
-      - name: Test hidden-tab service gallery behavior
-        run: node --test scripts/gallery-visibility.test.mjs
-
-      - name: Test parallax motion preference
-        run: node --test scripts/parallax-motion.test.mjs
+      - name: Run all Node regression tests
+        run: npm test
 
       - name: Report asset weights
         shell: bash
@@ -77,24 +56,3 @@ jobs:
 
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
-
-      - name: Test malformed local asset URLs
-        run: node --test scripts/malformed-asset-urls.test.mjs
-
-      - name: Test asset checker fixtures
-        run: node --test scripts/check-local-assets.test.mjs
-
-      - name: Test asset path casing and symlink integrity
-        run: node --test scripts/asset-path-integrity.test.mjs
-
-      - name: Test accessibility structure and safe links
-        run: node --test scripts/a11y-structure.test.mjs
-
-      - name: Test release byte equality verification
-        run: node --test scripts/verify-release.test.mjs
-
-      - name: Check release workflow exit propagation
-        run: node --test scripts/release-workflow-safety.test.mjs
-
-      - name: Test publication smoke checks
-        run: node --test scripts/smoke-public.test.mjs
