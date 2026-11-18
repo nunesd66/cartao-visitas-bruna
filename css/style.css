@@ -1947,14 +1947,6 @@ body:has(.mobile-nav[open]) {
 .privacy-control__actions button {
   flex: 1 1 6rem;
   padding: 0.55rem 1rem;
-}
-
-.privacy-control__accept {
-  color: #fff;
-  background: var(--color-primary);
-}
-
-.privacy-control__reject {
   color: var(--color-primary);
   background: var(--color-surface);
 }
