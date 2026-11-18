@@ -18,7 +18,10 @@ if (base.search || base.hash || base.username || base.password) {
 if (!base.pathname.endsWith('/')) base.pathname += '/';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
-const git = (...args) => execFileSync('git', args, { cwd: root });
+const git = (...args) => execFileSync('git', args, {
+  cwd: root,
+  maxBuffer: 100 * 1024 * 1024,
+});
 const commit = git('rev-parse', '--verify', '--end-of-options', ref + '^{commit}').toString().trim();
 const paths = git(
   'ls-tree', '-rz', '--name-only', commit, '--',
