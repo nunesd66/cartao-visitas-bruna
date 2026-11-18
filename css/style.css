@@ -2070,7 +2070,7 @@ body:has(.mobile-nav[open]) {
   }
   .faq__grid {
     grid-template-columns: minmax(15rem, 0.75fr) minmax(0, 1.25fr);
-    grid-template-areas: "intro list" "question question";
+    grid-template-areas: "intro list" "intro question";
     gap: clamp(3rem, 7vw, 7rem);
   }
   .faq__intro {
