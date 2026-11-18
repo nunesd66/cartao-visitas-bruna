@@ -12,6 +12,12 @@ class FakeElement {
     this.hidden = hidden;
     this.selectorMap = selectorMap;
     this.attributes = new Map();
+    const classes = new Set();
+    this.classList = {
+      add: (name) => classes.add(name),
+      remove: (name) => classes.delete(name),
+      contains: (name) => classes.has(name),
+    };
     this.listeners = new Map();
     this.focused = false;
   }
@@ -62,11 +68,13 @@ function createPrivacy(storage = new Map()) {
   });
   const toggle = new FakeElement({ hidden: true });
   const secondaryToggle = new FakeElement({ hidden: true });
+  const nextHeading = new FakeElement();
   const calls = [];
   const analytics = { setConsent: (granted) => calls.push(granted) };
   const document = {
     querySelector(selector) {
       if (selector === '[data-privacy-panel]') return panel;
+      if (selector === '#casos-reais') return nextHeading;
       return null;
     },
     querySelectorAll(selector) {
@@ -91,13 +99,14 @@ function createPrivacy(storage = new Map()) {
     storageListeners.get('storage')?.({ key, storageArea });
   }
 
-  return { panel, toggle, secondaryToggle, acceptButton, rejectButton, calls, storage, document, receiveStorageChange };
+  return { panel, toggle, secondaryToggle, nextHeading, acceptButton, rejectButton, calls, storage, document, receiveStorageChange };
 }
 
 test('primeira visita abre o aviso sem consentir e permite recusar', () => {
-  const { panel, toggle, calls, storage, rejectButton } = createPrivacy();
+  const { panel, toggle, calls, storage, rejectButton, nextHeading } = createPrivacy();
 
   assert.equal(panel.hidden, false);
+  assert.equal(panel.classList.contains('is-reopened'), false);
   assert.equal(toggle.hidden, true);
   assert.equal(toggle.getAttribute('aria-expanded'), 'true');
   assert.deepEqual(calls, [false]);
@@ -108,7 +117,7 @@ test('primeira visita abre o aviso sem consentir e permite recusar', () => {
   assert.equal(panel.hidden, true);
   assert.equal(toggle.hidden, false);
   assert.equal(toggle.getAttribute('aria-expanded'), 'false');
-  assert.equal(toggle.focused, true);
+  assert.equal(nextHeading.focused, true);
 });
 
 test('aceitar persiste a escolha e a restaura no carregamento seguinte', () => {
@@ -175,7 +184,7 @@ test('mudança em outra aba transfere o foco apenas se o controle em foco ficar 
   storage.set(key, 'accepted');
   tab.receiveStorageChange(key);
   assert.equal(tab.panel.hidden, true);
-  assert.equal(tab.toggle.focused, true);
+  assert.equal(tab.nextHeading.focused, true);
 
   tab.document.activeElement = tab.toggle;
   storage.clear();
@@ -202,6 +211,22 @@ test('limpar o armazenamento reabre o painel e revoga sem aceitar eventos de out
   assert.equal(tab.acceptButton.focused, false);
 });
 
+test('Escape fecha a reabertura e devolve o foco sem alterar a escolha salva', () => {
+  const key = 'bruna-analytics-consent-v1';
+  const storage = new Map([[key, 'rejected']]);
+  const { panel, secondaryToggle, calls } = createPrivacy(storage);
+
+  secondaryToggle.click();
+  assert.equal(panel.classList.contains('is-reopened'), true);
+  panel.listeners.get('keydown')({ key: 'Escape' });
+
+  assert.equal(panel.hidden, true);
+  assert.equal(panel.classList.contains('is-reopened'), false);
+  assert.equal(secondaryToggle.focused, true);
+  assert.equal(storage.get(key), 'rejected');
+  assert.deepEqual(calls, [false]);
+});
+
 test('markup acessivel, textos autorizados e layout fluido para telas estreitas', () => {
   assert.match(htmlSource, /role="region"[\s\S]*aria-labelledby="privacy-title"[\s\S]*aria-describedby="privacy-description"/);
   assert.match(htmlSource, /<h2 id="privacy-title">Privacidade e análise de visitas<\/h2>/);
@@ -213,7 +238,7 @@ test('markup acessivel, textos autorizados e layout fluido para telas estreitas'
   assert.match(htmlSource, /aria-controls="privacy-panel"[\s\S]*aria-expanded="false"[\s\S]*aria-label="Privacidade"[\s\S]*<\/button>/);
   assert.match(scssSource, /width: min\(28rem, calc\(100vw - 2rem\)\)/);
   assert.match(scssSource, /min-height: 2\.75rem/);
-  assert.match(scssSource, /@media \(min-width: 60rem\)[\s\S]*\.privacy-control__panel[\s\S]*bottom: 1rem/);
+  assert.match(scssSource, /@media \(min-width: 60rem\)[\s\S]*\.privacy-control__panel\.is-reopened[\s\S]*bottom: 1rem/);
   assert.match(htmlSource, /class="accessibility-tools__action privacy-control__toggle"/);
   assert.match(scssSource, /\.privacy-control__toggle--footer\s*\{\s*display: none;/);
   assert.match(scssSource, /\.accessibility-tools,[\s\S]*\.whatsapp-float\s*\{\s*display: none;/);

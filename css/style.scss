@@ -1901,19 +1901,24 @@ body:has(.mobile-nav[open]) {
 }
 
 .privacy-control__panel {
-  position: fixed;
-  z-index: 91;
-  right: 1rem;
-  bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
   width: min(28rem, calc(100vw - 2rem));
-  max-height: min(70vh, 28rem);
-  overflow-y: auto;
+  margin: 1rem auto;
   padding: 1rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
   color: var(--color-text);
   background: var(--color-surface);
   box-shadow: var(--shadow-soft);
+}
+
+.privacy-control__panel.is-reopened {
+  position: fixed;
+  z-index: 96;
+  right: 1rem;
+  bottom: calc(5.25rem + env(safe-area-inset-bottom, 0px));
+  max-height: min(70vh, 28rem);
+  margin: 0;
+  overflow-y: auto;
 }
 
 .privacy-control__panel h2 {
@@ -1989,7 +1994,7 @@ body:has(.mobile-nav[open]) {
 }
 
 @media (min-width: 60rem) {
-  .privacy-control__panel {
+  .privacy-control__panel.is-reopened {
     bottom: 1rem;
   }
 }
