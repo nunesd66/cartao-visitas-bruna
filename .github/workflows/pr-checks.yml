@@ -49,8 +49,8 @@ jobs:
       - name: Check SEO metadata consistency
         run: node --test scripts/seo.test.mjs
 
-      - name: Test accessibility structure and safe links
-        run: node --test scripts/a11y-structure.test.mjs
-
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
+
+      - name: Test accessibility structure and safe links
+        run: node --test scripts/a11y-structure.test.mjs
