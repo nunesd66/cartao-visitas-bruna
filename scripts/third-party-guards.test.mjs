@@ -31,11 +31,11 @@ test('iframe do Maps não dispara solicitação antes de interação explícita'
   for (const [frame] of frames) {
     assert.doesNotMatch(frame, /\ssrc\s*=\s*["']https?:\/\//i, 'iframe remoto imediato');
   }
-  assert.match(html, /data-map-src="https:\/\/maps\.google\.com\/maps\?/);
+  assert.match(html, /data-map-src="https:\/\/www\.google\.com\/maps\/embed\?pb=/);
   assert.match(html, /data-map-load/);
   assert.match(html, /referrerpolicy="no-referrer"/);
   assert.match(mapSource, /button\.addEventListener\('click'/);
-  assert.match(html, /href="https:\/\/www\.google\.com\/maps\/search/);
+  assert.match(html, /href="https:\/\/maps\.app\.goo\.gl\//);
 });
 
 test('meta de identificação GA4 é configuração, não autorização de coleta', () => {
