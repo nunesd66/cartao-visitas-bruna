@@ -1000,7 +1000,7 @@ body:has(.mobile-nav[open]) {
   transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
 }
 
-.testimonials__arrows {
+.testimonials__buttons {
   display: flex;
   justify-content: center;
   gap: 0.65rem;
@@ -1038,31 +1038,14 @@ body:has(.mobile-nav[open]) {
   clip-path: inset(50%);
 }
 
-.testimonials__rotation {
-  min-height: 2.75rem;
-  padding: 0.55rem 0.9rem;
-  border: 0.0625rem solid var(--color-border);
-  border-radius: 999px;
-  color: var(--color-primary);
-  background: var(--color-surface);
-  font: inherit;
-  font-size: 0.82rem;
-  cursor: pointer;
-  transition: color 180ms ease, background-color 180ms ease, border-color 180ms ease;
-}
-
-.testimonials__rotation:hover {
-  border-color: var(--color-primary);
-  color: #fff;
-  background: var(--color-primary);
-}
-
-.testimonials__rotation:focus-visible {
+.testimonials__control:focus-visible {
   outline: 0.18rem solid var(--color-primary);
   outline-offset: 0.18rem;
 }
 
-.testimonials__rotation[hidden] {
+.testimonials__rotation[hidden],
+.testimonials__rotation[data-paused="false"] .testimonials__icon-play,
+.testimonials__rotation[data-paused="true"] .testimonials__icon-pause {
   display: none;
 }
 
@@ -1114,9 +1097,12 @@ body:has(.mobile-nav[open]) {
   overscroll-behavior-inline: contain;
   scroll-padding-inline: 0.5rem;
   scroll-snap-type: x mandatory;
-  scrollbar-color: var(--color-primary) var(--color-surface-soft);
-  scrollbar-width: thin;
+  scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
+}
+
+.testimonials__viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .testimonials__track {

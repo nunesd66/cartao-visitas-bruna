@@ -234,18 +234,21 @@
             <p>Avaliações reais do Google e mensagens recebidas pelo Instagram.</p>
           </header>
 
-                    <div class="testimonials__carousel" data-carousel>
+          <div class="testimonials__carousel" data-carousel>
             <div class="testimonials__controls" data-carousel-controls hidden>
-              <div class="testimonials__arrows">
+              <div class="testimonials__buttons">
                 <button class="testimonials__control" type="button" data-carousel-prev aria-controls="testimonials-viewport" aria-label="Feedback anterior" disabled>
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <button class="testimonials__control testimonials__rotation" type="button" data-carousel-rotation aria-controls="testimonials-viewport" aria-label="Parar rotação" data-paused="false">
+                  <svg class="testimonials__icon-pause" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 5v14m6-14v14"/></svg>
+                  <svg class="testimonials__icon-play" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 5 11 7-11 7z"/></svg>
                 </button>
                 <button class="testimonials__control" type="button" data-carousel-next aria-controls="testimonials-viewport" aria-label="Próximo feedback">
                   <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m9 18 6-6-6-6"/></svg>
                 </button>
               </div>
               <span class="testimonials__status" data-carousel-status aria-live="polite" aria-atomic="true">1 de 11</span>
-              <button class="testimonials__rotation" type="button" data-carousel-rotation aria-controls="testimonials-viewport" aria-pressed="false">Parar rotação</button>
               <div class="testimonials__pagination" data-carousel-pagination role="group" aria-label="Navegação das avaliações"></div>
             </div>
             <section class="testimonials__viewport" id="testimonials-viewport" data-carousel-viewport tabindex="0" aria-roledescription="carrossel" aria-label="Avaliações e mensagens de clientes">

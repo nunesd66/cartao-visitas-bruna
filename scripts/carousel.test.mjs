@@ -12,7 +12,7 @@ assert.notEqual(start, -1, 'carousel initializer exists in main.js');
 assert.notEqual(end, -1, 'carousel initializer has a closing boundary');
 const carouselInitializer = source.slice(start, end);
 
-function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16 } = {}) {
+function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false } = {}) {
   const step = slideWidth + gap;
   const sidePadding = (viewportWidth - slideWidth) / 2;
   const frameQueue = new Map();
@@ -124,7 +124,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     addEventListener() {},
   };
   const motionPreference = {
-    matches: false,
+    matches: reducedMotion,
     addEventListener() {},
   };
 
@@ -133,7 +133,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     window,
     performance: { now: () => clock },
     motionPreference,
-    reduceMotion: false,
+    reduceMotion: reducedMotion,
     Number,
     Math,
   });
@@ -157,7 +157,11 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     return status.textContent;
   };
 
-  return { slides, viewport, status, next, previous, pagination, runAutoAdvance, flushFrames };
+  const focusRotation = () => carousel.listeners.get('focusin')({ target: rotationToggle });
+  const clickRotation = () => rotationToggle.listeners.get('click')();
+
+  return { slides, viewport, status, next, previous, pagination, rotationToggle,
+    focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames };
 }
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
@@ -182,4 +186,28 @@ test('direct navigation to slide 10 and adjacent arrows preserve the sequence', 
   carousel.previous.listeners.get('click')();
   carousel.flushFrames();
   assert.equal(carousel.status.textContent, '10 de 11');
+});
+
+test('rotation control applies its displayed action on the first activation', () => {
+  const carousel = createCarouselHarness();
+  const { rotationToggle } = carousel;
+
+  assert.equal(rotationToggle.getAttribute('aria-label'), 'Parar rotação');
+  carousel.focusRotation();
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), false);
+  assert.equal(rotationToggle.getAttribute('data-paused'), 'true');
+  assert.equal(rotationToggle.getAttribute('aria-label'), 'Retomar rotação');
+
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), true);
+  assert.equal(rotationToggle.getAttribute('data-paused'), 'false');
+  assert.equal(rotationToggle.getAttribute('aria-label'), 'Parar rotação');
+});
+
+test('reduced motion keeps the rotation control hidden and automatic rotation off', () => {
+  const carousel = createCarouselHarness({ reducedMotion: true });
+
+  assert.equal(carousel.rotationToggle.hidden, true);
+  assert.equal(carousel.isRotating(), false);
 });
