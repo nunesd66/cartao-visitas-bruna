@@ -50,3 +50,17 @@ test('componentes de privacidade e carrossel possuem controles nomeados', () => 
   assert.match(html, /data-carousel-rotation/);
   assert.match(html, /data-carousel-status/);
 });
+
+
+test('referências ARIA e associações de labels apontam para IDs existentes', () => {
+  const ids = new Set([...html.matchAll(/\bid=["']([^"']+)["']/gi)].map(([, id]) => id));
+  const references = ['aria-labelledby', 'aria-describedby', 'aria-controls', 'for'];
+  for (const attribute of references) {
+    const matcher = new RegExp('\\b' + attribute + '=["\\x27]([^"\\x27]+)["\\x27]', 'gi');
+    for (const [, rawValue] of html.matchAll(matcher)) {
+      for (const id of rawValue.trim().split(/\s+/)) {
+        assert.ok(ids.has(id), attribute + ' referencia ID inexistente: ' + id);
+      }
+    }
+  }
+});
