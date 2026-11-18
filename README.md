@@ -37,7 +37,7 @@ node --check js/main.js
 node --check js/analytics.js
 node --check js/privacy.js
 node --check js/map.js
-node --test scripts/*.test.mjs
+npm test
 node scripts/check-local-assets.mjs
 ```
 
