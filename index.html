@@ -415,9 +415,9 @@
               </p>
             </details>
           </div>
-          <form class="faq-question" data-whatsapp-form>
+          <form class="faq-question" data-whatsapp-form hidden>
             <label for="faq-question-input">Ainda tem uma dúvida específica?</label>
-            <textarea id="faq-question-input" name="question" rows="3" maxlength="500" placeholder="Escreva sua dúvida aqui..." required></textarea>
+            <textarea id="faq-question-input" rows="3" maxlength="500" placeholder="Escreva sua dúvida aqui..." required></textarea>
             <button class="button button--small" type="submit">Enviar dúvida pelo WhatsApp</button>
           </form>
         </div>
@@ -462,6 +462,7 @@
               data-map-src="https://maps.google.com/maps?q=Avenida%20Israel%20Pinheiro%2C%2082%2C%20sala%2001%2C%20Centro%2C%20Coromandel%2C%20MG&amp;output=embed"
               referrerpolicy="no-referrer"
               loading="lazy"
+              tabindex="-1"
               allowfullscreen
             ></iframe>
             <button type="button" class="button button--small map-embed__load" data-map-load>Carregar mapa interativo do Google</button>

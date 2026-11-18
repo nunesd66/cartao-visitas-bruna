@@ -32,6 +32,10 @@ class FakeElement {
     return this.selectorMap[selector] || null;
   }
 
+  contains(element) {
+    return element === this || Object.values(this.selectorMap).includes(element);
+  }
+
   focus() {
     this.focused = true;
   }
@@ -67,8 +71,20 @@ function createPrivacy(storage = new Map()) {
     setItem(key, value) { storage.set(key, value); },
   };
 
-  vm.runInNewContext(privacySource, { window: { localStorage, BrunaAnalytics: analytics }, document });
-  return { panel, toggle, acceptButton, rejectButton, calls, storage };
+  const storageListeners = new Map();
+  const window = {
+    localStorage,
+    BrunaAnalytics: analytics,
+    addEventListener(type, listener) { storageListeners.set(type, listener); },
+  };
+
+  vm.runInNewContext(privacySource, { window, document });
+
+  function receiveStorageChange(key, storageArea = localStorage) {
+    storageListeners.get('storage')?.({ key, storageArea });
+  }
+
+  return { panel, toggle, acceptButton, rejectButton, calls, storage, document, receiveStorageChange };
 }
 
 test('primeira visita abre o aviso sem consentir e permite recusar', () => {
@@ -119,6 +135,62 @@ test('recusa persistida nao habilita analytics e controle permanente sincroniza 
   visit.acceptButton.click();
   assert.equal(storage.get('bruna-analytics-consent-v1'), 'accepted');
   assert.deepEqual(visit.calls, [false, true]);
+});
+
+test('revogar e voltar a aceitar em outra aba atualiza o consentimento sem mover o foco externo', () => {
+  const key = 'bruna-analytics-consent-v1';
+  const storage = new Map([[key, 'accepted']]);
+  const activeTab = createPrivacy(storage);
+  const otherTab = createPrivacy(storage);
+  activeTab.document.activeElement = new FakeElement();
+
+  otherTab.rejectButton.click();
+  activeTab.receiveStorageChange(key);
+  assert.deepEqual(activeTab.calls, [true, false]);
+  assert.equal(activeTab.panel.hidden, true);
+  assert.equal(activeTab.toggle.hidden, false);
+  assert.equal(activeTab.toggle.focused, false);
+
+  otherTab.acceptButton.click();
+  activeTab.receiveStorageChange(key);
+  assert.deepEqual(activeTab.calls, [true, false, true]);
+  assert.equal(activeTab.acceptButton.focused, false);
+});
+
+test('mudança em outra aba transfere o foco apenas se o controle em foco ficar oculto', () => {
+  const key = 'bruna-analytics-consent-v1';
+  const storage = new Map();
+  const tab = createPrivacy(storage);
+  tab.document.activeElement = tab.rejectButton;
+
+  storage.set(key, 'accepted');
+  tab.receiveStorageChange(key);
+  assert.equal(tab.panel.hidden, true);
+  assert.equal(tab.toggle.focused, true);
+
+  tab.document.activeElement = tab.toggle;
+  storage.clear();
+  tab.receiveStorageChange(null);
+  assert.equal(tab.toggle.hidden, true);
+  assert.equal(tab.acceptButton.focused, true);
+});
+
+test('limpar o armazenamento reabre o painel e revoga sem aceitar eventos de outras chaves ou áreas', () => {
+  const key = 'bruna-analytics-consent-v1';
+  const storage = new Map([[key, 'accepted']]);
+  const tab = createPrivacy(storage);
+
+  storage.clear();
+  tab.receiveStorageChange('unrelated-key');
+  tab.receiveStorageChange(key, {});
+  assert.deepEqual(tab.calls, [true]);
+
+  tab.receiveStorageChange(null);
+  assert.deepEqual(tab.calls, [true, false]);
+  assert.equal(tab.panel.hidden, false);
+  assert.equal(tab.toggle.hidden, true);
+  assert.equal(tab.toggle.getAttribute('aria-expanded'), 'true');
+  assert.equal(tab.acceptButton.focused, false);
 });
 
 test('markup acessivel, textos autorizados e layout fluido para telas estreitas', () => {

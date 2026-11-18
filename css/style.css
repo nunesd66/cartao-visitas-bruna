@@ -2149,7 +2149,7 @@ body:has(.mobile-nav[open]) {
     grid-area: auto;
   }
 }
-.faq-question {
+.faq-question:not([hidden]) {
   display: grid;
   grid-area: question;
   gap: 0.65rem;
