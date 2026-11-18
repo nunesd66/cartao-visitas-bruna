@@ -360,8 +360,8 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const updateRotationControl = () => {
-    rotationToggle.setAttribute('aria-pressed', String(rotationPaused));
-    rotationToggle.textContent = rotationPaused ? 'Retomar rotação' : 'Parar rotação';
+    rotationToggle.setAttribute('data-paused', String(rotationPaused));
+    rotationToggle.setAttribute('aria-label', rotationPaused ? 'Retomar rotação' : 'Parar rotação');
     rotationToggle.hidden = motionPreference.matches;
   };
 
@@ -459,7 +459,10 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   previous.addEventListener('click', () => move(-1));
   next.addEventListener('click', () => move(1));
-  carousel.addEventListener('focusin', pauseRotationForInteraction);
+  carousel.addEventListener('focusin', (event) => {
+    // Let the rotation button apply the action shown before the user activated it.
+    if (event.target !== rotationToggle) pauseRotationForInteraction();
+  });
   viewport.addEventListener('pointerdown', () => {
     cancelCarouselAnimation();
     pauseRotationForInteraction();
