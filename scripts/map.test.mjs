@@ -6,7 +6,9 @@ import vm from 'node:vm';
 const source = await readFile(new URL('../js/map.js', import.meta.url), 'utf8');
 const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
 
-function setup(mapUrl = 'https://maps.google.com/maps?q=Coromandel&output=embed', { keyboard = false } = {}) {
+const embedUrl = 'https://www.google.com/maps/embed?pb=fixture';
+
+function setup(mapUrl = embedUrl, { keyboard = false } = {}) {
   let onClick;
   let removed = false;
   const frameAttributes = new Map([['tabindex', '-1']]);
@@ -36,14 +38,14 @@ test('sem o script, o botão de carregar fica oculto e o link direto continua di
   assert.match(button, /\shidden\b/);
   const directLink = html.match(/<a(?=[^>]+data-analytics-channel="google_maps")[^>]+>/)?.[0];
   assert.ok(directLink, 'link direto para o mapa presente');
-  assert.match(directLink, /href="https:\/\/www\.google\.com\/maps\/search\//);
+  assert.match(directLink, /href="https:\/\/maps\.app\.goo\.gl\/Z7Ym1ER1uHMzhi3w8"/);
   assert.doesNotMatch(directLink, /\shidden\b/);
 });
 
 test('mapa nao faz solicitacao a terceiros antes da interacao', () => {
   const mapFrame = html.match(/<iframe(?=[^>]+\bdata-map-src=)[^>]+>/)?.[0];
   assert.ok(mapFrame, 'iframe do mapa presente');
-  assert.match(mapFrame, /data-map-src="https:\/\/maps\.google\.com\/maps\?/);
+  assert.match(mapFrame, /data-map-src="https:\/\/www\.google\.com\/maps\/embed\?pb=[^"]*0x40b9ff4785f35611[^"]*Bruna%20Eduarda%20Beauty/);
   assert.match(mapFrame, /\stabindex="-1"/);
   assert.doesNotMatch(mapFrame, /\ssrc=/);
   const map = setup();
@@ -55,7 +57,7 @@ test('mapa e carregado apenas apos clique explicito', () => {
   const map = setup();
   assert.equal(map.button.hidden, false);
   map.click();
-  assert.equal(map.iframe.src, 'https://maps.google.com/maps?q=Coromandel&output=embed');
+  assert.equal(map.iframe.src, embedUrl);
   assert.equal(map.removed(), true);
   assert.equal(map.frameAttributes.has('tabindex'), false);
   assert.equal(map.document.activeElement, null);
