@@ -71,6 +71,10 @@ jobs:
       - name: Test parallax motion preference
         run: node --test scripts/parallax-motion.test.mjs
 
+      - name: Report asset weights
+        shell: bash
+        run: node scripts/report-asset-sizes.mjs >> "$GITHUB_STEP_SUMMARY"
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
