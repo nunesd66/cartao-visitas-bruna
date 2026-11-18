@@ -87,6 +87,9 @@ jobs:
       - name: Test asset path casing and symlink integrity
         run: node --test scripts/asset-path-integrity.test.mjs
 
+      - name: Test header keyboard focus visibility
+        run: node --test scripts/header-visibility.test.mjs
+
       - name: Test accessibility structure and safe links
         run: node --test scripts/a11y-structure.test.mjs
 
