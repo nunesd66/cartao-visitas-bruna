@@ -13,7 +13,7 @@ const attributes = (tag) => Object.fromEntries(
 );
 
 const eventControls = [...html.matchAll(/<(a|button|summary)\b[^>]*\bdata-analytics-event=["'][^>]*>/gi)]
-  .map(([, tagName, tail]) => ({ tagName: tagName.toLowerCase(), attrs: attributes(tail) }));
+  .map(([tag, tagName]) => ({ tagName: tagName.toLowerCase(), attrs: attributes(tag) }));
 
 const locations = new Set([
   'header_desktop', 'mobile_menu', 'hero', 'service_card', 'final_cta',
