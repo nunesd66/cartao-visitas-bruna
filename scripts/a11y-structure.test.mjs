@@ -84,3 +84,13 @@ test('tokens de texto mantêm contraste WCAG AA sobre superfícies padrão', () 
     }
   }
 });
+
+test('hierarquia de títulos mantém um H1 e não salta níveis', () => {
+  const headings = [...html.matchAll(/<h([1-6])\b[^>]*>/gi)].map(([, level]) => Number(level));
+  assert.ok(headings.length >= 2, 'página sem hierarquia de títulos');
+  assert.equal(headings.filter((level) => level === 1).length, 1, 'esperado exatamente um H1');
+  assert.equal(headings[0], 1, 'H1 deve iniciar a hierarquia');
+  for (let i = 1; i < headings.length; i++) {
+    assert.ok(headings[i] <= headings[i - 1] + 1, 'salto de nível entre títulos');
+  }
+});
