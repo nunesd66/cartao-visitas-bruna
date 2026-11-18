@@ -46,5 +46,8 @@ jobs:
       - name: Test analytics consent and event filtering
         run: node --test scripts/analytics.test.mjs scripts/privacy.test.mjs scripts/carousel.test.mjs scripts/map.test.mjs
 
+      - name: Check SEO metadata consistency
+        run: node --test scripts/seo.test.mjs
+
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
