@@ -8,7 +8,7 @@ node scripts/smoke-public.mjs --published-sha "$PAGES_DEPLOY_SHA"
 node scripts/smoke-public.mjs http://localhost:8080/
 ```
 
-Obtenha o SHA completo nos detalhes do deploy bem-sucedido do GitHub Pages e use esse valor em `PAGES_DEPLOY_SHA`. O relatório registra o SHA informado, o horário UTC e o ambiente. A opção associa a evidência HTTP ao SHA confirmado pelo operador. Para uma consulta de disponibilidade sem essa confirmação, execute o comando sem `--published-sha`. Redirecionamentos nos recursos testados são tratados como falhas.
+Obtenha o SHA completo nos detalhes do deploy bem-sucedido do GitHub Pages e use esse valor em `PAGES_DEPLOY_SHA`. O relatório registra o SHA informado, o horário UTC e o ambiente. A opção associa a evidência HTTP ao SHA confirmado pelo operador. Para uma consulta de disponibilidade sem essa confirmação, execute o comando sem `--published-sha`. Use uma URL base sem credenciais, parâmetros ou fragmento. O smoke exige HTTP 200 e o tipo de mídia esperado. Redirecionamentos são registrados com o status recebido e o destino não é seguido.
 
 ## Microtarefas e subtarefas
 - [x] Verificar HTML, CSS, JS, robots, sitemap, imagem social e foto de apresentação por HTTP 200 e Content-Type esperado.
