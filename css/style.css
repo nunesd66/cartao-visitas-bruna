@@ -1047,6 +1047,11 @@ body:has(.mobile-nav[open]) {
   gap: 0.1rem;
 }
 
+@media (max-width: 26rem) {
+  .testimonials__pagination {
+    display: none;
+  }
+}
 .testimonials__dot {
   display: grid;
   width: 2rem;
