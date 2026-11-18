@@ -83,6 +83,12 @@ a {
   box-shadow: 0 0 0 0.36rem var(--color-secondary);
 }
 
+.button:focus-visible,
+.testimonial__action:focus-visible {
+  outline-color: currentColor;
+  outline-offset: -0.35rem;
+}
+
 h1,
 h2,
 h3,
@@ -2115,11 +2121,6 @@ body:has(.mobile-nav[open]) {
     padding-inline: max(0px, calc((100cqi - min(60cqi, 42rem)) / 2));
   }
 
-  .about__grid {
-    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-    gap: clamp(3rem, 7vw, 6rem);
-  }
-
   .certifications__grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
@@ -2301,6 +2302,11 @@ body:has(.mobile-nav[open]) {
     max-height: none;
     border-radius: 12rem 12rem var(--radius-lg) var(--radius-lg);
     object-position: center 32%;
+  }
+
+  .about__grid {
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: clamp(3rem, 7vw, 6rem);
   }
 
   .section-heading--split {
