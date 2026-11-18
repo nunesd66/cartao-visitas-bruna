@@ -32,6 +32,7 @@
 !/scripts/analytics.test.mjs
 !/scripts/privacy.test.mjs
 !/scripts/carousel.test.mjs
+!/scripts/verify-release.mjs
 
 /images/*
 !/images/bruna-profissional.jpg
