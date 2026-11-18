@@ -36,6 +36,7 @@
   let consentGranted = false;
   let tagRequested = false;
   let tagFailed = false;
+  let tagConfigured = false;
   let pageViewSentForCurrentGrant = false;
 
   const readMeasurementId = () => {
@@ -94,33 +95,39 @@
     if (!consentGranted || !measurementId || tagRequested) return false;
 
     queueGoogleTag();
-    const pageLocation = `${window.location.origin}${window.location.pathname}`;
-    let pageReferrer = '';
-    try {
-      if (document.referrer) pageReferrer = new URL(document.referrer).origin;
-    } catch {
-      pageReferrer = '';
-    }
+    if (!tagConfigured) {
+      const pageLocation = `${window.location.origin}${window.location.pathname}`;
+      let pageReferrer = '';
+      try {
+        if (document.referrer) pageReferrer = new URL(document.referrer).origin;
+      } catch {
+        pageReferrer = '';
+      }
 
-    window.gtag('consent', 'default', { ...deniedConsent });
-    window.gtag('consent', 'update', { ...grantedConsent });
-    window.gtag('js', new Date());
-    window.gtag('config', measurementId, {
-      send_page_view: false,
-      page_location: pageLocation,
-      ...(pageReferrer ? { page_referrer: pageReferrer } : {}),
-      allow_google_signals: false,
-      allow_ad_personalization_signals: false,
-    });
-    window.gtag('event', 'page_view');
-    pageViewSentForCurrentGrant = true;
+      window.gtag('consent', 'default', { ...deniedConsent });
+      window.gtag('consent', 'update', { ...grantedConsent });
+      window.gtag('js', new Date());
+      window.gtag('config', measurementId, {
+        send_page_view: false,
+        page_location: pageLocation,
+        ...(pageReferrer ? { page_referrer: pageReferrer } : {}),
+        allow_google_signals: false,
+        allow_ad_personalization_signals: false,
+      });
+      window.gtag('event', 'page_view');
+      pageViewSentForCurrentGrant = true;
+      tagConfigured = true;
+    }
 
     const script = document.createElement('script');
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(measurementId)}`;
     script.onerror = () => {
       tagFailed = true;
+      tagRequested = false;
+      script.remove?.();
     };
+    tagFailed = false;
     tagRequested = true;
     document.head.appendChild(script);
     return true;
