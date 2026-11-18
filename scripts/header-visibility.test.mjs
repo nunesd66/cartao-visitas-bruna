@@ -55,9 +55,11 @@ function setup() {
       return id;
     },
   };
-  vm.runInNewContext(controller, { window, document, performance: { now: () => clock }, Math });
+  const context = { window, document, performance: { now: () => clock }, Math };
+  vm.runInNewContext(controller + '\nthis.testRevealSiteHeader = revealSiteHeader;', context);
   return {
     header, headerPin, document,
+    revealHeader() { context.testRevealSiteHeader(); },
     hidden: () => classes.has('is-hidden'),
     scrollTo(y) {
       window.scrollY = y;
@@ -91,4 +93,23 @@ test('header retains keyboard focus instead of disappearing during downward scro
   view.scrollTo(520);
   assert.equal(view.hidden(), true);
   assert.equal(view.header.inert, true);
+});
+
+
+test('scroll-to-top restoration removes inert and synchronizes header state', () => {
+  const view = setup();
+  view.scrollTo(500);
+  assert.equal(view.hidden(), true);
+  assert.equal(view.header.inert, true);
+  view.revealHeader();
+  assert.equal(view.hidden(), false);
+  assert.equal(view.header.inert, false);
+  view.advance();
+  view.scrollTo(600);
+  assert.equal(view.hidden(), true, 'next downward scroll must hide it again');
+});
+
+test('scroll-to-top controls use synchronized header restoration', () => {
+  assert.match(source, /if \(destination === 0\) revealSiteHeader\(\);/);
+  assert.doesNotMatch(source, /if \(destination === 0\) siteHeader\?\.classList\.remove/);
 });
