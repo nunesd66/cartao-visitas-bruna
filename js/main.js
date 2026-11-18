@@ -382,6 +382,9 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
   const updateControls = () => {
     const activeIndex = getActiveIndex();
+    const activeElement = document.activeElement;
+    const focusedArrow = activeElement === previous || activeElement === next ? activeElement : null;
+    const wasEnabled = focusedArrow && !focusedArrow.disabled;
 
     previous.disabled = activeIndex === 0;
     next.disabled = activeIndex === slides.length - 1;
@@ -389,6 +392,11 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     dots.forEach((dot, index) => {
       dot.setAttribute('aria-current', String(index === activeIndex));
     });
+
+    if (wasEnabled && focusedArrow.disabled) {
+      const alternativeArrow = focusedArrow === next ? previous : next;
+      if (!alternativeArrow.disabled) alternativeArrow.focus({ preventScroll: true });
+    }
   };
 
   const updateRotationControl = () => {
@@ -681,12 +689,13 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   const updateGalleryControls = () => {
     if (nextButton) nextButton.hidden = false;
     if (!pauseButton) return;
-    pauseButton.hidden = motionPreference.matches;
+    const reducedMotion = motionPreference.matches;
+    if (reducedMotion && document.activeElement === pauseButton) nextButton?.focus();
+    pauseButton.hidden = reducedMotion;
     pauseButton.textContent = manuallyPaused ? 'Retomar' : 'Pausar';
     const label = gallery.getAttribute?.('aria-label') || 'galeria';
     pauseButton.setAttribute('aria-label',
       (manuallyPaused ? 'Retomar' : 'Pausar') + ' troca automática de fotos — ' + label);
-    if (pauseButton.hidden && document.activeElement === pauseButton) nextButton?.focus();
   };
 
   nextButton?.addEventListener('click', () => {

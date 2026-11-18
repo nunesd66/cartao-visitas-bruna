@@ -25,7 +25,12 @@ function setup({ hidden = false, reducedMotion = false, observeViewport = false 
     removeAttribute() {},
   }));
   const createButton = () => ({
-    hidden: true,
+    isHidden: true,
+    get hidden() { return this.isHidden; },
+    set hidden(value) {
+      this.isHidden = value;
+      if (value && document.activeElement === this) document.activeElement = null;
+    },
     textContent: '',
     attrs: new Map(),
     listeners: new Map(),
@@ -65,6 +70,7 @@ function setup({ hidden = false, reducedMotion = false, observeViewport = false 
   }
   vm.runInNewContext(gallerySource, { document, motionPreference, window });
   return {
+    activeElement: () => document.activeElement,
     isRotating: () => intervals.size > 0,
     setHidden(next) { document.hidden = next; handlers.get('visibilitychange')?.(); },
     setReducedMotion(next) { motionPreference.matches = next; motionHandlers.get('change')?.({ matches: next }); },
@@ -155,6 +161,17 @@ test('próxima foto funciona sem iniciar rotação e movimento reduzido mantém 
   assert.equal(view.pauseButton.hidden, false);
   assert.equal(view.isRotating(), false);
   assert.equal(view.pauseButton.textContent, 'Retomar');
+});
+
+test('ativar movimento reduzido transfere o foco antes de ocultar o botão de pausa', () => {
+  const view = setup();
+  view.pauseButton.focus();
+  view.setReducedMotion(true);
+  assert.equal(view.pauseButton.hidden, true);
+  assert.equal(view.activeElement(), view.nextButton);
+  view.setReducedMotion(false);
+  assert.equal(view.pauseButton.hidden, false);
+  assert.equal(view.activeElement(), view.nextButton);
 });
 
 test('botão de galeria com rótulo de ação não declara estado toggle', () => {

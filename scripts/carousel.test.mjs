@@ -211,6 +211,36 @@ test('direct navigation to slide 10 and adjacent arrows preserve the sequence', 
   assert.equal(carousel.status.textContent, '10 de 11');
 });
 
+test('focus moves to the remaining arrow only when navigation disables the focused arrow', () => {
+  const carousel = createCarouselHarness({ reducedMotion: true });
+  const { next, previous, pagination } = carousel;
+
+  pagination.children[8].listeners.get('click')();
+  carousel.flushFrames();
+  next.focus();
+  next.listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.status.textContent, '10 de 11');
+  assert.equal(carousel.focusedElement(), next);
+
+  next.listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.status.textContent, '11 de 11');
+  assert.equal(carousel.focusedElement(), previous);
+
+  const secondDot = pagination.children[1];
+  secondDot.focus();
+  secondDot.listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.focusedElement(), secondDot);
+
+  previous.focus();
+  previous.listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.status.textContent, '1 de 11');
+  assert.equal(carousel.focusedElement(), next);
+});
+
 test('rotation control applies its displayed action on the first activation', () => {
   const carousel = createCarouselHarness();
   const { rotationToggle } = carousel;
