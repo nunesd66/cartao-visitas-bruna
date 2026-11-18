@@ -2,6 +2,8 @@
 
 Meta desta rodada: segunda-feira, 23 de novembro de 2026, no horário de Brasília. Cada nível é aceito com evidências da revisão e do ambiente correspondente.
 
+A ordem de execução é **N3 → N4 → N5**. As frentes visual e funcional podem trabalhar em paralelo dentro do nível ativo. Se uma aprovação ou acesso impedir fechar o nível, registre a dependência e avance as demais tarefas do mesmo nível.
+
 ## Ciclo de trabalho
 
 1. O orquestrador confere a branch padrão, os PRs, os critérios e o caminho crítico. Distribui capacidade entre os coordenadores visual e funcional.
