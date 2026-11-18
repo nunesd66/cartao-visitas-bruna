@@ -1230,20 +1230,9 @@ body:has(.mobile-nav[open]) {
 
 .review-invitation p {
   max-width: 42rem;
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   font-family: var(--font-serif);
   font-size: clamp(1.15rem, 2vw, 1.45rem);
-}
-
-.review-invitation__link {
-  color: var(--color-primary-dark);
-  text-decoration: none;
-  text-decoration-thickness: 0.08em;
-  text-underline-offset: 0.18em;
-}
-
-.review-invitation__link:hover {
-  text-decoration: underline;
 }
 
 .stars {

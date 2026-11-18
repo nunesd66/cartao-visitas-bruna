@@ -100,7 +100,7 @@ O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tr
 - Após o aceite em uma abertura, a aba Network mostrou `page_view` em duas tentativas com o mesmo ID de página, sequência e parâmetros do evento. A requisição para `www.google-analytics.com` foi bloqueada, e a tentativa alternativa para `www.google.com/g/collect` obteve HTTP 204. Isso sustenta um único evento lógico e um único envio com resposta de sucesso na abertura observada. A tentativa alternativa passou pelo bloqueio. Em novas reproduções, interceptar todos os destinos de coleta, inclusive o alternativo, ou usar um fluxo de testes.
 - O aviso publicado mostrou o link para falar com a Bruna pelo WhatsApp. A configuração de retenção exibiu 2 meses para eventos, 14 meses para dados do usuário e redefinição por nova atividade ativada. A consulta não alterou as configurações.
 - O relatório Sitemaps ainda mostrou falha, zero páginas e última leitura em 18/11, sem horário nem motivo específico. O XML público lista a página inicial indexada. A leitura posterior ao reenvio continua sem confirmação.
-- Daniel confirmou a aprovação do aviso publicado. Daniel também confirmou que os dois links dos depoimentos abriram o perfil correto no Instagram. Leitor de tela, discagem e navegação sem JavaScript seguem pendentes.
+- Daniel confirmou a aprovação do aviso publicado. Daniel também confirmou que os dois links dos depoimentos abriram o perfil correto no Instagram. Daniel confirmou em produção o arraste dos depoimentos e a abertura do discador pelo link de telefone. Leitor de tela e navegação sem JavaScript seguem pendentes.
 
 ## Verificação local
 
