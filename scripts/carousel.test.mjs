@@ -236,6 +236,19 @@ test('reduced motion keeps the rotation control hidden and automatic rotation of
 });
 
 
+test('manual navigation under reduced motion keeps autoplay paused when the preference is disabled', () => {
+  const carousel = createCarouselHarness({ reducedMotion: true });
+  carousel.pagination.children[1].listeners.get('click')();
+  carousel.flushFrames();
+  assert.equal(carousel.status.textContent, '2 de 11');
+
+  carousel.setReducedMotion(false);
+  assert.equal(carousel.isRotating(), false);
+  assert.equal(carousel.rotationToggle.getAttribute('aria-label'), 'Retomar rotação');
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), true);
+});
+
 test('hidden tab never starts rotation until it becomes visible', () => {
   const carousel = createCarouselHarness({ initiallyHidden: true });
   assert.equal(carousel.isRotating(), false);

@@ -467,6 +467,7 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
   };
 
   const resetRotation = () => {
+    if (motionPreference.matches) pausedBeforeReducedMotion = true;
     stopRotation();
     startRotation();
   };
