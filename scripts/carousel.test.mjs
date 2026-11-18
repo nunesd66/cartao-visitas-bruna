@@ -12,7 +12,7 @@ assert.notEqual(start, -1, 'carousel initializer exists in main.js');
 assert.notEqual(end, -1, 'carousel initializer has a closing boundary');
 const carouselInitializer = source.slice(start, end);
 
-function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false, initiallyHidden = false } = {}) {
+function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false, initiallyHidden = false, observeViewport = false } = {}) {
   const step = slideWidth + gap;
   const sidePadding = (viewportWidth - slideWidth) / 2;
   const frameQueue = new Map();
@@ -101,6 +101,8 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   carousel.querySelector = (selector) => descendants.get(selector) || null;
   carousel.querySelectorAll = (selector) => selector === '.testimonial-slide' ? slides : [];
 
+  let viewportObserver;
+  let observedCarousel;
   const window = {
     clearInterval(id) { intervals.delete(id); },
     setInterval(callback) {
@@ -130,6 +132,12 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     addEventListener(type, callback) { mediaListeners.set(type, callback); },
   };
 
+  if (observeViewport) {
+    window.IntersectionObserver = class {
+      constructor(callback) { viewportObserver = callback; }
+      observe(target) { observedCarousel = target; }
+    };
+  }
   vm.runInNewContext(carouselInitializer, {
     document,
     window,
@@ -165,7 +173,11 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   return { slides, viewport, status, next, previous, pagination, rotationToggle,
     focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames,
     setTabHidden(hidden) { document.hidden = hidden; documentListeners.get('visibilitychange')?.(); },
-    setReducedMotion(matches) { motionPreference.matches = matches; mediaListeners.get('change')?.({ matches }); } };
+    setReducedMotion(matches) { motionPreference.matches = matches; mediaListeners.get('change')?.({ matches }); },
+    setViewportVisible(visible) {
+      assert.equal(observedCarousel, carousel);
+      viewportObserver?.([{ isIntersecting: visible }]);
+    } };
 }
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
@@ -248,4 +260,36 @@ test('active rotation resumes after reduced motion is turned off', () => {
   assert.equal(carousel.isRotating(), false);
   carousel.setReducedMotion(false);
   assert.equal(carousel.isRotating(), true);
+});
+
+
+test('automatic testimonial rotation runs only while visible in viewport', () => {
+  const carousel = createCarouselHarness({ observeViewport: true });
+  assert.equal(carousel.isRotating(), false, 'before first observer notification');
+  carousel.setViewportVisible(true);
+  assert.equal(carousel.isRotating(), true);
+  carousel.setViewportVisible(false);
+  assert.equal(carousel.isRotating(), false);
+  carousel.setViewportVisible(true);
+  assert.equal(carousel.isRotating(), true);
+});
+
+test('visibility and reduced motion never restart a paused off-screen carousel', () => {
+  const carousel = createCarouselHarness({ observeViewport: true });
+  carousel.setViewportVisible(true);
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), false);
+  carousel.setViewportVisible(false);
+  carousel.setViewportVisible(true);
+  assert.equal(carousel.isRotating(), false);
+  carousel.setReducedMotion(true);
+  carousel.setReducedMotion(false);
+  assert.equal(carousel.isRotating(), false);
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), true);
+  carousel.setTabHidden(true);
+  assert.equal(carousel.isRotating(), false);
+  carousel.setViewportVisible(false);
+  carousel.setTabHidden(false);
+  assert.equal(carousel.isRotating(), false);
 });
