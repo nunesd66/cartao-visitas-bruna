@@ -40,7 +40,9 @@ async function fixture(t) {
   git('commit', '-qm', 'fixture');
   const sha = git('rev-parse', 'HEAD');
   const responses = new Map(expected);
+  const requests = [];
   const server = createServer((request, response) => {
+    requests.push(request.url);
     const body = responses.get(request.url);
     if (body === undefined) { response.writeHead(404); response.end(); return; }
     response.writeHead(200);
@@ -50,7 +52,7 @@ async function fixture(t) {
   await once(server, 'listening');
   t.after(() => new Promise(resolve => server.close(resolve)));
   return {
-    root, sha, responses,
+    root, sha, responses, requests,
     base: 'http://127.0.0.1:' + server.address().port + '/site/',
   };
 }
@@ -76,9 +78,24 @@ test('verificação detecta diferenças de bytes e não confunde HTTP 200 com ig
   assert.match(failure.stdout, /FAIL js\/main\.js.*conteúdo diverge/);
 });
 
-test('verificação rejeita base com credenciais ou query', async (t) => {
+test('verificação rejeita bases inseguras e malformadas antes de registrar ou fazer requisições', async (t) => {
   const f = await fixture(t);
-  const invalid = await run(f.root, f.sha, f.base + '?token=secret');
-  assert.notEqual(invalid.status, 0);
-  assert.match(invalid.stderr, /sem parâmetros, fragmento ou credenciais/);
+  const protectedBase = new URL(f.base);
+  protectedBase.username = 'usuario-ficticio';
+  protectedBase.password = 'senha-ficticia';
+  const validationError = /sem parâmetros, fragmento ou credenciais/;
+  const inputs = [
+    [f.base + '?token=token-ficticio', validationError],
+    [f.base + '#token-ficticio', validationError],
+    [protectedBase.href, validationError],
+    [protectedBase.href.replace(/:\d+\//, ':invalida/'), /URL base válida/],
+  ];
+
+  for (const [address, expectedError] of inputs) {
+    const invalid = await run(f.root, f.sha, address);
+    assert.equal(invalid.status, 1);
+    assert.doesNotMatch(invalid.stdout + invalid.stderr, /(?:usuario|senha|token)-fictici[oa]/);
+    assert.match(invalid.stderr, expectedError);
+  }
+  assert.equal(f.requests.length, 0);
 });
