@@ -619,7 +619,7 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
   };
 
   const start = () => {
-    if (timer !== null || motionPreference.matches) return;
+    if (timer !== null || motionPreference.matches || document.hidden) return;
     timer = window.setInterval(rotate, 3000);
   };
 
@@ -635,4 +635,8 @@ document.querySelectorAll('[data-image-rotator]').forEach((gallery) => {
 
 motionPreference.addEventListener('change', (event) => {
   imageRotators.forEach((rotator) => (event.matches ? rotator.stop() : rotator.start()));
+});
+
+document.addEventListener('visibilitychange', () => {
+  imageRotators.forEach((rotator) => (document.hidden ? rotator.stop() : rotator.start()));
 });
