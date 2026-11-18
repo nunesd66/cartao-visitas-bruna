@@ -609,7 +609,6 @@ body:has(.mobile-nav[open]) {
 
 .services__grid {
   display: grid;
-  grid-auto-rows: 1fr;
   grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
   scroll-margin-top: 5.5rem;
@@ -697,14 +696,9 @@ body:has(.mobile-nav[open]) {
   padding: 1.4rem;
 }
 
-.service-card__body h3 {
-  min-height: 3.2em;
-}
-
 .service-card__body p {
   margin-bottom: 0.4rem;
   color: var(--color-text-muted);
-  min-height: 6.6em;
   font-size: 0.93rem;
 }
 
@@ -2021,6 +2015,12 @@ body:has(.mobile-nav[open]) {
   .services__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+  .service-card__body h3 {
+    min-height: 3.2em;
+  }
+  .service-card__body p {
+    min-height: 6.6em;
+  }
   .testimonial-slide {
     flex-basis: min(60cqi, 42rem);
   }
@@ -2121,7 +2121,7 @@ body:has(.mobile-nav[open]) {
   min-height: 6rem;
   overflow-y: hidden;
   padding: 0.8rem 0.9rem;
-  border: 0.0625rem solid var(--color-border);
+  border: 0.0625rem solid var(--color-secondary);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
   color: var(--color-text);

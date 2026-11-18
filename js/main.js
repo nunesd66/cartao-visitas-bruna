@@ -52,6 +52,12 @@ document.querySelectorAll('.mobile-nav').forEach((menu) => {
       syncMenuState();
     }
   });
+  menu.addEventListener('focusout', (event) => {
+    if (menu.open && event.relatedTarget instanceof Node && !menu.contains(event.relatedTarget)) {
+      menu.open = false;
+      syncMenuState();
+    }
+  });
   menu.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || !menu.open) return;
     menu.open = false;
