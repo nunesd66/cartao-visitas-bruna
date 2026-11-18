@@ -2,6 +2,7 @@
   const storageKey = 'bruna-analytics-consent-v1';
   const panel = document.querySelector('[data-privacy-panel]');
   const toggles = [...document.querySelectorAll('[data-privacy-toggle]')];
+  const nextHeading = document.querySelector('#casos-reais');
   const menuToggle = document.querySelector('.accessibility-tools__toggle');
   const acceptButton = panel?.querySelector('[data-privacy-choice="accepted"]');
   const rejectButton = panel?.querySelector('[data-privacy-choice="rejected"]');
@@ -38,10 +39,14 @@
       toggle.setAttribute('aria-expanded', String(open));
     });
     if (open && moveFocus) acceptButton.focus();
-    if (!open && moveFocus) {
-      const focusTarget = [openingToggle, ...toggles, menuToggle]
-        .find((control) => control?.checkVisibility?.() ?? Boolean(control?.getClientRects().length));
-      focusTarget?.focus();
+    if (!open) {
+      panel.classList.remove('is-reopened');
+      if (moveFocus) {
+        const focusTarget = [openingToggle, nextHeading, ...toggles, menuToggle]
+          .find((control) => control?.checkVisibility?.() ?? Boolean(control?.getClientRects().length));
+        focusTarget?.focus();
+      }
+      openingToggle = undefined;
     }
   };
 
@@ -57,8 +62,13 @@
   toggles.forEach((toggle) => {
     toggle.addEventListener('click', () => {
       openingToggle = toggle;
+      panel.classList.add('is-reopened');
       setPanelOpen(true, true);
     });
+  });
+
+  panel.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && openingToggle) setPanelOpen(false, true);
   });
 
   const restoreChoice = () => {
