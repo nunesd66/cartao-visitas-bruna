@@ -1769,6 +1769,22 @@ body:has(.mobile-nav[open]) {
   box-shadow: 0 0.35rem 1rem rgba(0, 0, 0, 0.14);
 }
 
+@media (max-height: 47rem) {
+  .accessibility-tools:not(.is-footer-visible) .accessibility-tools__panel {
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+  }
+}
+@media (max-height: 26rem) {
+  .accessibility-tools:not(.is-footer-visible) .accessibility-tools__panel {
+    top: 50%;
+    right: calc(100% + 0.5rem);
+    bottom: auto;
+    flex-direction: row;
+    border-radius: 999px;
+    transform: translateY(-50%);
+  }
+}
 .accessibility-tools.is-footer-visible .accessibility-tools__panel {
   top: 50%;
   right: calc(100% + 0.5rem);
