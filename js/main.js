@@ -520,7 +520,13 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
 
     if (event.pointerType !== 'mouse' || event.button !== 0
         || viewport.scrollWidth <= viewport.clientWidth) return;
-    mouseDrag = { id: event.pointerId, startX: event.clientX, startLeft: viewport.scrollLeft, moved: false };
+    mouseDrag = {
+      id: event.pointerId,
+      startX: event.clientX,
+      startLeft: viewport.scrollLeft,
+      link: event.target.closest?.('a[href]'),
+      moved: false,
+    };
   });
 
   document.addEventListener('pointermove', (event) => {
@@ -535,18 +541,22 @@ document.querySelectorAll('[data-carousel]').forEach((carousel) => {
     viewport.scrollLeft = mouseDrag.startLeft - distance;
   });
 
-  const finishMouseDrag = (event) => {
+  const finishMouseDrag = (event, openLink = false) => {
     if (!mouseDrag || event.pointerId !== mouseDrag.id) return;
     const target = mouseDrag.moved ? getSlideTarget(getActiveIndex()) : null;
+    const link = mouseDrag.moved && openLink ? mouseDrag.link : null;
     suppressDragClick = mouseDrag.moved;
     mouseDrag = null;
     viewport.classList.remove('is-dragging');
     if (target !== null) animateTo(target);
+    // Pointer capture retargets the click after a drag to the viewport.
+    // Activate the original link once, only on a completed mouse release.
+    link?.click();
   };
 
-  document.addEventListener('pointerup', finishMouseDrag);
-  document.addEventListener('pointercancel', finishMouseDrag);
-  viewport.addEventListener('lostpointercapture', finishMouseDrag);
+  document.addEventListener('pointerup', (event) => finishMouseDrag(event, true));
+  document.addEventListener('pointercancel', (event) => finishMouseDrag(event));
+  viewport.addEventListener('lostpointercapture', (event) => finishMouseDrag(event));
   viewport.addEventListener('dragstart', (event) => {
     if (mouseDrag) event.preventDefault();
   });
