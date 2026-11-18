@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
 import vm from 'node:vm';
+import { readFileSync } from 'node:fs';
 
 const source = await readFile(new URL('../js/main.js', import.meta.url), 'utf8');
 
@@ -42,4 +43,18 @@ test('links da marca retornam ao topo respeitando a preferência atual de movime
     { top: 0, behavior: 'auto' },
     { top: 0, behavior: 'smooth' },
   ]);
+});
+
+
+test('todos os atalhos de navegação apontam para destinos reais e distintos', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const match = source.match(/const accessibilityShortcutTargets = \{([\s\S]*?)\};/);
+  assert.ok(match, 'mapa de atalhos não encontrado');
+  const entries = [...match[1].matchAll(/\b(Digit[0-5]):\s*'([^']+)'/g)];
+  assert.equal(entries.length, 6, 'atalhos 0 a 5 devem estar disponíveis');
+  assert.equal(new Set(entries.map(([, key]) => key)).size, 6);
+  assert.equal(new Set(entries.map(([, , id]) => id)).size, 6);
+  for (const [, key, id] of entries) {
+    assert.ok(html.includes('id="' + id + '"'), key + ' sem destino #' + id);
+  }
 });
