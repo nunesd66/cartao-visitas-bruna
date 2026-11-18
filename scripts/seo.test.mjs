@@ -48,3 +48,19 @@ test('metadados essenciais e imagem social permanecem disponiveis', () => {
   assert.ok(imagePath && existsSync(path.join(root, imagePath)), 'Social image missing locally');
   assert.ok(!/<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(html), 'Unexpected noindex');
 });
+
+
+test('dados estruturados mantêm contatos e imagem coerentes com o site', () => {
+  const ld = html.match(/<script\s+type="application\/ld\+json"\s*>([\s\S]*?)<\/script>/i)?.[1];
+  assert.ok(ld);
+  const schema = JSON.parse(ld);
+  const phones = [...html.matchAll(/href="tel:([^"]+)"/g)].map(([, number]) => number);
+  assert.ok(phones.length > 0, 'telefone de contato ausente');
+  assert.ok(phones.includes(schema.telephone), 'telefone JSON-LD diverge do contato');
+  assert.equal(schema.image, tagContent('property', 'og:image'));
+  assert.ok(schema.sameAs?.startsWith('https://www.instagram.com/'));
+  assert.ok(html.includes('href="' + schema.sameAs + '"'), 'Instagram JSON-LD sem link correspondente');
+  assert.equal(schema.address?.['@type'], 'PostalAddress');
+  assert.equal(schema.address?.addressCountry, 'BR');
+  assert.ok(schema.address?.streetAddress && schema.address?.addressLocality);
+});
