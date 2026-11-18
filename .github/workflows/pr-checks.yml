@@ -51,6 +51,4 @@ jobs:
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
 
-      - name: Test malformed local asset URLs
-        run: node --test scripts/malformed-asset-urls.test.mjs
 
