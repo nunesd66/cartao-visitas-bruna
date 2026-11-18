@@ -21,6 +21,7 @@ function setup() {
     attrs: new Map(),
     addEventListener(event, callback) { callbacks.set('pin:' + event, callback); },
     setAttribute(name, value) { this.attrs.set(name, value); },
+    getAttribute(name) { return this.attrs.get(name); },
   };
   const header = {
     offsetHeight: 72,
@@ -91,4 +92,18 @@ test('header retains keyboard focus instead of disappearing during downward scro
   view.scrollTo(520);
   assert.equal(view.hidden(), true);
   assert.equal(view.header.inert, true);
+});
+
+
+test('header pin changes action label without declaring toggle state', () => {
+  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const tag = html.match(/<button[^>]*data-header-pin[^>]*>/)?.[0];
+  assert.ok(tag);
+  assert.doesNotMatch(tag, /aria-pressed=/);
+  const view = setup();
+  view.pin();
+  assert.equal(view.headerPin.getAttribute('aria-label'), 'Desafixar cabeçalho');
+  assert.equal(view.headerPin.getAttribute('aria-pressed'), undefined);
+  view.pin();
+  assert.equal(view.headerPin.getAttribute('aria-label'), 'Fixar cabeçalho');
 });
