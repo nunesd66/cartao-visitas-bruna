@@ -90,3 +90,16 @@ test('smoke rejeita URL com dados de autenticação antes de registrar ou requis
   }
   assert.equal(requests.length, 0);
 });
+
+
+test('smoke reprova release com qualquer recurso obrigatório retornando 404', async (t) => {
+  const { base } = await fixture(t, new Map([
+    ['/site/images/primeira-foto.jpg', { status: 404 }],
+  ]));
+  await assert.rejects(runSmoke(base), ({ code, stdout }) => {
+    assert.equal(code, 1);
+    assert.match(stdout, /FAIL imagem social: 404/);
+    assert.match(stdout, /Resultado: 9\/10/);
+    return true;
+  });
+});
