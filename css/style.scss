@@ -1100,7 +1100,23 @@ body:has(.mobile-nav[open]) {
   padding-inline: max(0px, calc((100cqi - min(75cqi, 26rem)) / 2));
 }
 
-.testimonials__viewport.is-animating {
+@media (any-pointer: fine) {
+  .testimonials__viewport {
+    cursor: grab;
+    user-select: none;
+  }
+
+  .testimonials__viewport a {
+    cursor: inherit;
+  }
+
+  .testimonials__viewport.is-dragging {
+    cursor: grabbing;
+  }
+}
+
+.testimonials__viewport.is-animating,
+.testimonials__viewport.is-dragging {
   scroll-snap-type: none;
 }
 

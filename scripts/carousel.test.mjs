@@ -60,6 +60,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   }
 
   const viewport = new Element('viewport');
+  viewport.setPointerCapture = (id) => { viewport.capturedPointer = id; };
   viewport.id = 'testimonials-viewport';
   viewport.clientLeft = 0;
   viewport.clientWidth = viewportWidth;
@@ -175,7 +176,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
   const focusRotation = () => carousel.listeners.get('focusin')({ target: rotationToggle });
   const clickRotation = () => rotationToggle.listeners.get('click')();
 
-  return { slides, viewport, status, next, previous, pagination, rotationToggle,
+  return { slides, viewport, status, next, previous, pagination, rotationToggle, documentListeners,
     focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames,
     focusToggle() { rotationToggle.focus(); },
     focusedElement: () => document.activeElement,
@@ -186,6 +187,69 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
       viewportObserver?.([{ isIntersecting: visible }]);
     } };
 }
+
+test('arrastar com o mouse move nos dois sentidos e encaixa no depoimento mais próximo', () => {
+  const { viewport, documentListeners, isRotating, status, flushFrames } = createCarouselHarness();
+  const pointer = (type, clientX) => (viewport.listeners.get(type) ?? documentListeners.get(type))({
+    pointerId: 1, pointerType: 'mouse', button: 0, clientX, target: {},
+  });
+
+  pointer('pointerdown', 320);
+  assert.equal(viewport.capturedPointer, undefined);
+  assert.equal(isRotating(), false);
+  pointer('pointermove', 317);
+  assert.equal(viewport.scrollLeft, 0);
+  pointer('pointermove', 100);
+  assert.equal(viewport.capturedPointer, 1);
+  assert.equal(viewport.classList.contains('is-dragging'), true);
+  assert.equal(viewport.scrollLeft, 220);
+  pointer('pointerup', 100);
+  flushFrames();
+  assert.equal(viewport.classList.contains('is-dragging'), false);
+  assert.equal(status.textContent, '2 de 11');
+
+  pointer('pointerdown', 100);
+  pointer('pointermove', 315);
+  pointer('lostpointercapture', 315);
+  flushFrames();
+  assert.equal(viewport.classList.contains('is-dragging'), false);
+  assert.equal(status.textContent, '1 de 11');
+});
+
+test('soltar após arrastar sobre um link ativa o destino original uma vez', () => {
+  const { viewport, documentListeners } = createCarouselHarness();
+  let opened = 0;
+  const target = { closest: () => ({ click: () => { opened++; } }) };
+  const event = { pointerId: 1, pointerType: 'mouse', button: 0, clientX: 300, target };
+  const down = viewport.listeners.get('pointerdown');
+  const up = documentListeners.get('pointerup');
+  const click = viewport.listeners.get('click');
+  down(event);
+  up(event);
+  click({ detail: 1, preventDefault: () => assert.fail('o clique simples deve permanecer') });
+  assert.equal(opened, 0, 'o navegador abre o link no clique simples');
+
+  down(event);
+  documentListeners.get('pointermove')({ ...event, clientX: 100 });
+  assert.equal(opened, 0, 'o destino só abre ao soltar');
+  up(event);
+  assert.equal(opened, 1);
+  click({ detail: 0, preventDefault: () => assert.fail('a ativação do link deve permanecer') });
+  let prevented = false;
+  let stopped = false;
+  click({ detail: 1, preventDefault: () => { prevented = true; }, stopImmediatePropagation: () => { stopped = true; } });
+  assert.equal(prevented, true);
+  assert.equal(stopped, true);
+
+  down(event);
+  documentListeners.get('pointermove')({ ...event, clientX: 100 });
+  documentListeners.get('pointercancel')(event);
+  assert.equal(opened, 1, 'cancelar um arraste não abre o link');
+
+  down({ ...event, pointerType: 'touch' });
+  documentListeners.get('pointermove')({ ...event, pointerType: 'touch', clientX: 100 });
+  assert.equal(viewport.classList.contains('is-dragging'), false);
+});
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
   const carousel = createCarouselHarness();
