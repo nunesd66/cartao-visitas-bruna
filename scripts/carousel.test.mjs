@@ -191,7 +191,7 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
 test('arrastar com o mouse move nos dois sentidos e encaixa no depoimento mais próximo', () => {
   const { viewport, documentListeners, isRotating, status, flushFrames } = createCarouselHarness();
   const pointer = (type, clientX) => (viewport.listeners.get(type) ?? documentListeners.get(type))({
-    pointerId: 1, pointerType: 'mouse', button: 0, clientX,
+    pointerId: 1, pointerType: 'mouse', button: 0, clientX, target: {},
   });
 
   pointer('pointerdown', 320);
@@ -216,9 +216,10 @@ test('arrastar com o mouse move nos dois sentidos e encaixa no depoimento mais p
   assert.equal(status.textContent, '1 de 11');
 });
 
-test('um clique simples abre o link, mas um arraste iniciado sobre ele não navega', () => {
+test('soltar após arrastar sobre um link ativa o destino original uma vez', () => {
   const { viewport, documentListeners } = createCarouselHarness();
-  const target = { closest: () => ({}) };
+  let opened = 0;
+  const target = { closest: () => ({ click: () => { opened++; } }) };
   const event = { pointerId: 1, pointerType: 'mouse', button: 0, clientX: 300, target };
   const down = viewport.listeners.get('pointerdown');
   const up = documentListeners.get('pointerup');
@@ -226,15 +227,24 @@ test('um clique simples abre o link, mas um arraste iniciado sobre ele não nave
   down(event);
   up(event);
   click({ detail: 1, preventDefault: () => assert.fail('o clique simples deve permanecer') });
+  assert.equal(opened, 0, 'o navegador abre o link no clique simples');
 
   down(event);
   documentListeners.get('pointermove')({ ...event, clientX: 100 });
+  assert.equal(opened, 0, 'o destino só abre ao soltar');
   up(event);
+  assert.equal(opened, 1);
+  click({ detail: 0, preventDefault: () => assert.fail('a ativação do link deve permanecer') });
   let prevented = false;
   let stopped = false;
   click({ detail: 1, preventDefault: () => { prevented = true; }, stopImmediatePropagation: () => { stopped = true; } });
   assert.equal(prevented, true);
   assert.equal(stopped, true);
+
+  down(event);
+  documentListeners.get('pointermove')({ ...event, clientX: 100 });
+  documentListeners.get('pointercancel')(event);
+  assert.equal(opened, 1, 'cancelar um arraste não abre o link');
 
   down({ ...event, pointerType: 'touch' });
   documentListeners.get('pointermove')({ ...event, pointerType: 'touch', clientX: 100 });
