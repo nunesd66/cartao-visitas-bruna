@@ -56,7 +56,7 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 - Em 18/11/2026 às 14h51, o print da Inspeção de URL para a página inicial mostrou, na aba Teste em tempo real, que a página estava disponível para o Google e podia ser indexada.
 - Em 18/11/2026, a aba Índice do Google confirmou que a página inicial está indexada. Um print separado mostrou a página inicial como resultado orgânico para `Bruna Eduarda Beauty`.
 - O `sitemap.xml` abriu no navegador e listou a página inicial. A inspeção indicou que nenhum sitemap de referência foi detectado para a URL. O processamento no relatório Sitemaps permanece sem evidência.
-- Em 18/11/2026, o print do fluxo Web do GA4 mostrou a Métrica otimizada ativada, incluindo visualizações de página, rolagens, cliques de saída, pesquisa no site e interações com formulário. A validação dos eventos recebidos pelo DebugView permanece pendente.
+- Em 18/11/2026, o print do fluxo Web do GA4 mostrou a Métrica otimizada ativada, incluindo visualizações de página, rolagens, cliques de saída, pesquisa no site e interações com formulário. Uma nova captura do mesmo dia confirmou a chave desativada. O painel continuou exibindo o indicador padrão de visualizações de página. A validação dos eventos recebidos pelo DebugView permanece pendente.
 - Daniel informou que a Bruna aprovou o uso de todas as fotos e imagens. A aprovação do aviso de privacidade e o canal de contato para esse assunto aguardam confirmação.
 
 ### Revisão do aviso com a responsável
@@ -64,7 +64,7 @@ A tabela apresenta uma execução de laboratório por perfil. Versão do Chrome,
 | Ponto | Evidência ou decisão |
 | --- | --- |
 | Preferência | O navegador guarda a opção em `localStorage` e permite alterá-la pelo escudo de Privacidade. |
-| Analytics | O código aguarda Aceitar e limita eventos próprios a categorias e parâmetros definidos. Confirmar coleta real, retenção e Mensuração otimizada na propriedade GA4. |
+| Analytics | O código aguarda Aceitar e limita eventos próprios a categorias e parâmetros definidos. Métrica otimizada desativada na propriedade GA4. Confirmar coleta real e retenção. |
 | Outros canais | O iframe de Maps depende de solicitação explícita. Os links externos vão ao respectivo serviço. O FAQ monta localmente a mensagem que é encaminhada ao WhatsApp. |
 | Informação ao visitante | Confirmar quem responde pelo tratamento, canal de contato, finalidades, fornecedores e retenção antes de aprovar ou atualizar o aviso. Usar o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia-orientativo-cookies-e-protecao-de-dados-pessoais.pdf/@@display-file/file). |
 
@@ -96,7 +96,8 @@ Usar aba anônima sem dados anteriores; em Network ativar Preserve log. Filtrar 
 | Revogar: bloquear eventos futuros, limpar cookies acessíveis | NÃO EXECUTADO | Network, cookies |
 | Alterar consentimento em outra aba | NÃO EXECUTADO | Estado das duas abas |
 | Maps: iframe apenas após clique | NÃO EXECUTADO | Network antes/depois |
-| GA4 Mensuração otimizada: verificar duplicidades e parâmetros | NÃO EXECUTADO | Configuração e DebugView |
+| GA4: verificar configuração da Métrica otimizada | PASS | Chave desativada no fluxo Web |
+| GA4: verificar duplicidades e parâmetros | NÃO EXECUTADO | DebugView |
 | Viewports 320, 390, 768, 1440 px | NÃO EXECUTADO | Capturas, overflow e CTAs |
 | Teclado, menu, FAQ, carrossel, zoom 200%, leitor de tela | NÃO EXECUTADO | Passos e resultado |
 | Movimento reduzido | NÃO EXECUTADO | Configuração e observação |
