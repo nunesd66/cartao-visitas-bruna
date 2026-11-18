@@ -81,5 +81,8 @@ jobs:
       - name: Test accessibility structure and safe links
         run: node --test scripts/a11y-structure.test.mjs
 
+      - name: Test release byte equality verification
+        run: node --test scripts/verify-release.test.mjs
+
       - name: Test publication smoke checks
         run: node --test scripts/smoke-public.test.mjs
