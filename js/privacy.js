@@ -40,7 +40,7 @@
     if (open && moveFocus) acceptButton.focus();
     if (!open && moveFocus) {
       const focusTarget = [openingToggle, ...toggles, menuToggle]
-        .find((control) => control?.getClientRects().length);
+        .find((control) => control?.checkVisibility?.() ?? Boolean(control?.getClientRects().length));
       focusTarget?.focus();
     }
   };
