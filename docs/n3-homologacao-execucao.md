@@ -26,6 +26,14 @@ Conferir o SHA do workflow de Pages: o HEAD de `master` pode não ser o deploy e
 | Lighthouse em cópia local da mesma revisão | LCP mobile 3,83 s / desktop 0,77 s; CLS mobile 0 / desktop 0,005. A ferramenta sinalizou `NO_SCREENSHOTS`, então a categoria Performance ficou sem nota. A medição completa em produção permanece pendente |
 | Operação recorrente | Workflow diário configurado em #71. Na consulta desta rodada, sua primeira execução ainda não constava no GitHub Actions |
 
+## Verificação após integrar os PRs #79–84
+
+- O [deploy de `dad77bfc097ba830a4d802652f23352d58467f37`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44325988297) concluiu com sucesso. A revisão passou 94 testes e a checagem de referências locais.
+- Os 30 arquivos públicos conferiram byte a byte. Cinco imagens atingiram o limite de tempo na primeira passagem e conferiram na segunda, com requisições individuais.
+- Na cópia dessa revisão, Chromium validou 320, 390, 768 e 1440 px sem overflow horizontal, com CTA principal acionável, navegação por teclado em FAQ e carrosséis e Maps solicitado sob demanda.
+- Em Chromium, duas abas da mesma origem sincronizaram o consentimento e a revogação. A recusa bloqueou eventos, removeu cookies sintéticos `_ga` na raiz e `_ga_TEST` no caminho do projeto, preservou um cookie de preferência e persistiu no retorno. A tag do GA4 foi interceptada; DebugView e Mensuração otimizada continuam pendentes.
+- A tentativa de medir o site publicado pela API PageSpeed em mobile retornou HTTP 429. O Lighthouse completo em produção e o leitor de tela real permanecem pendentes.
+
 ## Verificação local
 
 ```sh

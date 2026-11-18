@@ -4,7 +4,7 @@
 
 ## Ponto de partida
 
-N2 está consolidado; N3 segue pendente de evidências externas segundo [o gate N3](n3-gate.md). O README registra restrições sobre textos, serviços, WhatsApp, avaliações, identidade e metadados. As PRs N4/N5 podem avançar em paralelo **quando não dependerem de decisões ainda abertas**, sem declarar os níveis concluídos.
+N2 está consolidado; N3 segue pendente de evidências externas segundo [o gate N3](n3-gate.md). O README registra restrições sobre textos, serviços, WhatsApp, avaliações, identidade e metadados. O trabalho de N4 começa após a homologação do N3. O trabalho de N5 começa após a homologação do N4.
 
 ## N4 — Identidade e estratégia de conversão (escopo proposto)
 
