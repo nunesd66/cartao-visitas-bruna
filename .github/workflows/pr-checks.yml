@@ -52,7 +52,7 @@ jobs:
         run: node --test scripts/seo.test.mjs
 
       - name: Test third-party privacy guards
-        run: node --test scripts/third-party-guards.test.mjs
+        run: node --test scripts/third-party-guards.test.mjs scripts/n3-invariants.test.mjs
 
       - name: Validate contact journey and analytics metadata
         run: node --test scripts/n4-contact-journey.test.mjs
