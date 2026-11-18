@@ -124,9 +124,10 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
     querySelectorAll(selector) { return selector === '[data-carousel]' ? [carousel] : []; },
     addEventListener(type, callback) { documentListeners.set(type, callback); },
   };
+  const mediaListeners = new Map();
   const motionPreference = {
     matches: reducedMotion,
-    addEventListener() {},
+    addEventListener(type, callback) { mediaListeners.set(type, callback); },
   };
 
   vm.runInNewContext(carouselInitializer, {
@@ -163,7 +164,8 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
 
   return { slides, viewport, status, next, previous, pagination, rotationToggle,
     focusRotation, clickRotation, isRotating: () => intervals.size > 0, runAutoAdvance, flushFrames,
-    setTabHidden(hidden) { document.hidden = hidden; documentListeners.get('visibilitychange')?.(); } };
+    setTabHidden(hidden) { document.hidden = hidden; documentListeners.get('visibilitychange')?.(); },
+    setReducedMotion(matches) { motionPreference.matches = matches; mediaListeners.get('change')?.({ matches }); } };
 }
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
@@ -223,5 +225,27 @@ test('hidden tab never starts rotation until it becomes visible', () => {
   carousel.setTabHidden(true);
   assert.equal(carousel.isRotating(), false);
   carousel.setTabHidden(false);
+  assert.equal(carousel.isRotating(), true);
+});
+
+
+test('manual pause remains active when reduced motion is toggled on and off', () => {
+  const carousel = createCarouselHarness();
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), false);
+  carousel.setReducedMotion(true);
+  carousel.setReducedMotion(false);
+  assert.equal(carousel.isRotating(), false);
+  assert.equal(carousel.rotationToggle.getAttribute('aria-label'), 'Retomar rotação');
+  carousel.clickRotation();
+  assert.equal(carousel.isRotating(), true);
+});
+
+test('active rotation resumes after reduced motion is turned off', () => {
+  const carousel = createCarouselHarness();
+  assert.equal(carousel.isRotating(), true);
+  carousel.setReducedMotion(true);
+  assert.equal(carousel.isRotating(), false);
+  carousel.setReducedMotion(false);
   assert.equal(carousel.isRotating(), true);
 });
