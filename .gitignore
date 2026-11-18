@@ -17,6 +17,7 @@
 !/.github/workflows/
 /.github/workflows/*
 !/.github/workflows/pr-checks.yml
+!/.github/workflows/verify-pages-release.yml
 
 /css/*
 !/css/style.css

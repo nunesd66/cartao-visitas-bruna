@@ -1,0 +1,41 @@
+name: Verify published Pages release
+
+on:
+  workflow_dispatch:
+    inputs:
+      published_sha:
+        description: Full commit SHA from the successful Pages deployment
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out release verification tools
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.19.0
+
+      - name: Verify public content and HTTP responses
+        shell: bash
+        env:
+          PUBLISHED_SHA: ${{ inputs.published_sha }}
+        run: |
+          if [[ ! "$PUBLISHED_SHA" =~ ^[a-f0-9]{40}$ ]]; then
+            echo "Provide the full Pages deployment SHA."
+            exit 2
+          fi
+
+          node scripts/verify-release.mjs "$PUBLISHED_SHA" | tee -a "$GITHUB_STEP_SUMMARY"
+          node scripts/smoke-public.mjs --published-sha "$PUBLISHED_SHA" | tee -a "$GITHUB_STEP_SUMMARY"

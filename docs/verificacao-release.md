@@ -7,6 +7,10 @@
 
 O SHA é a revisão **esperada**, obtida da execução do deploy. A igualdade dos arquivos comprova a equivalência do conteúdo conferido com essa revisão. Revisões com os mesmos bytes públicos são indistinguíveis dessa forma. Em caso de divergência, confira a conclusão do deploy, a revisão registrada e a propagação antes de avaliar uma reversão.
 
+## Execução pelo GitHub Actions
+
+Em **Actions → Verify published Pages release → Run workflow**, informe o SHA completo da publicação bem-sucedida. O resumo da execução guarda a verificação dos arquivos e o smoke HTTP, com resultado associado à revisão esperada. O workflow é somente leitura e pode ser executado novamente após a propagação do deploy.
+
 ## Verificação em ambiente isolado
 
 Sirva um worktree em `http://127.0.0.1:8080/` e rode o mesmo comando com essa URL como segundo argumento. Assim é possível detectar uma regressão simulada, reverter o commit numa branch de ensaio e verificar se os bytes esperados foram restaurados sem publicar.
