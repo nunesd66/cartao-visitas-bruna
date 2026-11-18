@@ -94,6 +94,14 @@ O Tag Assistant mostrou dois hits à mesma URL e com o mesmo identificador de p�
 
 O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tratamento de revogação. A cópia local passou 88 testes e a checagem de referências. Nenhum dado sintético foi enviado ao fluxo real. O cenário de um único hit por abertura precisa ser verificado usando a tag carregada, com coleta interceptada ou fluxo de teste, após o deploy.
 
+## Evidências da publicação em 18/11/2026
+
+- O GitHub confirmou a integração do [PR #96](https://github.com/nunesd66/cartao-visitas-bruna/pull/96) em `d1b3f236b056d39d68d34cc55a13350300256ca9`. A captura dos jobs mostrou deploy concluído e Daniel confirmou a presença do marcador de implementação do #96 no `js/analytics.js` servido pelo Pages. O teste identifica o script corrigido; não representa uma comparação byte a byte de todo o deploy.
+- Após o aceite em uma abertura, a aba Network mostrou `page_view` em duas tentativas com o mesmo ID de página, sequência e parâmetros do evento. A requisição para `www.google-analytics.com` foi bloqueada, e a tentativa alternativa para `www.google.com/g/collect` obteve HTTP 204. Isso sustenta um único evento lógico e um único envio com resposta de sucesso na abertura observada. A tentativa alternativa passou pelo bloqueio. Em novas reproduções, interceptar todos os destinos de coleta, inclusive o alternativo, ou usar um fluxo de testes.
+- O aviso publicado mostrou o link para falar com a Bruna pelo WhatsApp. A configuração de retenção exibiu 2 meses para eventos, 14 meses para dados do usuário e redefinição por nova atividade ativada. A consulta não alterou as configurações.
+- O relatório Sitemaps ainda mostrou falha, zero páginas e última leitura em 18/11, sem horário nem motivo específico. O XML público lista a página inicial indexada. A leitura posterior ao reenvio continua sem confirmação.
+- A revisão do aviso com a responsável, o leitor de tela e a abertura dos canais restantes seguem pendentes.
+
 ## Verificação local
 
 ```sh
@@ -124,7 +132,7 @@ Usar aba anônima sem dados anteriores; em Network ativar Preserve log. Filtrar 
 | Maps: iframe apenas após clique | NÃO EXECUTADO | Network antes/depois |
 | GA4: verificar configuração da Métrica otimizada | PASS | Chave desativada no fluxo Web |
 | GA4: clique de agendamento sem texto da mensagem nos parâmetros | PASS | DebugView, capturas de Daniel |
-| GA4: uma visualização por abertura | FAIL | Dois `page_view` no DebugView para uma abertura; origem em investigação |
+| GA4: uma visualização por abertura | PASS | Abertura observada após o #96; duas tentativas do mesmo hit, uma com HTTP 204 |
 | Viewports 320, 390, 768, 1440 px | NÃO EXECUTADO | Capturas, overflow e CTAs |
 | Teclado, menu, FAQ, carrossel, zoom 200%, leitor de tela | NÃO EXECUTADO | Passos e resultado |
 | Movimento reduzido | NÃO EXECUTADO | Configuração e observação |
