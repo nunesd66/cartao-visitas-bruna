@@ -20,11 +20,16 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
   const start = source.indexOf("document.querySelectorAll('[data-whatsapp-form]')");
   assert.ok(start >= 0, 'formulário de WhatsApp encontrado');
   const submissions = [];
+  const inputHandlers = new Map();
+  let validityMessage;
+  let reports = 0;
   const questionField = {
     value: '',
     scrollHeight: 48,
     style: {},
-    addEventListener() {},
+    addEventListener(event, handler) { inputHandlers.set(event, handler); },
+    setCustomValidity(message) { validityMessage = message; },
+    reportValidity() { reports++; },
   };
   const handlers = new Map();
   const form = {
@@ -43,7 +48,11 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
   questionField.value = '  ';
   submit();
   assert.equal(submissions.length, 0);
+  assert.equal(validityMessage, 'Digite sua dúvida antes de enviar.');
+  assert.equal(reports, 1);
   questionField.value = 'Pode ser às 9h? & sábado #1';
+  inputHandlers.get('input')();
+  assert.equal(validityMessage, '');
   submit();
   assert.equal(prevented, 2);
   assert.equal(submissions.length, 1);
