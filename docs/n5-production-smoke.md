@@ -6,7 +6,7 @@ Workflow: [Production smoke](https://github.com/nunesd66/cartao-visitas-bruna/ac
 
 O mesmo smoke será executado diariamente pelo GitHub Actions às **12:17 UTC (09:17 em Brasília)**. O agendamento é do tipo best-effort do GitHub: execuções podem atrasar ou ser desabilitadas pela plataforma em determinadas condições. Consulte o histórico de Actions para conferir se foi executado; falhas do job não fazem rollback e não enviam alertas externos por conta própria.
 
-Um evento de implantação bem-sucedida da `master` no ambiente `github-pages` também pode iniciar o smoke. O resumo identifica o gatilho, e a saída registra o SHA indicado no evento. A primeira execução por evento deve ser confirmada no histórico.
+Um evento de implantação bem-sucedida da `master` no ambiente `github-pages` também pode iniciar o smoke. O resumo identifica o gatilho, e a saída registra o SHA indicado no evento. A primeira execução por evento foi confirmada no histórico, conforme o registro abaixo.
 
 ## Como executar manualmente
 
@@ -22,7 +22,9 @@ O workflow consulta uma URL pública fixa, valida status HTTP 200, Content-Type 
 
 O [GitHub Pages publicou `92ef788`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44513373457). Em 19/11 às 08h17, horário de Brasília, a execução local do mesmo script do workflow verificou **10/10 recursos públicos** com HTTP 200 e tipo esperado. A verificação de release comparou **30/30 arquivos idênticos** ao SHA completo `92ef788a66dda1976d6abf780de30471f9fedd58`.
 
-A execução recorrente ainda precisa ser confirmada no histórico de Actions. O [ensaio de recuperação](verificacao-release.md#evidência-de-17112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
+Em 19/11 às 12h05, horário de Brasília, o [primeiro smoke disparado pelo deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44550850363) verificou 10/10 recursos públicos para o SHA indicado pelo Pages, `d236ab7880ffe9c0ab9bb5676b966eae99de668e`. A execução por horário permanece sem registro no histórico de Actions.
+
+ O [ensaio de recuperação](verificacao-release.md#evidência-de-17112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
 
 ## Limites da evidência
 
