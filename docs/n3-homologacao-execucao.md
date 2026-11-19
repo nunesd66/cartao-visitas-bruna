@@ -121,6 +121,17 @@ O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tr
 - **Lighthouse 13.6.0.** O acesso de Lighthouse à produção falhou por confiança no certificado do ambiente. Na cópia local de `7db7833`, LCP foi 3,83 s mobile e 0,76 s desktop, com CLS de 0 e 0,0032. A execução reportou `NO_SCREENSHOTS` e ficou sem nota de performance em ambos os perfis. O resultado completo de produção continua vinculado a `5750028`.
 - **GA4 e Search Console.** Todos os destinos externos foram interceptados durante os testes de interação. Nenhum dado sintético foi enviado ao GA4. O sitemap público continuou listando a home indexada. A confirmação de processamento no Search Console requer acesso à propriedade.
 
+## Lighthouse na publicação em 19/11/2026
+
+A [execução 44526263473](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44526263473) conferiu os arquivos publicados antes e depois da medição e associou os resultados ao deploy `1a693276ffd3404fa6514b796a1631573239e8a0`. Lighthouse 13.6.0, com Chrome em runner do GitHub Actions.
+
+| Perfil | Performance | LCP | CLS | TBT | Requisições | Transferência |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Mobile | 80 | 1,65 s | 0 | 821 ms | 14 | 3.095,2 KiB |
+| Desktop | 100 | 0,40 s | 0,0075 | 0 ms | 19 | 3.404,6 KiB |
+
+Mobile e desktop obtiveram 100 em acessibilidade automatizada, boas práticas e SEO. No mobile, três fotos das galerias responderam por aproximadamente 2,3 MiB. O TBT é resultado de laboratório desta rodada. Investigue o trabalho de layout e confirme a variação em execuções comparáveis antes de atribuir o bloqueio a uma causa.
+
 ## Verificação local
 
 ```sh
