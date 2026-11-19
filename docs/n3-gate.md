@@ -1,6 +1,6 @@
 # Gate de aceite — Nível 3 (SEO, métricas e refinamentos)
 
-> Estado em 18/11/2026: **N3 com medição de produção, revisão externa pendente**. Os resultados desta rodada estão no [roteiro de homologação](n3-homologacao-execucao.md).
+> Estado em 19/11/2026: **N3 com revisão publicada verificada, homologação pendente**. Os resultados desta rodada estão no [roteiro de homologação](n3-homologacao-execucao.md).
 
 ## O que foi automatizado
 
@@ -11,10 +11,11 @@
 ## Critérios externos para fechar N3
 
 ### Publicação e indexabilidade
-- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `5750028`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44327342837) concluiu com êxito.
-- [x] Validar recursos públicos. A verificação de conteúdo confirmou 30/30 arquivos idênticos a `5750028` antes e depois do [Lighthouse](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44328020671).
+- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `7db7833`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44405397713) concluiu com êxito.
+- [x] Validar recursos públicos. Em 19/11, 30/30 arquivos corresponderam a `7db7833` e o smoke HTTP passou 10/10.
 - [x] Confirmar indexação da página inicial na aba Índice do Google do Search Console.
-- [ ] Confirmar envio e processamento do sitemap no relatório Sitemaps.
+- [x] Confirmar envio do sitemap. O Google Search Console exibiu “Sitemap enviado” após o reenvio.
+- [ ] Confirmar o processamento no relatório Sitemaps. O XML publicado respondeu HTTP 200 e lista a página inicial.
 
 Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](https://nunesd66.github.io/robots.txt), que respondeu HTTP 404 na verificação do deploy `35528da`. Nesse estado, o Google considera o host sem regras de `robots.txt`. O [arquivo no caminho do projeto](https://nunesd66.github.io/cartao-visitas-bruna/robots.txt) respondeu HTTP 200 e permanece no smoke de artefatos. Envie o [sitemap do projeto](https://nunesd66.github.io/cartao-visitas-bruna/sitemap.xml) à propriedade correspondente no Search Console. Veja as referências do Google sobre [localização](https://developers.google.com/crawling/docs/robots-txt/create-robots-txt) e [códigos HTTP](https://developers.google.com/crawling/docs/robots-txt/robots-txt-spec?hl=pt-br).
 
@@ -32,7 +33,8 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [x] Testar teclado, foco, menu, FAQ, carrosséis e preferência de movimento reduzido em Chromium. A conferência com leitor de tela real segue abaixo.
 - [ ] Fazer inspeção manual com leitor de tela e registrar limitações.
 - [x] Medir Lighthouse mobile e desktop em produção no commit `5750028`. Resultados e condições no [roteiro de homologação](n3-homologacao-execucao.md#medição-em-produção-de-18112026).
-- [ ] Verificar abertura real de todos os canais e CTAs, inclusive sem JavaScript onde aplicável.
+- [x] Verificar navegação sem JavaScript em quatro tamanhos de tela, com destinos externos interceptados. O ajuste de controles do PR #99 foi validado em cópia local.
+- [ ] Confirmar no serviço externo o destino dos links ainda não validados. O relatório de homologação registra os canais já verificados e os limites da interceptação.
 
 ## Evidências mínimas por execução
 

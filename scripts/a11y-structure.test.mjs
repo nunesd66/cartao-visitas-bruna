@@ -52,6 +52,11 @@ test('componentes de privacidade e carrossel possuem controles nomeados', () => 
 });
 
 
+test('controles dependentes de JavaScript ficam ocultos no HTML inicial', () => {
+  assert.match(html, /<button\b[^>]*\bdata-header-pin\b[^>]*\shidden(?:\s|>)/);
+  assert.match(html, /<details class="accessibility-tools" hidden>/);
+});
+
 test('referências ARIA e associações de labels apontam para IDs existentes', () => {
   const ids = new Set([...html.matchAll(/\bid=["']([^"']+)["']/gi)].map(([, id]) => id));
   const references = ['aria-labelledby', 'aria-describedby', 'aria-controls', 'for'];

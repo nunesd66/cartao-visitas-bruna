@@ -31,41 +31,26 @@ const faqAnswers = document.querySelectorAll('.faq details');
 
 document.querySelectorAll('.mobile-nav').forEach((menu) => {
   const summary = menu.querySelector('summary');
-  const syncMenuState = () => {
-    if (!summary) return;
-    summary.setAttribute('aria-expanded', String(menu.open));
-    summary.setAttribute(
-      'aria-label',
-      menu.open ? 'Fechar menu de navegação' : 'Abrir menu de navegação',
-    );
-  };
-
-  menu.addEventListener('toggle', syncMenuState);
   summary?.addEventListener('click', () => {
     window.requestAnimationFrame(() => {
-      syncMenuState();
       if (menu.open) menu.querySelector('nav a')?.focus();
     });
   });
   menu.addEventListener('click', (event) => {
     if (event.target instanceof Element && event.target.closest('a[href^="#"]')) {
       menu.open = false;
-      syncMenuState();
     }
   });
   menu.addEventListener('focusout', (event) => {
     if (menu.open && event.relatedTarget instanceof Node && !menu.contains(event.relatedTarget)) {
       menu.open = false;
-      syncMenuState();
     }
   });
   menu.addEventListener('keydown', (event) => {
     if (event.key !== 'Escape' || !menu.open) return;
     menu.open = false;
-    syncMenuState();
     summary?.focus();
   });
-  syncMenuState();
 });
 
 const siteHeader = document.querySelector('.site-header');
@@ -150,6 +135,7 @@ if (siteHeader && casesRealAnchor) {
     scrollFrame = window.requestAnimationFrame(updateHeaderOnScroll);
   }, { passive: true });
 
+  if (headerPin) headerPin.hidden = false;
   headerPin?.addEventListener('click', () => {
     headerPinned = !headerPinned;
     const label = headerPinned ? 'Desafixar cabeçalho' : 'Fixar cabeçalho';
@@ -205,8 +191,8 @@ if (accessibilityTools && siteFooter && 'IntersectionObserver' in window) {
   window.addEventListener('resize', positionToolsBeforeFooter);
 }
 
+if (accessibilityTools) accessibilityTools.hidden = false;
 accessibilityTools?.addEventListener('toggle', () => {
-  accessibilityToolsToggle?.setAttribute('aria-expanded', String(accessibilityTools.open));
   if (!accessibilityTools.open && accessibilityHelp) accessibilityHelp.open = false;
 });
 

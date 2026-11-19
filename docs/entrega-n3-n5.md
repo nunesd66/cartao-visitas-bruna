@@ -34,6 +34,16 @@ A ordem de execução é **N3 → N4 → N5**. As frentes visual e funcional pod
 | N4 — Identidade visual e conversão | Direção visual aprovada pela profissional, sistema visual aplicado, jornada até o contato e hipótese de conversão documentada | Aceite visual responsivo, teste da jornada e protocolo de medição. Identificar cliques no WhatsApp como intenção de contato |
 | N5 — Operação contínua (proposta) | Release rastreável, verificação pós-publicação, recuperação, manutenção e ciclo de melhoria orientado por dados | Associar verificações a um deploy, ensaiar recuperação em branch isolada, registrar responsável operacional e documentar a primeira revisão de indicadores autorizados |
 
+## Situação em 19/11/2026
+
+| Nível | Evidências reutilizadas e verificações desta rodada | O que falta para o aceite |
+| --- | --- | --- |
+| N3 | `7db7833` confirmado no Pages com 30/30 arquivos idênticos, smoke HTTP 10/10 e 90 testes locais. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, leitor de tela real e conclusão da verificação de canais, incluindo os caminhos disponíveis sem JavaScript. |
+| N4 | Direção e jornada já documentadas. Na revisão publicada, Chrome confirmou o FAQ por teclado e o acionamento de “Avaliar no Google”. O inventário conferiu nove CTAs de agendamento, com os quatro serviços representados. | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
+| N5 | Comparação de arquivos e smoke HTTP ligados ao deploy real. Ensaio isolado de rollback já registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+
+As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
+
 ### Fila de entrega
 
 | Ordem | Macrotarefa | Microtarefas |
