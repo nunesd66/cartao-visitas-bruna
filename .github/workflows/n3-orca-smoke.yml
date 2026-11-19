@@ -39,7 +39,7 @@ jobs:
           gsettings set org.gnome.desktop.interface toolkit-accessibility true
           speech-dispatcher --spawn
           orca --version
-          orca --replace --enable=speech --disable=braille --debug --debug-file="$output" \
+          PYTHONUNBUFFERED=1 orca --replace --enable=speech --disable=braille --debug --debug-file="$output" \
             > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
           reader=$!
           timeout 15 bash -c 'until grep -Fq "SPEECH OUTPUT: " "$1" 2>/dev/null; do sleep 0.2; done' _ "$output"
