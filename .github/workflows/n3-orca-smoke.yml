@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   orca:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -22,7 +22,7 @@ jobs:
       - name: Install the screen reader and virtual display
         run: |
           sudo apt-get update
-          sudo apt-get install -y orca speech-dispatcher-espeak-ng xvfb xauth xdotool
+          sudo apt-get install -y orca speech-dispatcher-espeak-ng xvfb xauth xdotool openbox
 
       - name: Run keyboard navigation with Orca and Firefox
         shell: bash
@@ -31,19 +31,17 @@ jobs:
           set -euo pipefail
           output="$RUNNER_TEMP/bruna-orca.log"
           profile="$(mktemp -d)"
+          export XDG_SESSION_TYPE=x11
+          openbox > "$RUNNER_TEMP/bruna-orca-openbox.log" 2>&1 &
+          manager=$!
           python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/bruna-orca-server.log" 2>&1 &
           server=$!
-          trap 'kill "$server" "${reader:-}" "${browser:-}" 2>/dev/null || true' EXIT
+          trap 'kill "$server" "$manager" "${reader:-}" "${browser:-}" 2>/dev/null || true' EXIT
           curl --retry 5 --retry-connrefused --fail --silent http://127.0.0.1:8765/ >/dev/null
 
           gsettings set org.gnome.desktop.interface toolkit-accessibility true
           speech-dispatcher --spawn
           orca --version
-          PYTHONUNBUFFERED=1 orca --replace --debug --debug-file="$output" \
-            > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
-          reader=$!
-          timeout 15 bash -c 'until grep -Fq "SPEECH OUTPUT: " "$1" 2>/dev/null; do sleep 0.2; done' _ "$output"
-
           cat > "$profile/user.js" <<'PREFS'
           user_pref("accessibility.force_disabled", -1);
           user_pref("browser.aboutwelcome.enabled", false);
@@ -55,9 +53,12 @@ jobs:
           browser=$!
 
           window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
-          xdotool windowfocus --sync "$window"
-          if ! timeout 20 bash -c 'until grep -Fq "PROCESS OBJECT EVENT document:load-complete" "$1"; do sleep 0.2; done' _ "$output"; then
-            echo 'Orca did not process the document load event.' >&2
+          xdotool windowactivate --sync "$window"
+          PYTHONUNBUFFERED=1 orca --replace --debug --debug-file="$output" \
+            > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
+          reader=$!
+          if ! timeout 20 bash -c 'until grep -Fq "SPEECH OUTPUT: " "$1" 2>/dev/null; do sleep 0.2; done' _ "$output"; then
+            echo 'Orca did not start its speech output.' >&2
             exit 1
           fi
           for step in {1..20}; do
