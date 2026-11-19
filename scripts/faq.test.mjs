@@ -76,6 +76,7 @@ test('perguntas frequentes são operáveis com details/summary e respostas assoc
     const summary = content.match(/^\s*<summary\b([^>]*)>([\s\S]*?)<\/summary>/i);
     assert.ok(summary, 'summary deve ser primeiro conteúdo do details');
     assert.ok(summary[2].replace(/<[^>]*>/g, '').trim(), 'pergunta precisa de nome acessível');
+    assert.match(summary[2], /<span class="faq__indicator" aria-hidden="true"><\/span>/, 'ícone decorativo deve ficar fora do nome acessível');
     const id = summary[1].match(/data-analytics-question=["']([^"']+)["']/i)?.[1];
     assert.ok(/^faq_0[1-6]$/.test(id || ''), 'identificador de FAQ inválido');
     assert.ok(!seenIds.has(id), 'FAQ duplicada');
