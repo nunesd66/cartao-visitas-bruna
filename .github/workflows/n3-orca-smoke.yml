@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   orca:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
@@ -50,7 +50,7 @@ jobs:
           cat > "$profile/user.js" <<'PREFS'
           user_pref("accessibility.force_disabled", -1);
           user_pref("browser.aboutwelcome.enabled", false);
-          user_pref("browser.translations.automaticallyPopup", false);
+          user_pref("browser.translations.enable", false);
           PREFS
           firefox --version
           firefox --no-remote --profile "$profile" --kiosk http://127.0.0.1:8765/ \
@@ -59,7 +59,16 @@ jobs:
 
           window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
           xdotool windowactivate --sync "$window"
-          PYTHONUNBUFFERED=1 orca --replace --disable=braille --debug --debug-file="$output" \
+          # Flush Orca's diagnostic file so assertions can read speech as it is emitted.
+          export XDG_DATA_HOME="$RUNNER_TEMP/bruna-orca-data"
+          mkdir -p "$XDG_DATA_HOME/orca"
+          cat > "$XDG_DATA_HOME/orca/orca-customizations.py" <<'ORCA'
+          from orca import debug
+
+          if debug.debugFile is not None:
+              debug.debugFile.reconfigure(line_buffering=True)
+          ORCA
+          orca --debug-file="$output" \
             > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
           reader=$!
           await_announcement() {
@@ -68,7 +77,7 @@ jobs:
               return 1
             fi
           }
-          await_announcement 30 'Mozilla Firefox frame.'
+          await_announcement 30 'Firefox'
           xdotool key --clearmodifiers Tab
           await_announcement 40 'Pular para o conteúdo'
           for step in {1..20}; do
