@@ -34,3 +34,23 @@ test('imagem principal é prioritária e imagens secundárias carregam sob deman
     assert.notEqual(attrs.fetchpriority, 'high', 'Imagem secundária priorizada indevidamente: ' + attrs.src);
   }
 });
+
+test('galerias servem WebP mais leve e preservam os JPEG originais como fallback', () => {
+  const pairs = [
+    ['2.JPG', '2-1200.webp'],
+    ['IMG_3113.JPG', 'IMG_3113-1200.webp'],
+    ['IMG_3114.JPG', 'IMG_3114-1200.webp'],
+  ];
+  const pictures = [...html.matchAll(/<picture>\s*([\s\S]*?)<\/picture>/g)].map(([, content]) => content);
+  const photo = (name) => readFileSync(new URL('../images/' + name, import.meta.url));
+  for (const [original, derivative] of pairs) {
+    const expectedSource = `<source srcset="images/${derivative}" type="image/webp">`;
+    const picture = pictures.find((content) => content.includes(expectedSource));
+    assert.ok(picture?.includes(`<img src="images/${original}"`), 'Fallback JPEG ausente: ' + original);
+
+    const optimized = photo(derivative);
+    assert.equal(optimized.toString('ascii', 0, 4), 'RIFF');
+    assert.equal(optimized.toString('ascii', 8, 12), 'WEBP');
+    assert.ok(optimized.length < photo(original).length, 'WebP deve ser menor que o JPEG');
+  }
+});
