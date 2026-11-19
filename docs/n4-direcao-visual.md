@@ -31,6 +31,19 @@ Preservar a combinação de verde escuro, marrom suave e superfícies claras. A 
 1. **Validar as bases.** Registrar imagens de referência em 320, 390, 768 e 1440 px no mesmo SHA. Conferir início, serviços, sobre, avaliações, privacidade e contato. Registrar também navegação por teclado e zoom de 200% em área menor.
 2. **Aprovar direção com a Bruna.** Revisar os estados mobile e desktop e obter decisão sobre paleta, tipografia, enquadramento, hierarquia e pontos de ação. Registrar data, pessoa responsável e link das referências aprovadas.
 3. **Testar uma hipótese por alteração.** Exemplo para aprovação: em mobile, reforçar a visibilidade do CTA do hero pode aumentar a proporção de sessões consentidas com clique no WhatsApp. Revisar a experiência visual e a área útil em 320×568 antes de publicar. A conclusão depende da mensuração autorizada e de volume suficiente de dados. Clique é intenção de contato.
+
+## Referências da revisão publicada em 19/11/2026
+
+Capturas de página inteira da cópia local de [`1fdfdfa`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44588383976). Foram usadas quatro dimensões de janela no HeadlessChrome 153.0.8010.0 em Debian, em primeira visita, com movimento reduzido e integrações externas bloqueadas.
+
+| Área da janela | Referência |
+| --- | --- |
+| 320 × 568 | [320 px](screenshots/n4-1fdfdfa-320.webp) |
+| 390 × 844 | [390 px](screenshots/n4-1fdfdfa-390.webp) |
+| 768 × 1024 | [768 px](screenshots/n4-1fdfdfa-768.webp) |
+| 1440 × 900 | [1440 px](screenshots/n4-1fdfdfa-1440.webp) |
+
+Em todas as larguras, as 19 imagens carregaram e a página não teve overflow horizontal. O primeiro Tab alcançou o link de salto, e recusar o analytics com Enter levou o foco à seção de serviços. Os tamanhos são emulados e as referências aguardam aceite visual.
 4. **Registrar critérios antes do próximo PR visual.** Conferir estados padrão, hover, foco visível, aberto/fechado e movimento reduzido quando aplicável. Comparar contraste, ausência de overflow horizontal e Lighthouse em condições equivalentes. Associar cada evidência a commit, navegador, viewport e data.
 
 A decisão da profissional, o resultado da revisão visual e as evidências de conversão formam o aceite desta frente do N4. A operação de publicação, rollback e monitoramento pertence ao ciclo de manutenção do N5.
