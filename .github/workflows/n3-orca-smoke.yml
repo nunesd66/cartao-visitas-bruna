@@ -1,0 +1,66 @@
+name: Orca accessibility smoke
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - .github/workflows/n3-orca-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  orca:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install the screen reader and virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y orca speech-dispatcher-espeak-ng xvfb xauth xdotool
+
+      - name: Run keyboard navigation with Orca and Chrome
+        shell: bash
+        run: |
+          xvfb-run -a -s '-screen 0 1440x900x24' dbus-run-session -- bash <<'BASH'
+          set -euo pipefail
+          output="$RUNNER_TEMP/bruna-orca.log"
+          profile="$(mktemp -d)"
+          python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/bruna-orca-server.log" 2>&1 &
+          server=$!
+          trap 'kill "$server" "${reader:-}" "${chrome:-}" 2>/dev/null || true' EXIT
+          curl --retry 5 --retry-connrefused --fail --silent http://127.0.0.1:8765/ >/dev/null
+
+          gsettings set org.gnome.desktop.interface toolkit-accessibility true
+          speech-dispatcher --spawn
+          orca --version
+          orca --replace --debug --debug-file="$output" > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
+          reader=$!
+          google-chrome --user-data-dir="$profile" --no-first-run --no-default-browser-check \
+            --force-renderer-accessibility --app=http://127.0.0.1:8765/ \
+            > "$RUNNER_TEMP/bruna-orca-chrome.log" 2>&1 &
+          chrome=$!
+
+          window="$(timeout 30 xdotool search --sync --onlyvisible --class chrome | head -n 1)"
+          xdotool windowfocus --sync "$window"
+          xdotool key --repeat 20 --delay 500 Tab
+          kill -0 "$reader"
+          speech="$(grep -i 'SPEECH OUTPUT' "$output")"
+          printf '%s\n' "$speech" | grep -iF 'Pular para o conteúdo'
+          printf '%s\n' "$speech" | grep -iF 'Recusar'
+          echo 'Orca announced the skip link and the privacy rejection button.'
+          BASH
+
+      - name: Preserve public-site test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: orca-smoke-logs
+          path: ${{ runner.temp }}/bruna-orca*.log
+          retention-days: 7
+          if-no-files-found: warn
