@@ -34,3 +34,14 @@ A execução recorrente ainda precisa ser confirmada no histórico de Actions. O
 O job de PR inclui no resumo o peso total de `images/`, `css/` e `js/`, além da diferença em bytes por arquivo em relação à revisão base usada no merge de teste. O relatório é informativo. Use-o para investigar aumentos e confirme o efeito na navegação com [Lighthouse em produção](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/n3-published-lighthouse.yml). O tamanho no repositório pode diferir do volume transferido ao navegador.
 
 O resumo do Lighthouse traz a quantidade de requisições capturadas e o volume transferido na navegação, além de LCP, CLS e TBT. Compare execuções do mesmo perfil e registre o SHA e as condições da medição. Esses números descrevem uma visita de laboratório e variam com cache e carregamento sob demanda.
+
+## Medição pública após a otimização das galerias
+
+O [Lighthouse em produção de 19/11](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44543696312) verificou a revisão `aedfdce` antes e depois da medição, incluindo o tipo `image/webp` e a igualdade dos bytes das três imagens.
+
+| Perfil | Performance | LCP | CLS | TBT | Transferência |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Mobile | 100 | 1,54 s | 0 | 38 ms | 1.108,4 KiB |
+| Desktop | 100 | 0,40 s | 0,0075 | 0 ms | 1.417,9 KiB |
+
+O mobile transferiu 1.986,8 KiB a menos em relação à [medição anterior](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44526263473). São medições de laboratório. A variação de TBT pode incluir diferenças no ambiente de execução.
