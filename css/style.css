@@ -1310,7 +1310,7 @@ body:has(.mobile-nav[open]) {
   display: none;
 }
 
-.faq summary::after {
+.faq__indicator {
   position: absolute;
   top: 50%;
   right: 0.2rem;
@@ -1321,13 +1321,16 @@ body:has(.mobile-nav[open]) {
   border-radius: 50%;
   color: var(--color-primary-dark);
   background: var(--color-surface-soft);
-  content: "+";
   font-family: var(--font-sans);
   font-size: 1.15rem;
   transform: translateY(-50%);
 }
 
-.faq details[open] summary::after {
+.faq__indicator::before {
+  content: "+";
+}
+
+.faq details[open] .faq__indicator::before {
   content: "-";
 }
 
