@@ -1705,6 +1705,7 @@ body:has(.mobile-nav[open]) {
   z-index: 95;
   top: 65%;
   right: 0;
+  color: var(--color-text);
   transform: translateY(-50%);
 }
 

@@ -57,6 +57,13 @@ test('controles dependentes de JavaScript ficam ocultos no HTML inicial', () => 
   assert.match(html, /<details class="accessibility-tools" hidden>/);
 });
 
+test('atalhos flutuantes pertencem ao landmark do rodapé', () => {
+  const footer = html.match(/<footer\b[^>]*>([\s\S]*?)<\/footer>/i)?.[1];
+  assert.ok(footer, 'rodapé não encontrado');
+  assert.match(footer, /<details class="accessibility-tools" hidden>/);
+  assert.match(footer, /class="whatsapp-float"/);
+});
+
 test('referências ARIA e associações de labels apontam para IDs existentes', () => {
   const ids = new Set([...html.matchAll(/\bid=["']([^"']+)["']/gi)].map(([, id]) => id));
   const references = ['aria-labelledby', 'aria-describedby', 'aria-controls', 'for'];
