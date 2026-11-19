@@ -71,25 +71,41 @@ jobs:
           orca --debug-file="$output" \
             > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
           reader=$!
-          await_announcement() {
-            if ! timeout "$1" bash -c 'until grep -F "SPEECH OUTPUT: " "$1" 2>/dev/null | grep -iF "$2"; do sleep 0.2; done' _ "$output" "$2"; then
-              printf 'Orca did not announce "%s".\n' "$2" >&2
-              return 1
-            fi
+          has_announcement() {
+            tail -n "+$1" "$output" | grep -F "SPEECH OUTPUT: " | grep -iF "$2"
           }
-          await_announcement 30 'Firefox'
+          await_announcement() {
+            local deadline=$((SECONDS + $1))
+            while (( SECONDS < deadline )); do
+              if has_announcement "$3" "$2" 2>/dev/null; then return; fi
+              sleep 0.2
+            done
+            printf 'Orca did not announce "%s".\n' "$2" >&2
+            return 1
+          }
+          tab_to_announcement() {
+            local name="$1" limit="$2" from step
+            for (( step=0; step<limit; step++ )); do
+              from=$(( $(wc -l < "$output") + 1 ))
+              xdotool key --clearmodifiers Tab
+              sleep 0.75
+              if has_announcement "$from" "$name"; then return; fi
+            done
+            await_announcement 10 "$name" "$from"
+          }
+          await_announcement 30 'Firefox' 1
+          from=$(( $(wc -l < "$output") + 1 ))
           xdotool key --clearmodifiers Tab
-          await_announcement 40 'Pular para o conteúdo'
-          for step in {1..20}; do
-            xdotool key --clearmodifiers Tab
-            sleep 0.75
-            if grep -i 'SPEECH OUTPUT' "$output" | grep -iF 'Recusar' >/dev/null; then
-              break
-            fi
-          done
+          await_announcement 40 'Pular para o conteúdo' "$from"
+          tab_to_announcement 'Recusar' 20
+          from=$(( $(wc -l < "$output") + 1 ))
+          xdotool key --clearmodifiers Return
+          await_announcement 20 'Cuidado em cada detalhe' "$from"
+          tab_to_announcement 'Resultados de micropigmentação esfumada' 8
+          tab_to_announcement 'Próximo feedback' 24
+          tab_to_announcement 'A micropigmentação vai ficar muito escura ou marcada?' 32
           kill -0 "$reader"
-          await_announcement 20 'Recusar'
-          echo 'Orca announced the skip link and the privacy rejection button.'
+          echo 'Orca announced the skip link, the privacy rejection and its focus target, the service gallery, the testimonials control and the first FAQ item.'
           BASH
 
       - name: Preserve screen-reader test logs
