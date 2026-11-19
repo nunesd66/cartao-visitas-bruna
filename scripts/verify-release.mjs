@@ -39,7 +39,17 @@ async function verify(path) {
   try {
     const expected = git('cat-file', 'blob', commit + ':' + path);
     const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(15000) });
-    if (response.status !== 200) return 'HTTP ' + response.status;
+    if (response.status !== 200) {
+      await response.body?.cancel();
+      return 'HTTP ' + response.status;
+    }
+    if (path.endsWith('.webp')) {
+      const type = (response.headers.get('content-type') ?? '').split(';', 1)[0].trim().toLowerCase();
+      if (type !== 'image/webp') {
+        await response.body?.cancel();
+        return 'Content-Type esperado image/webp; recebido ' + (type || 'ausente');
+      }
+    }
     const actual = Buffer.from(await response.arrayBuffer());
     return actual.equals(expected) ? null : 'conteúdo diverge da revisão esperada';
   } catch (error) {

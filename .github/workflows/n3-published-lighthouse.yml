@@ -5,6 +5,7 @@ on:
     branches: [master]
     paths:
       - .github/workflows/n3-published-lighthouse.yml
+      - scripts/verify-release.mjs
   workflow_dispatch:
     inputs:
       published_sha:
