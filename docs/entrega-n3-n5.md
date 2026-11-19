@@ -2,7 +2,7 @@
 
 Meta desta rodada: segunda-feira, 23 de novembro de 2026, no horário de Brasília. Cada nível é aceito com evidências da revisão e do ambiente correspondente.
 
-A ordem de execução é **N3 → N4 → N5**. As frentes visual e funcional podem trabalhar em paralelo dentro do nível ativo. Se uma aprovação ou acesso impedir fechar o nível, registre a dependência e avance as demais tarefas do mesmo nível.
+Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pendências acionáveis do N3 e registre o que depende de acesso, aprovação ou entrega anterior. Cada nível é homologado com as evidências e os aceites dos seus próprios critérios.
 
 ## Ciclo de trabalho
 
@@ -38,15 +38,15 @@ A ordem de execução é **N3 → N4 → N5**. As frentes visual e funcional pod
 
 | Nível | Evidências reutilizadas e verificações desta rodada | O que falta para o aceite |
 | --- | --- | --- |
-| N3 | `7db7833` confirmado no Pages com 30/30 arquivos idênticos, smoke HTTP 10/10 e 90 testes locais. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, leitor de tela real e conclusão da verificação de canais, incluindo os caminhos disponíveis sem JavaScript. |
-| N4 | Direção e jornada já documentadas. Na revisão publicada, Chrome confirmou o FAQ por teclado e o acionamento de “Avaliar no Google”. O inventário conferiu nove CTAs de agendamento, com os quatro serviços representados. | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
-| N5 | Comparação de arquivos e smoke HTTP ligados ao deploy real. Ensaio isolado de rollback já registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+| N3 | `92ef788` confirmado no Pages com 30/30 arquivos idênticos e smoke HTTP 10/10. O PR #99 integrou a correção validada com JavaScript ligado e desligado. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, leitor de tela real e confirmação no serviço externo dos destinos restantes. |
+| N4 | Direção e jornada documentadas. Chromium exercitou a jornada de contato em quatro tamanhos, com os quatro CTAs de serviço e os destinos de WhatsApp interceptados. [Evidência da jornada](n4-conversao.md#verificação-técnica-em-19112026). | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
+| N5 | Comparação de arquivos e [smoke HTTP vinculados ao deploy `92ef788`](n5-production-smoke.md#verificação-do-release-de-19112026). Ensaio isolado de rollback registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
 As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
 
-### Fila de entrega
+### Prioridades de entrega
 
-| Ordem | Macrotarefa | Microtarefas |
+| Prioridade | Macrotarefa | Microtarefas |
 | --- | --- | --- |
 | 1 | N3 — Verificar o estado publicado | Confirmar deploy e identidade dos arquivos; rodar smoke; registrar baseline responsivo, acessibilidade, Network e Lighthouse |
 | 2 | N3 — Corrigir regressões observadas | Reproduzir, corrigir, adicionar cobertura pertinente e repetir a verificação |

@@ -14,6 +14,12 @@ Objetivo: facilitar a escolha do serviço e o início de uma conversa pelo Whats
 
 O site mede cliques nos pontos instrumentados. Conversas iniciadas e agendamentos confirmados acontecem fora da página e dependem de informação da profissional.
 
+## Verificação técnica em 19/11/2026
+
+No Chromium 140, em cópia local da revisão `92ef788a66dda1976d6abf780de30471f9fedd58`, a jornada foi exercitada em 320×568, 390×844, 768×1024 e 1440×900. Em cada tamanho, os quatro botões de serviços abriram o destino de WhatsApp esperado, com o serviço correspondente nos metadados do link. Também foram verificados a acionabilidade dos CTAs do início e do fim, o CTA do cabeçalho ou menu móvel, a ação de avaliação e a abertura do FAQ pelo teclado. Não houve overflow horizontal.
+
+A navegação ao WhatsApp foi interceptada no navegador. O teste confirma os destinos configurados e o fluxo técnico, sem enviar mensagens ou eventos de teste ao GA4. A revisão visual com a Bruna, o teste de tarefa com participantes e a medição de conversão permanecem pendentes.
+
 ## Prioridades para validação
 
 | Ordem | Hipótese | Como avaliar |
