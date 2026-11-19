@@ -46,9 +46,16 @@ jobs:
             > "$RUNNER_TEMP/bruna-orca-chrome.log" 2>&1 &
           chrome=$!
 
-          window="$(timeout 30 xdotool search --sync --onlyvisible --class chrome | head -n 1)"
+          window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
           xdotool windowfocus --sync "$window"
-          xdotool key --repeat 20 --delay 500 Tab
+          # Let Chrome finish registering its accessible window before the first key.
+          sleep 8
+          xdotool mousemove --window "$window" 25 325 click 1
+          for step in {1..20}; do
+            xdotool key Tab
+            sleep 0.5
+          done
+          sleep 3
           kill -0 "$reader"
           speech="$(grep -i 'SPEECH OUTPUT' "$output")"
           printf '%s\n' "$speech" | grep -iF 'Pular para o conteúdo'
