@@ -673,12 +673,19 @@ document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
     questionField.style.height = 'auto';
     questionField.style.height = `${questionField.scrollHeight}px`;
   };
-  questionField.addEventListener('input', resizeQuestionField);
+  questionField.addEventListener('input', () => {
+    questionField.setCustomValidity('');
+    resizeQuestionField();
+  });
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
     const question = questionField.value.trim();
-    if (!question) return;
+    if (!question) {
+      questionField.setCustomValidity('Digite sua dúvida antes de enviar.');
+      questionField.reportValidity();
+      return;
+    }
     const message = `Ol\u00e1! Vim pelo site e enviei uma d\u00favida pela se\u00e7\u00e3o de d\u00favidas frequentes: ${question}`;
     const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank', 'noopener,noreferrer');
