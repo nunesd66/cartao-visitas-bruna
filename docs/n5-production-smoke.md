@@ -28,3 +28,7 @@ A execução recorrente ainda precisa ser confirmada no histórico de Actions. O
 - A presença de conteúdo não confirma igualdade de bytes nem conteúdo correto. Não valida Lighthouse, acessibilidade, privacidade, indexação nem GA4.
 - Disponibilidade e comportamento podem mudar entre execuções. Resultados são fotografias daquele instante.
 - Avaliação e aprovação de PRs continuam com Daniel. Não automatizar merge ou rollback por este workflow.
+
+## Peso dos arquivos em revisão
+
+O job de PR inclui no resumo o peso total de `images/`, `css/` e `js/`, além da diferença em bytes por arquivo em relação à revisão base usada no merge de teste. O relatório é informativo. Use-o para investigar aumentos e confirme o efeito na navegação com [Lighthouse em produção](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/n3-published-lighthouse.yml). O tamanho no repositório pode diferir do volume transferido ao navegador.
