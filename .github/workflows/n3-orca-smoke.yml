@@ -40,7 +40,12 @@ jobs:
           curl --retry 5 --retry-connrefused --fail --silent http://127.0.0.1:8765/ >/dev/null
 
           gsettings set org.gnome.desktop.interface toolkit-accessibility true
-          speech-dispatcher --spawn
+          # Xvfb has no physical audio device. Keep speech synthesis available via ALSA.
+          speech_config="$(mktemp -d)"
+          cp -R /etc/speech-dispatcher/. "$speech_config/"
+          printf '\nAudioOutputMethod "alsa"\nAudioALSADevice "null"\n' >> "$speech_config/speechd.conf"
+          speech-dispatcher --run-daemon --config-dir "$speech_config"
+          timeout 10 spd-say --wait 'Speech synthesis ready'
           orca --version
           cat > "$profile/user.js" <<'PREFS'
           user_pref("accessibility.force_disabled", -1);
@@ -61,6 +66,7 @@ jobs:
             echo 'Orca did not start its speech output.' >&2
             exit 1
           fi
+          sleep 4
           for step in {1..20}; do
             xdotool key --clearmodifiers Tab
             sleep 0.75
