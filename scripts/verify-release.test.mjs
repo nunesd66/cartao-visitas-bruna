@@ -25,6 +25,7 @@ async function fixture(t) {
     ['/site/css/style.css', 'body{}'],
     ['/site/js/main.js', 'void 0;'],
     ['/site/images/hero.jpg', 'image fixture'],
+    ['/site/images/service.webp', 'webp fixture'],
     ['/site/robots.txt', 'User-agent: *'],
     ['/site/sitemap.xml', '<urlset/>'],
   ]);
@@ -40,19 +41,21 @@ async function fixture(t) {
   git('commit', '-qm', 'fixture');
   const sha = git('rev-parse', 'HEAD');
   const responses = new Map(expected);
+  const types = new Map([['/site/images/service.webp', 'image/webp']]);
   const requests = [];
   const server = createServer((request, response) => {
     requests.push(request.url);
     const body = responses.get(request.url);
     if (body === undefined) { response.writeHead(404); response.end(); return; }
-    response.writeHead(200);
+    const type = types.get(request.url);
+    response.writeHead(200, type ? { 'Content-Type': type } : {});
     response.end(body);
   });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
   t.after(() => new Promise(resolve => server.close(resolve)));
   return {
-    root, sha, responses, requests,
+    root, sha, responses, requests, types,
     base: 'http://127.0.0.1:' + server.address().port + '/site/',
   };
 }
@@ -71,11 +74,19 @@ test('verificação detecta diferenças de bytes e não confunde HTTP 200 com ig
   const f = await fixture(t);
   const success = await run(f.root, f.sha, f.base);
   assert.equal(success.status, 0, success.stderr);
-  assert.match(success.stdout, /6\/6 arquivos iguais/);
+  assert.match(success.stdout, /7\/7 arquivos iguais/);
   f.responses.set('/site/js/main.js', 'different content');
   const failure = await run(f.root, f.sha, f.base);
   assert.equal(failure.status, 1);
   assert.match(failure.stdout, /FAIL js\/main\.js.*conteúdo diverge/);
+});
+
+test('verificação reprova WebP servido com Content-Type incorreto mesmo com bytes iguais', async (t) => {
+  const f = await fixture(t);
+  f.types.set('/site/images/service.webp', 'application/octet-stream');
+  const failure = await run(f.root, f.sha, f.base);
+  assert.equal(failure.status, 1);
+  assert.match(failure.stdout, /FAIL images\/service\.webp.*Content-Type esperado image\/webp/);
 });
 
 test('verificação rejeita bases inseguras e malformadas antes de registrar ou fazer requisições', async (t) => {
