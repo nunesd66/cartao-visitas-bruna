@@ -39,8 +39,14 @@ jobs:
           gsettings set org.gnome.desktop.interface toolkit-accessibility true
           speech-dispatcher --spawn
           orca --version
-          orca --replace --debug --debug-file="$output" > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
+          orca --replace --enable=speech --disable=braille --debug --debug-file="$output" \
+            > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
           reader=$!
+          timeout 15 bash -c 'until grep -Fq "SPEECH OUTPUT: " "$1" 2>/dev/null; do sleep 0.2; done' _ "$output"
+
+          # Keep the fresh browser profile from showing Chrome's translation prompt.
+          mkdir -p "$profile/Default"
+          printf '%s\n' '{"translate":{"enabled":false}}' > "$profile/Default/Preferences"
           google-chrome --user-data-dir="$profile" --no-first-run --no-default-browser-check \
             --force-renderer-accessibility --app=http://127.0.0.1:8765/ \
             > "$RUNNER_TEMP/bruna-orca-chrome.log" 2>&1 &
@@ -48,22 +54,23 @@ jobs:
 
           window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
           xdotool windowfocus --sync "$window"
-          # Let Chrome finish registering its accessible window before the first key.
-          sleep 8
-          xdotool mousemove --window "$window" 25 325 click 1
+          timeout 20 bash -c 'until grep -Fq "PROCESS OBJECT EVENT document:load-complete" "$1"; do sleep 0.2; done' _ "$output"
           for step in {1..20}; do
-            xdotool key Tab
-            sleep 0.5
+            xdotool key --clearmodifiers Tab
+            sleep 0.75
+            if grep -i 'SPEECH OUTPUT' "$output" | grep -iF 'Recusar' >/dev/null; then
+              break
+            fi
           done
-          sleep 3
           kill -0 "$reader"
           speech="$(grep -i 'SPEECH OUTPUT' "$output")"
+          printf '%s\n' "$speech"
           printf '%s\n' "$speech" | grep -iF 'Pular para o conteúdo'
           printf '%s\n' "$speech" | grep -iF 'Recusar'
           echo 'Orca announced the skip link and the privacy rejection button.'
           BASH
 
-      - name: Preserve public-site test logs
+      - name: Preserve screen-reader test logs
         if: always()
         uses: actions/upload-artifact@v7
         with:
