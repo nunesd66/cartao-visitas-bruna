@@ -102,6 +102,17 @@ O patch remove a chamada manual e mantém o bloqueio da tag até o aceite e o tr
 - O relatório Sitemaps ainda mostrou falha, zero páginas e última leitura em 18/11, sem horário nem motivo específico. O XML público lista a página inicial indexada. A leitura posterior ao reenvio continua sem confirmação.
 - Daniel confirmou a aprovação do aviso publicado. Daniel também confirmou que os dois links dos depoimentos abriram o perfil correto no Instagram. Daniel confirmou em produção o arraste dos depoimentos e a abertura do discador pelo link de telefone. Leitor de tela e navegação sem JavaScript seguem pendentes.
 
+## Verificação da publicação em 19/11/2026
+
+| Critério | Evidência |
+| --- | --- |
+| Publicação | [GitHub Pages](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44405397713) concluiu o deploy de `7db7833a4489a571b762603752a64114369d6c8f` às 18h49 de 18/11, horário de Brasília. |
+| Integridade em produção | Em 19/11 às 07h37, `node scripts/verify-release.mjs <SHA>` confirmou 30/30 arquivos byte a byte. O `smoke-public.mjs --published-sha <SHA>` confirmou status 200 e Content-Type esperado nos 10 recursos. |
+| Testes da revisão | 90/90 em `npm test`. Checagem de referências locais e de sintaxe dos scripts passou. Sass 1.108.2 recompilou CSS idêntico ao versionado. |
+| Navegador em produção | Em Chrome, a 1363×936 px (1348 px de área útil), sem overflow horizontal. Após recusar Analytics, o primeiro FAQ abriu por Enter. Nove links de agendamento identificados na revisão, quatro deles nos cards de serviço. O botão “Avaliar no Google” abriu o endereço configurado por Enter. O destino final aguardou verificação de tráfego do Google nesse navegador. O Maps tinha link direto disponível e iframe ainda sem origem antes de interação. |
+| Search Console | Daniel enviou captura com “Sitemap enviado”. O XML em produção respondeu 200 com `application/xml`; confirmação de leitura com sucesso pelo Search Console segue pendente. A home já consta como indexada nas evidências de 18/11. |
+| Acessibilidade e performance pendentes | Leitor de tela real e navegador sem JavaScript ainda aguardam execução. A última medição completa de Lighthouse disponível é a de `5750028`, registrada acima. |
+
 ## Verificação local
 
 ```sh
