@@ -54,9 +54,21 @@ for (const [name, relative, mediaTypes] of resources) {
     const response = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(12000) });
     const type = response.headers.get('content-type') || '';
     const mediaType = type.split(';', 1)[0].trim().toLowerCase();
-    const ok = response.status === 200 && mediaTypes.includes(mediaType);
-    await response.body?.cancel();
-    results.push({ name, url: url.href, status: response.status, contentType: type, ms: Date.now() - started, ok });
+    const expectedResponse = response.status === 200 && mediaTypes.includes(mediaType);
+    let error;
+    if (expectedResponse) {
+      const reader = response.body?.getReader();
+      try {
+        const chunk = await reader?.read();
+        if (!chunk?.value?.byteLength) error = 'corpo vazio';
+      } finally {
+        await reader?.cancel();
+      }
+    } else {
+      await response.body?.cancel();
+    }
+    const ok = expectedResponse && !error;
+    results.push({ name, url: url.href, status: response.status, contentType: type, ms: Date.now() - started, ok, error });
   } catch (error) {
     results.push({ name, url: url.href, status: 'ERROR', contentType: '', ms: Date.now() - started, ok: false, error: String(error) });
   }

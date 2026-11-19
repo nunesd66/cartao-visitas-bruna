@@ -14,7 +14,7 @@ O mesmo smoke será executado diariamente pelo GitHub Actions às **12:17 UTC (0
 4. Se houver falhas, investigue os arquivos indicados antes de homologar. Não realizar rollback automático.
 5. Complete as verificações manuais de [N3](n3-gate.md) e [homologação](n3-homologacao-execucao.md).
 
-O workflow consulta uma URL pública fixa, valida status HTTP 200 e Content-Type de dez recursos e termina com falha se qualquer recurso falhar. Não publica nem altera o site, e não requer secrets.
+O workflow consulta uma URL pública fixa, valida status HTTP 200, Content-Type e presença de conteúdo em dez recursos e termina com falha se qualquer recurso falhar. Não publica nem altera o site, e não requer secrets.
 
 ## Verificação do release de 19/11/2026
 
@@ -25,6 +25,6 @@ A execução recorrente ainda precisa ser confirmada no histórico de Actions. O
 ## Limites da evidência
 
 - `GITHUB_SHA` é o commit da branch selecionada, **não prova o SHA efetivamente publicado pelo GitHub Pages**.
-- HTTP 200 não confirma igualdade de bytes nem conteúdo correto. Não valida Lighthouse, acessibilidade, privacidade, indexação nem GA4.
+- A presença de conteúdo não confirma igualdade de bytes nem conteúdo correto. Não valida Lighthouse, acessibilidade, privacidade, indexação nem GA4.
 - Disponibilidade e comportamento podem mudar entre execuções. Resultados são fotografias daquele instante.
 - Avaliação e aprovação de PRs continuam com Daniel. Não automatizar merge ou rollback por este workflow.
