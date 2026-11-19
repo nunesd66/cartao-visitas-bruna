@@ -132,6 +132,13 @@ A [execução 44526263473](https://github.com/nunesd66/cartao-visitas-bruna/acti
 
 Mobile e desktop obtiveram 100 em acessibilidade automatizada, boas práticas e SEO. No mobile, três fotos das galerias responderam por aproximadamente 2,3 MiB. O TBT é resultado de laboratório desta rodada. Investigue o trabalho de layout e confirme a variação em execuções comparáveis antes de atribuir o bloqueio a uma causa.
 
+## Leitor de tela e publicação do PR 110
+
+- Em 19/11, o teste do PR #110 usou Orca 50.3 e Firefox 160.0 em Linux/X11, com tela virtual de 1440 × 900 e perfil novo. Em `http://127.0.0.1:8765/`, a navegação por Tab produziu os anúncios “Pular para o conteúdo” e “Recusar” em português do Brasil. A execução foi automatizada por Codex no GitHub Actions. [Execução e logs de fala](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44577554207).
+- O teste usou a revisão `c62a94284c4ad3040cb18a88aed01344d94df826`. O merge `5791e5adfb0f1179b1b36801f91580036268f43b` alterou apenas o workflow em relação à base, e os arquivos públicos do candidato e do merge são idênticos pela árvore Git. A interação por Tab ocorreu sem aceitar analytics.
+- O GitHub Pages publicou `5791e5a` em 19/11. A comparação com a URL pública retornou 33/33 arquivos idênticos. O smoke disparado pelo deploy retornou 10/10. [Deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579384341) · [Smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579545896).
+- A evidência com Orca cobre os dois anúncios no ambiente local do CI. A inspeção manual da jornada permanece aberta. A última medição de Lighthouse segue vinculada a `aedfdce`, com performance 100 em mobile e desktop. [Medição](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44543696312).
+
 ## Verificação local
 
 ```sh
@@ -164,7 +171,7 @@ Usar aba anônima sem dados anteriores; em Network ativar Preserve log. Filtrar 
 | GA4: clique de agendamento sem texto da mensagem nos parâmetros | PASS | DebugView, capturas de Daniel |
 | GA4: uma visualização por abertura | PASS | Abertura observada após o #96; duas tentativas do mesmo hit, uma com HTTP 204 |
 | Viewports 320, 390, 768, 1440 px | NÃO EXECUTADO | Capturas, overflow e CTAs |
-| Teclado, menu, FAQ, carrossel, zoom 200%, leitor de tela | NÃO EXECUTADO | Passos e resultado |
+| Teclado, menu, FAQ, carrossel, zoom 200%, leitor de tela | PARCIAL | [Orca e Firefox](#leitor-de-tela-e-publicação-do-pr-110) confirmaram dois anúncios. Inspeção manual da jornada pendente |
 | Movimento reduzido | NÃO EXECUTADO | Configuração e observação |
 | Lighthouse mobile e desktop | NÃO EXECUTADO | Relatório, SHA, LCP, CLS |
 | WhatsApp, Instagram, telefone, Maps externos | NÃO EXECUTADO | Destino real de cada link |
