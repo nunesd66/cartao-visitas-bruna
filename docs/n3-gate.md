@@ -11,8 +11,8 @@
 ## Critérios externos para fechar N3
 
 ### Publicação e indexabilidade
-- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `7db7833`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44405397713) concluiu com êxito.
-- [x] Validar recursos públicos. Em 19/11, 30/30 arquivos corresponderam a `7db7833` e o smoke HTTP passou 10/10.
+- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `5791e5a`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579384341) concluiu com êxito.
+- [x] Validar recursos públicos. Em 19/11, 33/33 arquivos corresponderam a `5791e5a` e o [smoke HTTP pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579545896) passou 10/10.
 - [x] Confirmar indexação da página inicial na aba Índice do Google do Search Console.
 - [x] Confirmar envio do sitemap. O Google Search Console exibiu “Sitemap enviado” após o reenvio.
 - [ ] Confirmar o processamento no relatório Sitemaps. O XML publicado respondeu HTTP 200 e lista a página inicial.
@@ -31,8 +31,9 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 ### UX, acessibilidade e performance
 - [x] Verificar 320, 390, 768 e 1440 px, sem overflow horizontal e com CTA principal acionável.
 - [x] Testar teclado, foco, menu, FAQ, carrosséis e preferência de movimento reduzido em Chromium. A conferência com leitor de tela real segue abaixo.
-- [ ] Fazer inspeção manual com leitor de tela e registrar limitações.
-- [x] Medir Lighthouse mobile e desktop em produção no commit `5750028`. Resultados e condições no [roteiro de homologação](n3-homologacao-execucao.md#medição-em-produção-de-18112026).
+- [x] Confirmar com leitor de tela real os anúncios do link de salto e do botão de recusa em primeira visita. [Teste automatizado com Orca e Firefox](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110).
+- [ ] Fazer a inspeção manual da jornada com leitor de tela e registrar limitações.
+- [x] Medir Lighthouse mobile e desktop em produção. A última medição obteve 100 nos dois perfis em `aedfdce`. [Resultados e condições](n5-production-smoke.md#medição-pública-após-a-otimização-das-galerias).
 - [x] Verificar navegação sem JavaScript em quatro tamanhos de tela, com destinos externos interceptados. O ajuste de controles do PR #99 foi validado em cópia local.
 - [ ] Confirmar no serviço externo o destino dos links ainda não validados. O relatório de homologação registra os canais já verificados e os limites da interceptação.
 

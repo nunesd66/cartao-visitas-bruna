@@ -38,9 +38,9 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 
 | Nível | Evidências reutilizadas e verificações desta rodada | O que falta para o aceite |
 | --- | --- | --- |
-| N3 | `92ef788` confirmado no Pages com 30/30 arquivos idênticos e smoke HTTP 10/10. O PR #99 integrou a correção validada com JavaScript ligado e desligado. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, leitor de tela real e confirmação no serviço externo dos destinos restantes. |
+| N3 | `5791e5a` publicado no Pages com 33/33 arquivos idênticos e smoke HTTP 10/10. Orca e Firefox confirmaram os anúncios do link de salto e do botão de recusa. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, inspeção manual da jornada com leitor de tela e confirmação do destino do botão de avaliação. |
 | N4 | Direção e jornada documentadas. Chromium exercitou a jornada de contato em quatro tamanhos, com os quatro CTAs de serviço e os destinos de WhatsApp interceptados. [Evidência da jornada](n4-conversao.md#verificação-técnica-em-19112026). | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
-| N5 | Comparação de arquivos e [smoke HTTP vinculados ao deploy `92ef788`](n5-production-smoke.md#verificação-do-release-de-19112026). Ensaio isolado de rollback registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+| N5 | Comparação de arquivos e [smoke HTTP vinculados ao deploy `5791e5a`](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110). Ensaio isolado de rollback registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
 As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
 
@@ -49,10 +49,10 @@ As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-exec
 | Responsável | Pendências |
 | --- | --- |
 | Daniel | Confirmar o resultado do sitemap na propriedade do Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 para a primeira revisão quando houver dados suficientes (N4/N5). |
-| Bruna | Dar o aceite visual e confirmar a hipótese prioritária de conversão (N4). A avaliação com uma pessoa representativa do público deve ser combinada com a Bruna. |
-| Codex | Fazer o teste com leitor de tela real e terminar a verificação dos destinos públicos (N3). Atualizar a medição Lighthouse da revisão publicada quando o ambiente permitir (N3/N5). Acompanhar a primeira execução agendada do smoke e registrar a análise dos indicadores assim que houver dados autorizados (N5). |
+| Bruna | Fornecer, com o administrador do Perfil da Empresa no Google, o link direto para solicitar avaliações (N3). Dar o aceite visual e confirmar a hipótese prioritária de conversão (N4). Combinar o teste com uma pessoa representativa do público. |
+| Codex | Completar a inspeção manual com leitor de tela em uma sessão interativa e verificar o CTA após obter o link direto (N3). Acompanhar a primeira execução agendada do smoke e analisar os indicadores quando houver dados autorizados (N5). |
 
-Em 19/11, o [deploy de `5da3a75`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44523441219) foi confirmado com 30/30 arquivos idênticos e smoke manual 10/10. A agenda de smoke ainda não mostrou uma execução no histórico. Os nove links curtos de avaliações responderam HTTP 302 para o Google. O conteúdo final das avaliações segue pendente de verificação. Em Chromium, a cópia local da mesma revisão passou na checagem de reflow a 640×450 e 320×256 pixels CSS com DPR 2, incluindo menu e foco, FAQ, recusa de analytics e os CTAs principais. Essa emulação verifica layout em área reduzida e não substitui o leitor de tela.
+Em 19/11, o [histórico do smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml) registrou execuções por deploy. A consulta filtrada por `schedule` ainda retornava zero. Os nove links de avaliações publicadas chegaram às respectivas avaliações do Google. A abertura do formulário pelo botão “Avaliar no Google” ficou sem confirmação após a verificação de tráfego do Google.
 
 ### Prioridades de entrega
 
