@@ -33,7 +33,8 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [x] Testar teclado, foco, menu, FAQ, carrosséis e preferência de movimento reduzido em Chromium. A conferência com leitor de tela real segue abaixo.
 - [ ] Fazer inspeção manual com leitor de tela e registrar limitações.
 - [x] Medir Lighthouse mobile e desktop em produção no commit `5750028`. Resultados e condições no [roteiro de homologação](n3-homologacao-execucao.md#medição-em-produção-de-18112026).
-- [ ] Verificar abertura real de todos os canais e CTAs, inclusive sem JavaScript onde aplicável.
+- [x] Verificar navegação sem JavaScript em quatro tamanhos de tela, com destinos externos interceptados. O ajuste de controles do PR #99 foi validado em cópia local.
+- [ ] Confirmar no serviço externo o destino dos links ainda não validados. O relatório de homologação registra os canais já verificados e os limites da interceptação.
 
 ## Evidências mínimas por execução
 

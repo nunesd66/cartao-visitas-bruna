@@ -2326,7 +2326,7 @@ body:has(.mobile-nav[open]) {
 }
 
 @media (min-width: 60rem) and (hover: hover) and (pointer: fine) {
-  .header-pin {
+  .header-pin:not([hidden]) {
     display: grid;
   }
 }
