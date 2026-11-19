@@ -32,3 +32,5 @@ A execução recorrente ainda precisa ser confirmada no histórico de Actions. O
 ## Peso dos arquivos em revisão
 
 O job de PR inclui no resumo o peso total de `images/`, `css/` e `js/`, além da diferença em bytes por arquivo em relação à revisão base usada no merge de teste. O relatório é informativo. Use-o para investigar aumentos e confirme o efeito na navegação com [Lighthouse em produção](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/n3-published-lighthouse.yml). O tamanho no repositório pode diferir do volume transferido ao navegador.
+
+O resumo do Lighthouse traz a quantidade de requisições capturadas e o volume transferido na navegação, além de LCP, CLS e TBT. Compare execuções do mesmo perfil e registre o SHA e as condições da medição. Esses números descrevem uma visita de laboratório e variam com cache e carregamento sob demanda.

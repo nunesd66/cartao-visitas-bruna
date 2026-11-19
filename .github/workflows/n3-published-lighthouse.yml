@@ -73,6 +73,7 @@ jobs:
           if (!Number.isFinite(performance) || result.runtimeError) {
             throw new Error(result.runtimeError?.message || 'Lighthouse did not score Performance');
           }
+          const requests = result.audits['network-requests']?.details?.items;
           console.log('## Lighthouse ' + process.env.FORM_FACTOR);
           console.log('- Expected Pages revision: ' + process.env.PUBLISHED_SHA);
           console.log('- Final URL: ' + result.finalDisplayedUrl);
@@ -82,6 +83,11 @@ jobs:
           console.log('- LCP: ' + (metric('largest-contentful-paint') / 1000).toFixed(3) + ' s');
           console.log('- CLS: ' + metric('cumulative-layout-shift').toFixed(3));
           console.log('- TBT: ' + Math.round(metric('total-blocking-time')) + ' ms');
+          if (Array.isArray(requests)) {
+            const transferBytes = requests.reduce((sum, request) => sum + (request.transferSize ?? 0), 0);
+            console.log('- Requests captured during navigation: ' + requests.length);
+            console.log('- Transfer recorded by Chrome: ' + (transferBytes / 1024).toFixed(1) + ' KiB');
+          }
           JS
 
       - name: Preserve Lighthouse reports
