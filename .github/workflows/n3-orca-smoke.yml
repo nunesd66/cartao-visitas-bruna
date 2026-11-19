@@ -1,0 +1,102 @@
+name: Orca accessibility smoke
+
+on:
+  pull_request:
+    branches: [master]
+    paths:
+      - .github/workflows/n3-orca-smoke.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  orca:
+    runs-on: ubuntu-26.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Install the screen reader and virtual display
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends orca at-spi2-core speech-dispatcher-espeak-ng speech-dispatcher-audio-plugins xvfb xauth xdotool openbox
+
+      - name: Run keyboard navigation with Orca and Firefox
+        shell: bash
+        run: |
+          xvfb-run -a -s '-screen 0 1440x900x24' dbus-run-session -- bash <<'BASH'
+          set -euo pipefail
+          output="$RUNNER_TEMP/bruna-orca.log"
+          profile="$(mktemp -d)"
+          export XDG_SESSION_TYPE=x11
+          openbox > "$RUNNER_TEMP/bruna-orca-openbox.log" 2>&1 &
+          manager=$!
+          python3 -m http.server 8765 --bind 127.0.0.1 > "$RUNNER_TEMP/bruna-orca-server.log" 2>&1 &
+          server=$!
+          trap 'kill "$server" "$manager" "${reader:-}" "${browser:-}" 2>/dev/null || true' EXIT
+          curl --retry 5 --retry-connrefused --fail --silent http://127.0.0.1:8765/ >/dev/null
+
+          gsettings set org.gnome.desktop.interface toolkit-accessibility true
+          # Xvfb has no physical audio device. Keep speech synthesis available via ALSA.
+          speech_config="$(mktemp -d)"
+          cp -R /etc/speech-dispatcher/. "$speech_config/"
+          printf '\nAudioOutputMethod "alsa"\nAudioALSADevice "null"\n' >> "$speech_config/speechd.conf"
+          speech-dispatcher --run-daemon --config-dir "$speech_config"
+          timeout 10 spd-say --wait 'Speech synthesis ready'
+          orca --version
+          cat > "$profile/user.js" <<'PREFS'
+          user_pref("accessibility.force_disabled", -1);
+          user_pref("browser.aboutwelcome.enabled", false);
+          user_pref("browser.translations.enable", false);
+          PREFS
+          firefox --version
+          firefox --no-remote --profile "$profile" --kiosk http://127.0.0.1:8765/ \
+            > "$RUNNER_TEMP/bruna-orca-firefox.log" 2>&1 &
+          browser=$!
+
+          window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
+          xdotool windowactivate --sync "$window"
+          # Flush Orca's diagnostic file so assertions can read speech as it is emitted.
+          export XDG_DATA_HOME="$RUNNER_TEMP/bruna-orca-data"
+          mkdir -p "$XDG_DATA_HOME/orca"
+          cat > "$XDG_DATA_HOME/orca/orca-customizations.py" <<'ORCA'
+          from orca import debug
+
+          if debug.debugFile is not None:
+              debug.debugFile.reconfigure(line_buffering=True)
+          ORCA
+          orca --debug-file="$output" \
+            > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
+          reader=$!
+          await_announcement() {
+            if ! timeout "$1" bash -c 'until grep -F "SPEECH OUTPUT: " "$1" 2>/dev/null | grep -iF "$2"; do sleep 0.2; done' _ "$output" "$2"; then
+              printf 'Orca did not announce "%s".\n' "$2" >&2
+              return 1
+            fi
+          }
+          await_announcement 30 'Firefox'
+          xdotool key --clearmodifiers Tab
+          await_announcement 40 'Pular para o conteúdo'
+          for step in {1..20}; do
+            xdotool key --clearmodifiers Tab
+            sleep 0.75
+            if grep -i 'SPEECH OUTPUT' "$output" | grep -iF 'Recusar' >/dev/null; then
+              break
+            fi
+          done
+          kill -0 "$reader"
+          await_announcement 20 'Recusar'
+          echo 'Orca announced the skip link and the privacy rejection button.'
+          BASH
+
+      - name: Preserve screen-reader test logs
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: orca-smoke-logs
+          path: ${{ runner.temp }}/bruna-orca*.log
+          retention-days: 7
+          if-no-files-found: warn
