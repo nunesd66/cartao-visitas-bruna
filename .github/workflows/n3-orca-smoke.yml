@@ -22,7 +22,7 @@ jobs:
       - name: Install the screen reader and virtual display
         run: |
           sudo apt-get update
-          sudo apt-get install -y orca speech-dispatcher-espeak-ng xvfb xauth xdotool openbox
+          sudo apt-get install -y --no-install-recommends orca at-spi2-core speech-dispatcher-espeak-ng speech-dispatcher-audio-plugins xvfb xauth xdotool openbox
 
       - name: Run keyboard navigation with Orca and Firefox
         shell: bash
@@ -59,14 +59,18 @@ jobs:
 
           window="$(timeout 35 xdotool search --sync --onlyvisible --name 'Bruna Eduarda Beauty' | head -n 1)"
           xdotool windowactivate --sync "$window"
-          PYTHONUNBUFFERED=1 orca --replace --debug --debug-file="$output" \
+          PYTHONUNBUFFERED=1 orca --replace --disable=braille --debug --debug-file="$output" \
             > "$RUNNER_TEMP/bruna-orca-process.log" 2>&1 &
           reader=$!
-          if ! timeout 20 bash -c 'until grep -Fq "SPEECH OUTPUT: " "$1" 2>/dev/null; do sleep 0.2; done' _ "$output"; then
-            echo 'Orca did not start its speech output.' >&2
-            exit 1
-          fi
-          sleep 4
+          await_announcement() {
+            if ! timeout "$1" bash -c 'until grep -F "SPEECH OUTPUT: " "$1" 2>/dev/null | grep -iF "$2"; do sleep 0.2; done' _ "$output" "$2"; then
+              printf 'Orca did not announce "%s".\n' "$2" >&2
+              return 1
+            fi
+          }
+          await_announcement 30 'Mozilla Firefox frame.'
+          xdotool key --clearmodifiers Tab
+          await_announcement 40 'Pular para o conteúdo'
           for step in {1..20}; do
             xdotool key --clearmodifiers Tab
             sleep 0.75
@@ -75,10 +79,7 @@ jobs:
             fi
           done
           kill -0 "$reader"
-          speech="$(grep -i 'SPEECH OUTPUT' "$output")"
-          printf '%s\n' "$speech"
-          printf '%s\n' "$speech" | grep -iF 'Pular para o conteúdo'
-          printf '%s\n' "$speech" | grep -iF 'Recusar'
+          await_announcement 20 'Recusar'
           echo 'Orca announced the skip link and the privacy rejection button.'
           BASH
 
