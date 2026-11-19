@@ -139,6 +139,20 @@ Mobile e desktop obtiveram 100 em acessibilidade automatizada, boas práticas e 
 - O GitHub Pages publicou `5791e5a` em 19/11. A comparação com a URL pública retornou 33/33 arquivos idênticos. O smoke disparado pelo deploy retornou 10/10. [Deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579384341) · [Smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579545896).
 - A evidência com Orca cobre os dois anúncios no ambiente local do CI. A inspeção manual da jornada permanece aberta. A última medição de Lighthouse segue vinculada a `aedfdce`, com performance 100 em mobile e desktop. [Medição](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44543696312).
 
+## Matriz de regressão em produção de 19/11/2026
+
+A revisão do [deploy `1fdfdfa`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44588383976) foi conferida com 33/33 arquivos idênticos antes e depois da medição. O [smoke pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44588556230) passou 10/10. Às 16h02, em Brasília, uma execução local de contingência também passou 10/10. O [histórico do workflow](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml) ainda não registrava execução por agendamento.
+
+| Motor em Debian 13 | Perfis emulados | Verificações aprovadas |
+| --- | ---: | ---: |
+| Chromium 151.0.7922.34 | 7 | 90/91 |
+| Firefox 153.0 | 3 | 37/39 |
+| WebKit 26.5 | 5 | 64/65 |
+
+A rodada passou 45/45 verificações específicas de toque. O axe sinalizou conteúdo fora de regiões no menu auxiliar aberto e no WhatsApp flutuante a 768 px. Os controles responderam nos cenários testados. A coleta de analytics foi interceptada. Edge ficou bloqueado na inicialização, e Safari nativo e aparelhos físicos ficaram fora da cobertura.
+
+O Lighthouse 13.6 registrou performance 93 com LCP de 1,55 s no mobile e 94 com LCP de 0,38 s no desktop. As notas variaram em execuções da mesma revisão. O sitemap serviu XML por HTTP 200. A confirmação de processamento no Search Console continua pendente.
+
 ## Verificação local
 
 ```sh

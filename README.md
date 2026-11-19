@@ -51,14 +51,16 @@ A branch protegida `master` publica no GitHub Pages por workflow. O HTML declara
 
 O site contém o Measurement ID de GA4 `G-YVS4N0BZ9S` (Stream ID `16362293759`) e utiliza `js/analytics.js` + `js/privacy.js` com **Consent Mode básico**:
 
-- Sem decisão, após recusa ou revogação, o código não inicia a tag Google nem eventos próprios. O painel persiste `accepted` ou `rejected` no `localStorage`; se indisponível, a escolha dura apenas a sessão da página.
-- **Ao clicar Aceitar, a implementação atual já pode carregar o `gtag.js` e enviar uma visualização de página.** Portanto, não afirmar que “GA4 está desligado” de forma absoluta. A coleta está condicionada ao consentimento individual, **mas a aprovação de privacidade e a homologação em Network/DebugView permanecem pendentes**.
+- A tag Google e os eventos próprios dependem de consentimento. O painel guarda a escolha em `localStorage` quando disponível.
+- Ao receber o aceite ou restaurar uma escolha aceita, a implementação pode carregar `gtag.js`. A tag pode enviar uma visualização de página após o carregamento.
 - O consentimento inicial nega todos os tipos de armazenamento; após aceite, apenas `analytics_storage` passa a `granted`. Estados de publicidade, Google Signals e personalização de anúncios permanecem desabilitados.
 - Revogação bloqueia novos eventos próprios, sinaliza `denied`, ativa `ga-disable-<ID>` e tenta excluir cookies GA acessíveis. Não elimina dados previamente transmitidos.
 
-A tag de destino do Google Analytics envia `page_view` na Inicialização após o aceite. O site mantém `send_page_view: false` no comando `config` e já passa a URL da página sem query ou fragmento nessa configuração. Os eventos próprios são `contact_intent` (cliques no WhatsApp), `contact_channel_click` e `faq_open`, com parâmetros filtrados por lista permitida. O clique no WhatsApp mede intenção de contato.
+O comando `config` mantém `send_page_view: false` e passa a URL da página sem query ou fragmento. O site delega a visualização inicial à tag de destino após o aceite. Os eventos próprios são `contact_intent` (cliques no WhatsApp), `contact_channel_click` e `faq_open`, com parâmetros filtrados por lista permitida. O clique no WhatsApp mede intenção de contato.
 
-**Bloqueadores antes de considerar a mensuração homologada:** aprovar aviso/política e base aplicável; revisar Mensuração otimizada no GA4 (cliques de saída, histórico, pesquisa e formulários); validar primeira visita, aceite, recusa, retorno e revogação em Network; confirmar recebimento real no Tag Assistant/DebugView. O painel de consentimento, isoladamente, não comprova conformidade LGPD. Consulte o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia_orientativo_cookies_e_protecao_de_dados_pessoais).
+Daniel confirmou a aprovação do aviso publicado. As evidências registram Métrica otimizada desativada no fluxo Web, um `contact_intent` no DebugView e, após o #96, um único `page_view` lógico na abertura observada em produção. Primeira visita, aceite, recusa, retorno e revogação também foram exercitados em Chromium com terceiros interceptados. A homologação do N3 segue pendente. [Evidências e limites](docs/n3-homologacao-execucao.md) · [Gate de aceite do N3](docs/n3-gate.md)
+
+Para orientações de privacidade, consulte o [guia de cookies da ANPD](https://www.gov.br/anpd/pt-br/centrais-de-conteudo/materiais-educativos-e-publicacoes/guia_orientativo_cookies_e_protecao_de_dados_pessoais).
 
 ## Evolução e próximos passos
 
