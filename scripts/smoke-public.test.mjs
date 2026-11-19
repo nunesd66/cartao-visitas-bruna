@@ -123,10 +123,16 @@ test('smoke reprova release com qualquer recurso obrigatório retornando 404', a
 });
 
 
-test('workflow de produção conserva execução manual, agendamento e permissões mínimas', () => {
+test('workflow de produção aceita deploy do Pages, execução manual e agendamento', () => {
   const yaml = readFileSync(new URL('../.github/workflows/production-smoke.yml', import.meta.url), 'utf8');
   assert.match(yaml, /on:\s*\n\s*workflow_dispatch:/);
   assert.match(yaml, /schedule:\s*\n\s*- cron: '17 12 \* \* \*'/);
+  assert.match(yaml, /\n  deployment_status:/);
+  assert.match(yaml, /github\.event\.deployment_status\.state == 'success'\s*&&/);
+  assert.match(yaml, /github\.event\.deployment_status\.environment == 'github-pages'\s*&&/);
+  assert.match(yaml, /github\.event\.deployment\.ref == 'master'/);
+  assert.match(yaml, /github\.event\.deployment\.sha/);
+  assert.match(yaml, /--published-sha "\$DEPLOYMENT_SHA"/);
   assert.match(yaml, /permissions:\s*\n\s*contents: read/);
   assert.match(yaml, /set -o pipefail/);
   assert.match(yaml, /node scripts\/smoke-public\.mjs/);

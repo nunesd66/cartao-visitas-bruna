@@ -1,14 +1,16 @@
-# N5 — Smoke manual da publicação
+# N5 — Smoke da publicação
 
-Workflow: [Production smoke (manual)](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml).
+Workflow: [Production smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml).
 
 ## Execução automatizada
 
 O mesmo smoke será executado diariamente pelo GitHub Actions às **12:17 UTC (09:17 em Brasília)**. O agendamento é do tipo best-effort do GitHub: execuções podem atrasar ou ser desabilitadas pela plataforma em determinadas condições. Consulte o histórico de Actions para conferir se foi executado; falhas do job não fazem rollback e não enviam alertas externos por conta própria.
 
+Um evento de implantação bem-sucedida da `master` no ambiente `github-pages` também pode iniciar o smoke. O resumo identifica o gatilho, e a saída registra o SHA indicado no evento. A primeira execução por evento deve ser confirmada no histórico.
+
 ## Como executar manualmente
 
-1. Após um deploy, abra **Actions → Production smoke (manual) → Run workflow**, escolhendo a branch `master`.
+1. Após um deploy, abra **Actions → Production smoke → Run workflow**, escolhendo a branch `master`.
 2. Confira o resultado do job **Validate published assets**, o resumo e o artefato `production-smoke-result`.
 3. Registre URL, data, execução do workflow e SHA **efetivamente publicado** (obtido separadamente no workflow do Pages).
 4. Se houver falhas, investigue os arquivos indicados antes de homologar. Não realizar rollback automático.
