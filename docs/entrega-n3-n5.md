@@ -44,6 +44,16 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 
 As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
 
+### Pendências por responsável
+
+| Responsável | Pendências |
+| --- | --- |
+| Daniel | Confirmar o resultado do sitemap na propriedade do Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 para a primeira revisão quando houver dados suficientes (N4/N5). |
+| Bruna | Dar o aceite visual e confirmar a hipótese prioritária de conversão (N4). A avaliação com uma pessoa representativa do público deve ser combinada com a Bruna. |
+| Codex | Fazer o teste com leitor de tela real e terminar a verificação dos destinos públicos (N3). Atualizar a medição Lighthouse da revisão publicada quando o ambiente permitir (N3/N5). Acompanhar a primeira execução agendada do smoke e registrar a análise dos indicadores assim que houver dados autorizados (N5). |
+
+Em 19/11, o [deploy de `5da3a75`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44523441219) foi confirmado com 30/30 arquivos idênticos e smoke manual 10/10. A agenda de smoke ainda não mostrou uma execução no histórico. Os nove links curtos de avaliações responderam HTTP 302 para o Google. O conteúdo final das avaliações segue pendente de verificação. Em Chromium, a cópia local da mesma revisão passou na checagem de reflow a 640×450 e 320×256 pixels CSS com DPR 2, incluindo menu e foco, FAQ, recusa de analytics e os CTAs principais. Essa emulação verifica layout em área reduzida e não substitui o leitor de tela.
+
 ### Prioridades de entrega
 
 | Prioridade | Macrotarefa | Microtarefas |
