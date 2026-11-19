@@ -1,7 +1,8 @@
-name: Production smoke (manual)
+name: Production smoke
 
 on:
   workflow_dispatch:
+  deployment_status:
   schedule:
     - cron: '17 12 * * *'
 
@@ -15,6 +16,11 @@ concurrency:
 jobs:
   smoke:
     name: Validate published assets
+    if: >-
+      github.event_name != 'deployment_status' ||
+      (github.event.deployment_status.state == 'success' &&
+      github.event.deployment_status.environment == 'github-pages' &&
+      github.event.deployment.ref == 'master')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -29,20 +35,28 @@ jobs:
           node-version: 20.19.0
 
       - name: Check public site
+        shell: bash
+        env:
+          DEPLOYMENT_SHA: ${{ github.event_name == 'deployment_status' && github.event.deployment.sha || '' }}
         run: |
           set -o pipefail
-          node scripts/smoke-public.mjs https://nunesd66.github.io/cartao-visitas-bruna/ | tee smoke-result.txt
+          args=()
+          if [[ -n "$DEPLOYMENT_SHA" ]]; then
+            args=(--published-sha "$DEPLOYMENT_SHA")
+          fi
+          node scripts/smoke-public.mjs https://nunesd66.github.io/cartao-visitas-bruna/ "${args[@]}" | tee smoke-result.txt
 
       - name: Publish run summary
         if: always()
         run: |
           {
-            echo '## Production smoke (manual)'
+            echo '## Production smoke'
             echo ''
             echo '- URL: https://nunesd66.github.io/cartao-visitas-bruna/'
+            echo "- Trigger: $GITHUB_EVENT_NAME"
             echo "- Repository revision checked out: $GITHUB_SHA"
             echo '- Note: repository revision does not prove which commit GitHub Pages published.'
-            echo '- This smoke checks HTTP status and media types, not asset byte equality or UX.'
+            echo '- This smoke checks HTTP status, media types and presence of content.'
             echo ''
             echo '### Output'
             echo '```text'
