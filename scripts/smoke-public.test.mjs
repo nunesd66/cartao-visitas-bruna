@@ -29,15 +29,18 @@ async function fixture(t, override = new Map()) {
   const server = createServer((request, response) => {
     const path = request.url;
     requests.push(path);
+    let body = '';
     if (override.has(path)) {
-      const { status = 200, headers } = override.get(path);
+      const { status = 200, headers, body: payload = '' } = override.get(path);
+      body = payload;
       response.writeHead(status, headers);
     } else if (contentTypes.has(path)) {
+      body = 'resource fixture';
       response.writeHead(200, { 'Content-Type': `${contentTypes.get(path).toUpperCase()}; charset=utf-8` });
     } else {
       response.writeHead(404);
     }
-    response.end();
+    response.end(body);
   });
   server.listen(0, '127.0.0.1');
   await once(server, 'listening');
@@ -60,6 +63,20 @@ test('smoke rejeita Content-Type com substring enganosa', async (t) => {
     assert.equal(code, 1);
     assert.match(stdout, /FAIL CSS: 200 text\/css-malformado/);
     assert.match(stdout, /FAIL JS principal: 200 application\/notjavascript/);
+    return true;
+  });
+});
+
+test('smoke rejeita recurso vazio com status 200 e Content-Type correto', async (t) => {
+  const { base } = await fixture(t, new Map([
+    ['/site/css/style.css', { headers: { 'Content-Type': 'text/css', 'Content-Length': '0' } }],
+    ['/site/js/main.js', { headers: { 'Content-Type': 'application/javascript', 'Transfer-Encoding': 'chunked' } }],
+  ]));
+  await assert.rejects(runSmoke(base), ({ code, stdout }) => {
+    assert.equal(code, 1);
+    assert.match(stdout, /FAIL CSS: 200 text\/css .* corpo vazio/);
+    assert.match(stdout, /FAIL JS principal: 200 application\/javascript .* corpo vazio/);
+    assert.match(stdout, /Resultado: 8\/10/);
     return true;
   });
 });
