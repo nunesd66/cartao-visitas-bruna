@@ -33,7 +33,7 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [x] Testar teclado, foco, menu, FAQ, carrosséis e preferência de movimento reduzido em Chromium. A conferência com leitor de tela real segue abaixo.
 - [x] Confirmar com leitor de tela real os anúncios do link de salto e do botão de recusa em primeira visita. [Teste automatizado com Orca e Firefox](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110).
 - [ ] Fazer a inspeção manual da jornada com leitor de tela e registrar limitações.
-- [x] Medir Lighthouse mobile e desktop em produção. A medição registrada para `1fdfdfa` marcou 93 e 94 em performance, respectivamente. [Resultados e condições](n3-homologacao-execucao.md#matriz-de-regressão-em-produção-de-19112026).
+- [x] Medir Lighthouse mobile e desktop em produção. A medição de `d11e58db` marcou 98 e 100 em performance, respectivamente. [Resultados e condições](n3-homologacao-execucao.md#rechecagem-da-publicação-em-20112026).
 - [x] Verificar navegação sem JavaScript em quatro tamanhos de tela, com destinos externos interceptados. O ajuste de controles do PR #99 foi validado em cópia local.
 - [ ] Confirmar no serviço externo o destino dos links ainda não validados. O relatório de homologação registra os canais já verificados e os limites da interceptação.
 
