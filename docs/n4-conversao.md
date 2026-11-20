@@ -20,6 +20,12 @@ No Chromium 140, em cópia local da revisão `92ef788a66dda1976d6abf780de30471f9
 
 A navegação ao WhatsApp foi interceptada no navegador. O teste confirma os destinos configurados e o fluxo técnico, sem enviar mensagens ou eventos de teste ao GA4. A revisão visual com a Bruna, o teste de tarefa com participantes e a medição de conversão permanecem pendentes.
 
+## Jornada em modo paisagem em 20/11/2026
+
+Em HeadlessChrome 153.0.8010.0, a cópia de `d11e58db05a81dc902343186b4d3301b03dd29d2` foi verificada em **568 × 320** e **844 × 390**, com toque emulado. Os bytes do HTML, CSS, `main.js` e `privacy.js` da cópia conferiram com o [deploy público](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990).
+
+Nos dois tamanhos, o toque nos botões do menu móvel, da abertura e da chamada final levou ao WhatsApp configurado, com texto de origem correspondente. A página ficou sem rolagem horizontal. Escape fechou o menu e devolveu o foco ao controle de abertura. A navegação externa foi interceptada e nenhuma requisição foi enviada ao GA4. A validação técnica foi feita em emulação. O aceite visual e o teste com uma pessoa do público permanecem pendentes.
+
 ## Prioridades para validação
 
 | Ordem | Hipótese | Como avaliar |
