@@ -26,6 +26,8 @@ Em 19/11 às 12h05, horário de Brasília, o [primeiro smoke disparado pelo depl
 
 Em 19/11 às 17h39, horário de Brasília, o [primeiro smoke com gatilho `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44610894810) verificou **10/10 recursos públicos**. A execução usou a revisão `d11e58db05a81dc902343186b4d3301b03dd29d2`. O SHA servido foi confirmado separadamente pelo [deploy do Pages](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990). O horário foi o de início observado, posterior ao horário configurado.
 
+Em 20/11 às 16h00, horário de Brasília, o [histórico filtrado por `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml?event=schedule) ainda mostrava apenas a execução de 19/11. O smoke público de contingência executado por Codex às 16h00 verificou **10/10 recursos** com HTTP 200 e o tipo esperado no mesmo deploy `d11e58db05a81dc902343186b4d3301b03dd29d2`. A execução agendada de 20/11 continuava sem evidência no momento da consulta.
+
 O [ensaio de recuperação de 20/11](verificacao-release.md#ensaio-de-recuperação-em-20112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
 
 ## Limites da evidência
