@@ -60,6 +60,7 @@ jobs:
           fi
           npm exec --yes --package=lighthouse@13.6.0 -- lighthouse "$PAGES_URL" \
             "${args[@]}" --chrome-flags="--headless" --quiet \
+            --blocked-url-patterns '*googletagmanager.com/*' '*google-analytics.com/*' '*google.com/g/collect*' \
             --output=json --output=html --output-path=./lighthouse-report
 
       - name: Confirm the revision again and summarize
