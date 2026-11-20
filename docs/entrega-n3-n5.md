@@ -40,7 +40,7 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 | --- | --- | --- |
 | N3 | `5791e5a` publicado no Pages com 33/33 arquivos idênticos e smoke HTTP 10/10. Orca e Firefox confirmaram os anúncios do link de salto e do botão de recusa. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, inspeção manual da jornada com leitor de tela e confirmação do destino do botão de avaliação. |
 | N4 | Direção e jornada documentadas. Chromium exercitou a jornada de contato em quatro tamanhos, com os quatro CTAs de serviço e os destinos de WhatsApp interceptados. [Evidência da jornada](n4-conversao.md#verificação-técnica-em-19112026). | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
-| N5 | Comparação de arquivos e [smoke HTTP vinculados ao deploy `5791e5a`](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110). Ensaio isolado de rollback registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+| N5 | O [primeiro smoke agendado](n5-production-smoke.md#verificação-do-release-de-19112026) passou 10/10 na revisão `d11e58db`. O [ensaio de recuperação](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos. O mapa de manutenção e o guia de revisão de dependências estão registrados. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
 As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
 
@@ -50,9 +50,9 @@ As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-exec
 | --- | --- |
 | Daniel | Confirmar o resultado do sitemap na propriedade do Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 para a primeira revisão quando houver dados suficientes (N4/N5). |
 | Bruna | Fornecer, com o administrador do Perfil da Empresa no Google, o link direto para solicitar avaliações (N3). Dar o aceite visual e confirmar a hipótese prioritária de conversão (N4). Combinar o teste com uma pessoa representativa do público. |
-| Codex | Completar a inspeção manual com leitor de tela em uma sessão interativa e verificar o CTA após obter o link direto (N3). Acompanhar a primeira execução agendada do smoke e analisar os indicadores quando houver dados autorizados (N5). |
+| Codex | Completar a inspeção manual com leitor de tela em uma sessão interativa e verificar o CTA após obter o link direto (N3). Analisar os indicadores quando houver dados autorizados (N5). |
 
-Em 19/11, o [histórico do smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml) registrou execuções por deploy. A consulta filtrada por `schedule` ainda retornava zero. Os nove links de avaliações publicadas chegaram às respectivas avaliações do Google. A abertura do formulário pelo botão “Avaliar no Google” ficou sem confirmação após a verificação de tráfego do Google.
+Em 19/11, o histórico do smoke registrou execuções por deploy e por agendamento. Os nove links de avaliações publicadas chegaram às respectivas avaliações do Google. A abertura do formulário pelo botão “Avaliar no Google” ficou sem confirmação após a verificação de tráfego do Google.
 
 ### Prioridades de entrega
 

@@ -22,9 +22,11 @@ O workflow consulta uma URL pública fixa, valida status HTTP 200, Content-Type 
 
 O [GitHub Pages publicou `92ef788`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44513373457). Em 19/11 às 08h17, horário de Brasília, a execução local do mesmo script do workflow verificou **10/10 recursos públicos** com HTTP 200 e tipo esperado. A verificação de release comparou **30/30 arquivos idênticos** ao SHA completo `92ef788a66dda1976d6abf780de30471f9fedd58`.
 
-Em 19/11 às 12h05, horário de Brasília, o [primeiro smoke disparado pelo deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44550850363) verificou 10/10 recursos públicos para o SHA indicado pelo Pages, `d236ab7880ffe9c0ab9bb5676b966eae99de668e`. A execução por horário permanece sem registro no histórico de Actions.
+Em 19/11 às 12h05, horário de Brasília, o [primeiro smoke disparado pelo deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44550850363) verificou 10/10 recursos públicos para o SHA indicado pelo Pages, `d236ab7880ffe9c0ab9bb5676b966eae99de668e`.
 
- O [ensaio de recuperação](verificacao-release.md#evidência-de-17112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
+Em 19/11 às 17h39, horário de Brasília, o [primeiro smoke com gatilho `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44610894810) verificou **10/10 recursos públicos**. A execução usou a revisão `d11e58db05a81dc902343186b4d3301b03dd29d2`. O SHA servido foi confirmado separadamente pelo [deploy do Pages](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990). O horário foi o de início observado, posterior ao horário configurado.
+
+O [ensaio de recuperação de 20/11](verificacao-release.md#ensaio-de-recuperação-em-20112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
 
 ## Limites da evidência
 
