@@ -714,6 +714,19 @@ body:has(.mobile-nav[open]) {
   white-space: normal;
 }
 
+.service-card--assessment {
+  grid-column: 1 / -1;
+}
+
+.service-card--assessment .service-card__body :is(h3, p) {
+  min-height: 0;
+}
+
+.service-card--assessment .service-card__body > .button {
+  width: fit-content;
+  margin-top: 0.75rem;
+}
+
 .about {
   overflow: clip;
   background: var(--color-surface-soft);

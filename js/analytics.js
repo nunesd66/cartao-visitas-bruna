@@ -28,6 +28,7 @@
       'design_sobrancelhas',
       'design_tintura',
       'design_henna',
+      'avaliacao_micropigmentacao',
     ]),
     channels: new Set(['whatsapp', 'instagram', 'google_maps', 'phone', 'google']),
     faqIds: new Set(['faq_01', 'faq_02', 'faq_03', 'faq_04', 'faq_05', 'faq_06']),
