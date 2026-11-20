@@ -21,6 +21,7 @@ const locations = new Set([
 ]);
 const services = new Set([
   'micropigmentacao', 'design_sobrancelhas', 'design_tintura', 'design_henna',
+  'avaliacao_micropigmentacao',
 ]);
 
 test('CTAs de WhatsApp preservam destino, contexto e parâmetros de mensuração', () => {
