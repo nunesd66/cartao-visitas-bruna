@@ -153,6 +153,12 @@ A rodada passou 45/45 verificações específicas de toque. O axe sinalizou cont
 
 O Lighthouse 13.6 registrou performance 93 com LCP de 1,55 s no mobile e 94 com LCP de 0,38 s no desktop. As notas variaram em execuções da mesma revisão. O sitemap serviu XML por HTTP 200. A confirmação de processamento no Search Console continua pendente.
 
+## Rechecagem da publicação em 20/11/2026
+
+- O [deploy do Pages](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990) publicou `d11e58db05a81dc902343186b4d3301b03dd29d2`. O verificador de release confirmou 33/33 arquivos públicos idênticos e o [smoke pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605839439) passou 10/10.
+- O [teste automatizado de Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) da mudança integrada pelo #112 confirmou anúncios no percurso que incluiu privacidade, galeria, avaliações e FAQ. A inspeção manual completa permanece aberta. O runner local ainda bloqueou a abertura do socket Unix necessário à sessão gráfica.
+- A tentativa de Lighthouse sobre a URL pública terminou em `ERR_EMPTY_RESPONSE` no Chrome do ambiente. Na cópia local de `d11e58db`, mobile e desktop retornaram 100 em acessibilidade automatizada, boas práticas e SEO. A coleta de capturas falhou em ambos os perfis (`NO_SCREENSHOTS`), deixando a pontuação de performance indisponível. As notas de performance em produção continuam ligadas à revisão `1fdfdfa`.
+
 ## Verificação local
 
 ```sh
