@@ -38,6 +38,8 @@ Em 22/11 às 15h55, horário de Brasília, o [histórico filtrado por `schedule`
 
 Em 22/11 às 16h42, horário de Brasília, o [smoke com gatilho `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45062288221) confirmou **10/10 recursos públicos**. O checkout usou `d11e58db05a81dc902343186b4d3301b03dd29d2`, mesma revisão identificada no deploy.
 
+Em 23/11 às 16h05, horário de Brasília, o [histórico filtrado por `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml?event=schedule) ainda não mostrava execução para o dia. O smoke público de contingência executado por Codex confirmou **10/10 recursos** com HTTP 200 e o tipo esperado no deploy `d11e58db05a81dc902343186b4d3301b03dd29d2`.
+
 O [ensaio de recuperação de 20/11](verificacao-release.md#ensaio-de-recuperação-em-20112026) registra a detecção de conteúdo divergente e a restauração dos arquivos em branch isolada.
 
 ## Limites da evidência
