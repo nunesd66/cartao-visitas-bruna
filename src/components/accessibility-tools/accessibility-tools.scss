@@ -1,0 +1,208 @@
+.accessibility-tools {
+  position: fixed;
+  z-index: 95;
+  top: 65%;
+  right: 0;
+  color: var(--color-text);
+  transform: translateY(-50%);
+}
+
+.accessibility-tools.is-footer-visible {
+  top: var(--accessibility-tools-top, 5.25rem);
+  transform: none;
+}
+
+.accessibility-tools__toggle {
+  display: grid;
+  width: 2.75rem;
+  height: 3rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 0.9rem 0 0 0.9rem;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 0.14);
+  cursor: pointer;
+  list-style: none;
+}
+
+.accessibility-tools__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.accessibility-tools__toggle svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  transition: transform 180ms ease;
+}
+
+.accessibility-tools[open] > .accessibility-tools__toggle svg {
+  transform: rotate(180deg);
+}
+
+.accessibility-tools__toggle:focus-visible,
+.accessibility-tools__action:focus-visible,
+.accessibility-help > summary:focus-visible {
+  outline: 0.18rem solid var(--color-primary);
+  outline-offset: 0.18rem;
+}
+
+.accessibility-tools__panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 0.5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.5rem;
+  background: var(--color-surface);
+  box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 0.14);
+}
+
+@media (max-height: 47rem) {
+  .accessibility-tools:not(.is-footer-visible) .accessibility-tools__panel {
+    top: auto;
+    bottom: calc(100% + 0.5rem);
+  }
+}
+
+@media (max-height: 26rem) {
+  .accessibility-tools:not(.is-footer-visible) .accessibility-tools__panel {
+    top: 50%;
+    right: calc(100% + 0.5rem);
+    bottom: auto;
+    flex-direction: row;
+    border-radius: 999px;
+    transform: translateY(-50%);
+  }
+}
+
+.accessibility-tools.is-footer-visible .accessibility-tools__panel {
+  top: 50%;
+  right: calc(100% + 0.5rem);
+  bottom: auto;
+  flex-direction: row;
+  border-radius: 999px;
+  transform: translateY(calc(-50% - 0.25rem));
+}
+
+.accessibility-tools__action,
+.accessibility-help > summary {
+  display: grid;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: 0 0 2.9rem;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  background: var(--color-surface);
+  cursor: pointer;
+  list-style: none;
+}
+
+.accessibility-tools__action svg,
+.accessibility-help > summary svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+}
+
+.accessibility-help {
+  position: static;
+}
+
+.accessibility-help > summary::-webkit-details-marker {
+  display: none;
+}
+
+.accessibility-help__panel {
+  position: fixed;
+  z-index: 1;
+  top: 1rem;
+  right: 4rem;
+  width: min(22rem, calc(100vw - 4.75rem));
+  max-height: min(26rem, max(8rem, calc(50vh - 1.5rem)));
+  overflow: auto;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: 0 0.6rem 2rem rgb(0 0 0 / 0.18);
+}
+
+.accessibility-help__panel h2 {
+  margin-bottom: 0.6rem;
+  font-size: 1rem;
+}
+
+.accessibility-help__panel ul {
+  display: grid;
+  gap: 0.55rem;
+  margin: 0;
+  padding-left: 1.1rem;
+  font-size: 0.88rem;
+  line-height: 1.5;
+}
+
+.accessibility-help__panel h3 {
+  margin: 1rem 0 0.35rem;
+  font-size: 0.9rem;
+}
+
+.accessibility-help__shortcuts {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.accessibility-help__shortcuts > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.5rem;
+  padding-block: 0.18rem;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 0.78rem;
+}
+
+.accessibility-help__shortcuts kbd {
+  width: fit-content;
+  padding: 0.08rem 0.25rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.25rem;
+  background: var(--color-surface-soft);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  line-height: 1.4;
+}
+
+.accessibility-help__note {
+  margin: 0.65rem 0 0;
+  color: var(--color-text-muted);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+
+@media (max-width: 47.999rem), (hover: none) and (pointer: coarse) {
+  .accessibility-tools,
+  .whatsapp-float {
+    display: none;
+  }
+
+  .accessibility-help__desktop-instructions {
+    display: none;
+  }
+}

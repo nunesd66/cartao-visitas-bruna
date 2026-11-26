@@ -1,0 +1,16 @@
+@media (prefers-reduced-motion: reduce) {
+  .final-cta .button::before,
+  .final-cta .button::after,
+  .final-cta .button > span::after {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

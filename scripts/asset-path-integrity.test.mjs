@@ -12,9 +12,9 @@ function fixture(t, reference) {
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(path.join(root, 'css'));
   mkdirSync(path.join(root, 'images'));
+  mkdirSync(path.join(root, 'src'));
   writeFileSync(path.join(root, 'index.html'), '<img src="' + reference + '">');
   writeFileSync(path.join(root, 'css/style.css'), '');
-  writeFileSync(path.join(root, 'css/style.scss'), '');
   return root;
 }
 const run = (root) => spawnSync(process.execPath, [checker], { cwd: root, encoding: 'utf8' });

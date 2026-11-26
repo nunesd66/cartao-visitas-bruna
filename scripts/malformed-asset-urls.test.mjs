@@ -12,10 +12,10 @@ test('checker reports malformed encoded asset URL and continues checking remaini
   const root = mkdtempSync(path.join(tmpdir(), 'bruna-invalid-url-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(path.join(root, 'css'));
+  mkdirSync(path.join(root, 'src'));
   writeFileSync(path.join(root, 'index.html'),
     '<img src="images/%E0%A4%A"><img src="images/missing.jpg">');
   writeFileSync(path.join(root, 'css/style.css'), '');
-  writeFileSync(path.join(root, 'css/style.scss'), '');
   const result = spawnSync(process.execPath, [checker], {
     cwd: root,
     encoding: 'utf8',

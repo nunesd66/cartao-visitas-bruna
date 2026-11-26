@@ -1,0 +1,70 @@
+.final-cta {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(4rem, 11vw, 6.5rem);
+  color: #fff;
+  background: var(--color-primary);
+}
+
+.final-cta::before,
+.final-cta::after {
+  position: absolute;
+  border: 0.0625rem solid rgb(255 255 255 / 0.16);
+  border-radius: 50%;
+  content: "";
+}
+
+.final-cta::before {
+  top: -7rem;
+  left: -5rem;
+  width: 15rem;
+  height: 15rem;
+}
+
+.final-cta::after {
+  right: -8rem;
+  bottom: -10rem;
+  width: 20rem;
+  height: 20rem;
+}
+
+.final-cta__inner {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+}
+
+.final-cta .eyebrow,
+.final-cta h2 {
+  color: #fff;
+}
+
+.final-cta .button--light,
+.final-cta .button--light:hover {
+  color: var(--color-primary);
+}
+
+.final-cta h2 {
+  max-width: 13ch;
+  margin-inline: auto;
+}
+
+.final-cta__inner > p:not(.eyebrow) {
+  margin-bottom: 1.6rem;
+  color: rgb(255 255 255 / 0.82);
+}
+
+.final-cta .button {
+  position: relative;
+  box-shadow: 0 0.55rem 1.4rem rgb(0 0 0 / 0.2);
+  transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.final-cta .button:hover {
+  box-shadow: 0 0 0 0.25rem rgb(255 255 255 / 0.12), 0 0.85rem 1.8rem rgb(0 0 0 / 0.28);
+  transform: translateY(-0.16rem) scale(1.015);
+}
+
+.final-cta .button:active {
+  transform: translateY(0) scale(0.99);
+}

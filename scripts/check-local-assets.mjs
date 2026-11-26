@@ -19,7 +19,7 @@ const hasExactCase = (relative) => {
 };
 
 
-const addReference = (sourceFile, value) => {
+const addReference = (sourceFile, value, baseDirectory = path.dirname(sourceFile)) => {
   const reference = value.trim();
   if (!reference || /^(?:[a-z][a-z\d+.-]*:|\/\/|#)/i.test(reference)) return;
 
@@ -31,7 +31,7 @@ const addReference = (sourceFile, value) => {
     references.push({ sourceFile, reference, error: 'invalid percent-encoding in local asset URL' });
     return;
   }
-  const target = path.resolve(path.dirname(sourceFile), pathname);
+  const target = path.resolve(baseDirectory, pathname);
   const relativeTarget = path.relative(root, target);
 
   if (relativeTarget.startsWith('..') || path.isAbsolute(relativeTarget)) {
@@ -53,11 +53,21 @@ for (const match of html.matchAll(/\b(?:src|href)\s*=\s*["']([^"']+)["']/gi)) {
   addReference(htmlPath, match[1]);
 }
 
-for (const cssName of ['css/style.css', 'css/style.scss']) {
-  const cssPath = path.join(root, cssName);
-  const css = readFileSync(cssPath, 'utf8');
-  for (const match of css.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) {
-    addReference(cssPath, match[1]);
+const addStylesheetReferences = (sourceFile, baseDirectory) => {
+  const stylesheet = readFileSync(sourceFile, 'utf8');
+  for (const match of stylesheet.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)) {
+    addReference(sourceFile, match[1], baseDirectory);
+  }
+};
+
+const cssPath = path.join(root, 'css/style.css');
+addStylesheetReferences(cssPath);
+
+// Sass preserves the URLs. They are resolved relative to the emitted CSS.
+const scssRoot = path.join(root, 'src');
+for (const entry of readdirSync(scssRoot, { recursive: true, withFileTypes: true })) {
+  if (entry.isFile() && entry.name.endsWith('.scss')) {
+    addStylesheetReferences(path.join(entry.parentPath, entry.name), path.dirname(cssPath));
   }
 }
 
