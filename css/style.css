@@ -1415,7 +1415,14 @@ body:has(.mobile-nav[open]) {
   bottom: auto;
   left: 50%;
   max-width: calc(100% - 2rem);
+  cursor: pointer;
   transform: translate(-50%, -50%);
+}
+
+.map-embed .map-embed__load:active {
+  border-color: var(--color-primary-dark);
+  background: var(--color-primary-dark);
+  box-shadow: inset 0 0.15rem 0.3rem rgba(0, 0, 0, 0.24);
 }
 
 .map-embed__load[hidden] {
