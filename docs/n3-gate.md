@@ -11,8 +11,8 @@
 ## Critérios externos para fechar N3
 
 ### Publicação e indexabilidade
-- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `5791e5a`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579384341) concluiu com êxito.
-- [x] Validar recursos públicos. Em 19/11, 33/33 arquivos corresponderam a `5791e5a` e o [smoke HTTP pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44579545896) passou 10/10.
+- [x] Confirmar `master` e commit publicado no GitHub Pages. O [deploy de `d11e58db`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990) concluiu com êxito.
+- [x] Validar recursos públicos. Em 20/11, 33/33 arquivos corresponderam a `d11e58db`. O [smoke HTTP pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605839439) passou 10/10.
 - [x] Confirmar indexação da página inicial na aba Índice do Google do Search Console.
 - [x] Confirmar envio do sitemap. O Google Search Console exibiu “Sitemap enviado” após o reenvio.
 - [ ] Confirmar o processamento no relatório Sitemaps. O XML publicado respondeu HTTP 200 e lista a página inicial.
@@ -33,7 +33,7 @@ Para regras de rastreamento, o Google consulta o [`robots.txt` da raiz do host](
 - [x] Testar teclado, foco, menu, FAQ, carrosséis e preferência de movimento reduzido em Chromium. A conferência com leitor de tela real segue abaixo.
 - [x] Confirmar com leitor de tela real os anúncios do link de salto e do botão de recusa em primeira visita. [Teste automatizado com Orca e Firefox](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110).
 - [ ] Fazer a inspeção manual da jornada com leitor de tela e registrar limitações.
-- [x] Medir Lighthouse mobile e desktop em produção. A última medição obteve 100 nos dois perfis em `aedfdce`. [Resultados e condições](n5-production-smoke.md#medição-pública-após-a-otimização-das-galerias).
+- [x] Medir Lighthouse mobile e desktop em produção. A medição de `d11e58db` marcou 98 e 100 em performance, respectivamente. [Resultados e condições](n3-homologacao-execucao.md#rechecagem-da-publicação-em-20112026).
 - [x] Verificar navegação sem JavaScript em quatro tamanhos de tela, com destinos externos interceptados. O ajuste de controles do PR #99 foi validado em cópia local.
 - [ ] Confirmar no serviço externo o destino dos links ainda não validados. O relatório de homologação registra os canais já verificados e os limites da interceptação.
 

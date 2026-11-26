@@ -153,6 +153,19 @@ A rodada passou 45/45 verificações específicas de toque. O axe sinalizou cont
 
 O Lighthouse 13.6 registrou performance 93 com LCP de 1,55 s no mobile e 94 com LCP de 0,38 s no desktop. As notas variaram em execuções da mesma revisão. O sitemap serviu XML por HTTP 200. A confirmação de processamento no Search Console continua pendente.
 
+## Rechecagem da publicação em 20/11/2026
+
+- O [deploy do Pages](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990) publicou `d11e58db05a81dc902343186b4d3301b03dd29d2`. O verificador de release confirmou 33/33 arquivos públicos idênticos e o [smoke pós-deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605839439) passou 10/10.
+- O [teste automatizado de Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) da mudança integrada pelo #112 confirmou anúncios no percurso que incluiu privacidade, galeria, avaliações e FAQ. A inspeção manual completa permanece aberta. O runner local ainda bloqueou a abertura do socket Unix necessário à sessão gráfica.
+- A primeira tentativa de Lighthouse na URL pública terminou em `ERR_EMPTY_RESPONSE`. A cópia local ficou sem pontuação de performance por `NO_SCREENSHOTS`. Às 16h03, horário de Brasília, a [nova medição em produção no GitHub Actions](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655) usou Lighthouse 13.6.0 e Headless Chrome 157. O workflow conferiu o SHA publicado antes e depois da medição. Os relatórios dos dois perfis registraram zero requisições aos endpoints do Analytics e ao carregador da tag, com bloqueio explícito no navegador de teste.
+
+| Perfil | Performance | LCP | CLS | TBT | Acessibilidade / Boas práticas / SEO |
+| --- | --- | --- | --- | --- | --- |
+| Mobile | 98 | 1,558 s | 0 | 155 ms | 100 / 100 / 100 |
+| Desktop | 100 | 0,408 s | 0,007 | 0 ms | 100 / 100 / 100 |
+
+As notas vêm de uma auditoria de laboratório. A inspeção manual com leitor de tela e a confirmação de processamento do sitemap no Search Console seguem abertas.
+
 ## Verificação local
 
 ```sh
