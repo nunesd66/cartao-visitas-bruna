@@ -29,7 +29,7 @@ npm run build:css
 python -m http.server 8080
 ```
 
-Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`, o conteúdo por seção em `src/sections/` e a interface compartilhada em `src/components/`. Execute `npm run build:html` e inclua o HTML gerado na PR enquanto o Pages publicar a partir da raiz da branch. Edite os estilos em `css/style.scss` e gere `css/style.css` com `npm run build:css`.
+Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`, o conteúdo por seção em `src/sections/` e a interface compartilhada em `src/components/`. Execute `npm run build:html` e inclua o HTML gerado na PR enquanto o Pages publicar a partir da raiz da branch. Edite o SCSS junto à seção ou componente. O arquivo `src/styles/main.scss` define a ordem da cascata. Gere `css/style.css` com `npm run build:css`.
 
 ### Verificação local
 

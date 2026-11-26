@@ -12,9 +12,10 @@ function fixture(t, { html, css = '', scss = '', assets = [] }) {
   const root = mkdtempSync(path.join(tmpdir(), 'bruna-asset-check-'));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   mkdirSync(path.join(root, 'css'));
+  mkdirSync(path.join(root, 'src/sections/gallery'), { recursive: true });
   writeFileSync(path.join(root, 'index.html'), html);
   writeFileSync(path.join(root, 'css/style.css'), css);
-  writeFileSync(path.join(root, 'css/style.scss'), scss);
+  writeFileSync(path.join(root, 'src/sections/gallery/gallery.scss'), scss);
   for (const asset of assets) {
     const location = path.join(root, asset);
     mkdirSync(path.dirname(location), { recursive: true });
@@ -43,11 +44,13 @@ test('assets ausentes são informados com referência e saída diferente de zero
   const root = fixture(t, {
     html: '<img src="images/inexistente.jpg">',
     css: 'body { background: url("../images/outro.jpg"); }',
+    scss: '$image: url("../images/scss-missing.jpg");',
   });
   const result = check(root);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /images\/inexistente\.jpg/);
   assert.match(result.stderr, /images\/outro\.jpg/);
+  assert.match(result.stderr, /src\/sections\/gallery\/gallery\.scss: \.\.\/images\/scss-missing\.jpg/);
   assert.match(result.stderr, /file does not exist/);
 });
 

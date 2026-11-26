@@ -1,0 +1,21 @@
+.section {
+  padding-block: clamp(4.25rem, 10vw, 7.5rem);
+  scroll-margin-top: 0;
+}
+
+.section-heading {
+  margin-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+
+.section-heading > p:last-child,
+.section-heading--split > p {
+  max-width: 41rem;
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.section-heading--center {
+  max-width: 47rem;
+  margin-inline: auto;
+  text-align: center;
+}

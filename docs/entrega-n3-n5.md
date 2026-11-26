@@ -80,7 +80,7 @@ Cada PR registra quem executou as verificações e quem validou a mudança. A re
 | --- | --- | --- |
 | Serviços, FAQ, horário e fotos | [`index.html`](../index.html) e [`images/`](../images/) | Aprovação da responsável, texto alternativo, ativos publicados e apresentação em celular e desktop |
 | Telefone, WhatsApp, endereço e Maps | [`index.html`](../index.html) e o envio de dúvidas em [`js/main.js`](../js/main.js) | Consistência entre contato visível, CTAs, ficha do Maps e dados estruturados. Conferir o link direto e o mapa sob demanda |
-| Layout e interações | [`css/style.scss`](../css/style.scss) e [`js/main.js`](../js/main.js) | Gerar `css/style.css`, rodar `npm test` e conferir teclado, foco e movimento reduzido no navegador |
+| Layout e interações | [Módulos SCSS](../src/styles/main.scss) e [`js/main.js`](../js/main.js) | Gerar `css/style.css`, rodar `npm test` e conferir teclado, foco e movimento reduzido no navegador |
 | URL pública, sitemap e metadados | [`index.html`](../index.html), [`sitemap.xml`](../sitemap.xml) e [`robots.txt`](../robots.txt) | Rodar `npm test`, conferir a URL publicada e registrar a inspeção no Search Console com o titular da propriedade |
 | Consentimento e eventos | [`js/privacy.js`](../js/privacy.js) e [`js/analytics.js`](../js/analytics.js) | Revisão de privacidade e evidências do [gate N3](n3-gate.md), incluindo Network e validação autorizada na propriedade GA4 |
 

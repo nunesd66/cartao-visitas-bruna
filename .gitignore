@@ -23,7 +23,6 @@
 
 /css/*
 !/css/style.css
-!/css/style.scss
 
 /js/*
 !/js/main.js

@@ -78,8 +78,8 @@ test('referências ARIA e associações de labels apontam para IDs existentes', 
 });
 
 test('tokens de texto mantêm contraste WCAG AA sobre superfícies padrão', () => {
-  const scss = readFileSync(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../css/style.scss'), 'utf8');
-  const palette = Object.fromEntries([...scss.matchAll(/\$(color-[\w-]+):\s*(#[0-9a-f]{6});/gi)]
+  const css = readFileSync(new URL('../css/style.css', import.meta.url), 'utf8');
+  const palette = Object.fromEntries([...css.matchAll(/--(color-[\w-]+):\s*(#[0-9a-f]{6});/gi)]
     .map(([, name, color]) => [name, color]));
   const luminance = (color) => {
     const channels = [1, 3, 5].map((position) => parseInt(color.slice(position, position + 2), 16) / 255)

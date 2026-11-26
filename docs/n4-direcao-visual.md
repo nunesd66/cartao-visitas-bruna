@@ -1,6 +1,6 @@
 # Direção visual e design system do N4
 
-**Estado.** Proposta para revisão da Bruna. Este documento registra a linguagem visual já implementada no `css/style.scss` e os critérios para evoluí-la. A direção, os novos usos de marca e os testes de conversão dependem de aprovação específica.
+**Estado.** Proposta para revisão da Bruna. Este documento registra a linguagem visual já implementada nos módulos [SCSS](../src/styles/main.scss) e os critérios para evoluí-la. A direção, os novos usos de marca e os testes de conversão dependem de aprovação específica.
 
 ## Direção proposta
 

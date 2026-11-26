@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 
 const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
-const css = readFileSync(new URL('../css/style.scss', import.meta.url), 'utf8');
+const css = readFileSync(new URL('../css/style.css', import.meta.url), 'utf8');
 const services = html.match(/<section class="section services"[\s\S]*?<\/section>/)?.[0];
 
 test('fotos de serviços preservam o texto alternativo e compartilham a mesma marca d’água', () => {

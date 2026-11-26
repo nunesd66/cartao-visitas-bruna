@@ -1,0 +1,22 @@
+// A ordem dos módulos preserva a cascata da folha publicada.
+@use "base/tokens";
+@use "base/foundation";
+@use "components/buttons";
+@use "../sections/header/header";
+@use "../sections/hero/hero";
+@use "base/section-layout";
+@use "../sections/services/services";
+@use "../sections/about/about";
+@use "../sections/certifications/certifications";
+@use "../sections/testimonials/testimonials";
+@use "../sections/faq/faq";
+@use "../sections/final-cta/final-cta";
+@use "../sections/contact/contact";
+@use "../sections/footer/footer";
+@use "../components/accessibility-tools/accessibility-tools";
+@use "../components/privacy/privacy";
+@use "components/floating-contact";
+@use "layout/responsive";
+@use "components/faq-question";
+@use "layout/desktop";
+@use "base/reduced-motion";
