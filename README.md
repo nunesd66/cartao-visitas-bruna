@@ -24,16 +24,15 @@ HTML semântico, SCSS compilado em CSS e JavaScript nativo. Sem framework nem de
 
 ```bash
 npm ci
-npm run build:html
-npm run build:css
-python -m http.server 8080
+npm run build
+python -m http.server 8080 --directory dist
 ```
 
-Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`, o conteúdo por seção em `src/sections/` e a interface compartilhada em `src/components/`. Execute `npm run build:html` e inclua o HTML gerado na PR enquanto o Pages publicar a partir da raiz da branch. Edite o SCSS junto à seção ou componente. O arquivo `src/styles/main.scss` define a ordem da cascata. Gere `css/style.css` com `npm run build:css`.
+Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`, o conteúdo por seção em `src/sections/` e a interface compartilhada em `src/components/`. Gere o HTML versionado com `npm run build:html`. Edite o SCSS junto à seção ou componente. O arquivo `src/styles/main.scss` define a ordem da cascata. Gere `css/style.css` com `npm run build:css`.
 
 ### Verificação local
 
-Para conferir o pacote estático isolado, execute `npm run build` e sirva `dist/` com `python -m http.server 8080 --directory dist`. O pacote inclui o HTML e o CSS gerados, os módulos JavaScript usados pelo site, as imagens versionadas, o sitemap e o robots. O workflow de publicação atual ainda usa a raiz da branch.
+O pacote em `dist/` inclui HTML, CSS, JavaScript, imagens, sitemap e robots. O CI confere que o HTML e o CSS do pacote correspondem aos arquivos gerados e versionados na raiz.
 
 O `js/main.js` inicializa os módulos por funcionalidade. Os testes de comportamento ficam ao lado dos módulos em `js/`. Os testes estruturais e de publicação ficam em `scripts/`.
 
@@ -50,9 +49,9 @@ O workflow `Pull request checks` valida build, sintaxe, testes Node e referênci
 
 ## SEO e publicação
 
-Para migrar a publicação para `dist/`, selecione **GitHub Actions** como origem em **Settings → Pages** e execute **Publish static site to GitHub Pages** na `master`. Confira o smoke e execute `node scripts/verify-release.mjs <SHA-do-deploy>` depois da publicação. Durante a transição, os arquivos gerados continuam na raiz. Para voltar ao fluxo anterior, selecione **Deploy from a branch**, com `master` e `/ (root)`.
+Com **GitHub Actions** como origem em **Settings → Pages**, execute manualmente **Publish static site to GitHub Pages** na `master` para publicar `dist/`. Após o deploy, o **Production smoke** verifica a disponibilidade dos recursos, incluindo a foto da avaliação, e compara os arquivos públicos com o SHA informado pelo deploy. Para repetir essa comparação manualmente, use **Verify published Pages release** com o SHA completo. Para voltar ao fluxo anterior, selecione **Deploy from a branch**, com `master` e `/ (root)`.
 
-A branch protegida `master` publica no GitHub Pages por workflow. O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon de marca depende de aprovação. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
+O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon de marca depende de aprovação. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
 
 ## Analytics e privacidade
 

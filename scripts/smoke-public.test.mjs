@@ -29,6 +29,7 @@ const contentTypes = new Map([
   ['/site/sitemap.xml', 'text/xml'],
   ['/site/images/primeira-foto.jpg', 'image/jpeg'],
   ['/site/images/bruna-profissional.jpg', 'image/jpeg'],
+  ['/site/images/avaliacao-micropigmentacao.webp', 'image/webp'],
 ]);
 
 async function fixture(t, override = new Map()) {
@@ -58,7 +59,7 @@ async function fixture(t, override = new Map()) {
 test('smoke aceita os tipos esperados com variação de caixa e charset', async (t) => {
   const { base } = await fixture(t);
   const { stdout } = await runSmoke(base);
-  assert.match(stdout, /Resultado: 17\/17/);
+  assert.match(stdout, /Resultado: 18\/18/);
 });
 
 test('smoke rejeita Content-Type com substring enganosa', async (t) => {
@@ -83,7 +84,7 @@ test('smoke rejeita recurso vazio com status 200 e Content-Type correto', async 
     assert.equal(code, 1);
     assert.match(stdout, /FAIL CSS: 200 text\/css .* corpo vazio/);
     assert.match(stdout, /FAIL JS principal: 200 application\/javascript .* corpo vazio/);
-    assert.match(stdout, /Resultado: 15\/17/);
+    assert.match(stdout, /Resultado: 16\/18/);
     return true;
   });
 });
@@ -117,14 +118,14 @@ test('smoke rejeita URL com dados de autenticação antes de registrar ou requis
 });
 
 
-test('smoke reprova release com qualquer recurso obrigatório retornando 404', async (t) => {
+test('smoke reprova release sem a foto da avaliação', async (t) => {
   const { base } = await fixture(t, new Map([
-    ['/site/images/primeira-foto.jpg', { status: 404 }],
+    ['/site/images/avaliacao-micropigmentacao.webp', { status: 404 }],
   ]));
   await assert.rejects(runSmoke(base), ({ code, stdout }) => {
     assert.equal(code, 1);
-    assert.match(stdout, /FAIL imagem social: 404/);
-    assert.match(stdout, /Resultado: 16\/17/);
+    assert.match(stdout, /FAIL foto da avaliação: 404/);
+    assert.match(stdout, /Resultado: 17\/18/);
     return true;
   });
 });
@@ -136,7 +137,7 @@ test('smoke reprova release se um módulo importado não estiver publicado', asy
   await assert.rejects(runSmoke(base), ({ code, stdout }) => {
     assert.equal(code, 1);
     assert.match(stdout, /FAIL JS perguntas frequentes: 404/);
-    assert.match(stdout, /Resultado: 16\/17/);
+    assert.match(stdout, /Resultado: 17\/18/);
     return true;
   });
 });
@@ -153,6 +154,8 @@ test('workflow de produção aceita deploy do Pages, execução manual e agendam
   assert.match(yaml, /github\.event\.deployment\.sha/);
   assert.match(yaml, /--published-sha "\$DEPLOYMENT_SHA"/);
   assert.match(yaml, /permissions:\s*\n\s*contents: read/);
-  assert.match(yaml, /set -o pipefail/);
+  assert.match(yaml, /set -eo pipefail/);
+  assert.match(yaml, /fetch-depth: 0/);
+  assert.match(yaml, /node scripts\/verify-release\.mjs "\$DEPLOYMENT_SHA"/);
   assert.match(yaml, /node scripts\/smoke-public\.mjs/);
 });

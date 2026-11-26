@@ -47,6 +47,7 @@ const resources = [
   ['sitemap', 'sitemap.xml', ['application/xml', 'text/xml']],
   ['imagem social', 'images/primeira-foto.jpg', ['image/jpeg']],
   ['foto de apresentação', 'images/bruna-profissional.jpg', ['image/jpeg']],
+  ['foto da avaliação', 'images/avaliacao-micropigmentacao.webp', ['image/webp']],
 ];
 
 console.log(`Data UTC: ${new Date().toISOString()}`);
