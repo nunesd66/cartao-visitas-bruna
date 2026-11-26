@@ -2,6 +2,7 @@
 !/.gitignore
 !/README.md
 !/index.html
+!/src/
 !/css/
 !/js/
 !/images/
@@ -37,6 +38,8 @@
 !/scripts/privacy.test.mjs
 !/scripts/carousel.test.mjs
 !/scripts/verify-release.mjs
+!/scripts/build-html.mjs
+!/scripts/build-html.test.mjs
 
 /images/*
 !/images/bruna-profissional.jpg

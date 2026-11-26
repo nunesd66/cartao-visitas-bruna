@@ -31,6 +31,11 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
+      - name: Verify committed HTML matches the section fragments
+        run: |
+          npm run build:html
+          git diff --exit-code -- index.html
+
       - name: Verify committed CSS matches SCSS
         run: |
           npm run build:css
