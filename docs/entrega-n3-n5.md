@@ -36,23 +36,21 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 
 ## Situação em 23/11/2026
 
-O [GitHub Pages publicou `d11e58db05a81dc902343186b4d3301b03dd29d2`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990). A homologação dos três níveis segue pendente pelos critérios abaixo.
+Em 26/11/2026, o [GitHub Pages publicou `da6bfe38eeaa806ea99d82259fb15e6600eb7ae5`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45877029700). O verificador conferiu 41/41 arquivos públicos por conteúdo. A homologação segue pendente pelos critérios abaixo e as verificações recentes estão no [roteiro de execução](n3-homologacao-execucao.md#verificação-em-26112026).
 
 | Nível | Evidências verificadas | O que falta para o aceite |
 | --- | --- | --- |
-| N3 | 33/33 arquivos públicos conferidos. O [Lighthouse](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655) mediu performance de 98 no mobile e 100 no desktop, com zero requisições aos destinos bloqueados do GA4. [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado. | Confirmar o processamento do sitemap no Search Console, completar a inspeção manual com leitor de tela e confirmar o destino do botão de avaliação. |
-| N4 | Direção e jornada documentadas. O Chromium exercitou a jornada de contato em quatro larguras e em duas janelas em paisagem, com destinos externos interceptados. [Registro do teste em paisagem](https://github.com/nunesd66/cartao-visitas-bruna/pull/119). | Aceite da direção visual e da hipótese prioritária, teste de tarefa com público representativo e medição após coleta autorizada. |
-| N5 | Os [smokes agendados e de contingência](n5-production-smoke.md#verificação-do-release-de-19112026) têm resultados identificados pelo gatilho. O [ensaio de recuperação](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos em ambiente isolado. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
-
-O sitemap público respondeu HTTP 200 com XML. A página inicial consta como indexada na evidência de 18/11. A confirmação de processamento do sitemap depende do relatório da propriedade. O destino atual de “Avaliar no Google” segue publicado enquanto se aguarda o link oficial, pois a verificação de tráfego impediu confirmar a abertura do formulário.
+| N3 | Release, sitemap público, foto da avaliação, legenda e título confirmados. A medição completa de Lighthouse em produção permanece no [SHA anterior](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655). [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado anterior. | Confirmar o processamento no Search Console, completar a inspeção manual com leitor de tela e validar o link direto de avaliação. |
+| N4 | Direção e jornada documentadas. [Teste de contato em paisagem](https://github.com/nunesd66/cartao-visitas-bruna/pull/119). As 10 mensagens de WhatsApp na versão publicada correspondem às intenções aprovadas. | Aceite visual e da hipótese prioritária, teste com público representativo e medição com dados autorizados. |
+| N5 | [Smoke de deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45877119725) concluído. Smoke de contingência passou 18/18. A última [execução por horário](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45707073865) visível na consulta ainda era de 25/11. [Ensaio de recuperação anterior](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
 ### Pendências por responsável
 
 | Responsável | Pendências |
 | --- | --- |
-| Daniel | Revisar os PRs #118 a #122. Confirmar o processamento do sitemap no Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 quando houver dados suficientes (N4/N5). |
-| Bruna | Obter, com quem administra o Perfil da Empresa no Google, o link direto para solicitar avaliações (N3). Dar o aceite visual, confirmar a hipótese prioritária e indicar a pessoa representativa para o teste de tarefa (N4). |
-| Codex | Retomar a inspeção manual com leitor de tela quando houver sessão gráfica compatível. A tentativa de 23/11 voltou a receber `EPERM` ao abrir um socket Unix. Validar o CTA com o link oficial e analisar os dados quando houver acesso autorizado. |
+| Daniel | Revisar os PRs pendentes, disponibilizar a evidência de processamento do sitemap (N3) e os indicadores autorizados quando houver dados suficientes (N4/N5), indicar quem acompanha a operação (N5) e enviar o esboço do favicon. |
+| Bruna | Obter, com quem administra a ficha do Google, o link direto para solicitar avaliações (N3). Dar o aceite visual, confirmar a hipótese prioritária e indicar a pessoa representativa para o teste de tarefa (N4). |
+| Codex | Retentar a medição de Lighthouse em produção e a inspeção manual com leitor de tela em ambiente compatível. Conferir a evidência do smoke agendado após o atraso. Validar o CTA com o link oficial e analisar os dados quando disponíveis. |
 
 ### Prioridades de entrega
 
