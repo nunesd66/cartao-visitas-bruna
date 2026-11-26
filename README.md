@@ -33,6 +33,8 @@ Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`
 
 ### Verificação local
 
+Para conferir o pacote estático isolado, execute `npm run build` e sirva `dist/` com `python -m http.server 8080 --directory dist`. O pacote inclui o HTML e o CSS gerados, os módulos JavaScript usados pelo site, as imagens versionadas, o sitemap e o robots. O workflow de publicação atual ainda usa a raiz da branch.
+
 O `js/main.js` inicializa os módulos por funcionalidade. Os testes de comportamento ficam ao lado dos módulos em `js/`. Os testes estruturais e de publicação ficam em `scripts/`.
 
 ```bash
