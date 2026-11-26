@@ -40,7 +40,7 @@ Em 26/11/2026, o [GitHub Pages publicou `da6bfe38eeaa806ea99d82259fb15e6600eb7ae
 
 | Nível | Evidências verificadas | O que falta para o aceite |
 | --- | --- | --- |
-| N3 | Release, sitemap público, foto da avaliação, legenda e título confirmados. A medição completa de Lighthouse em produção permanece no [SHA anterior](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655). [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado anterior. | Confirmar o processamento no Search Console, completar a inspeção manual com leitor de tela e validar o link direto de avaliação. |
+| N3 | Release, sitemap público, foto da avaliação, legenda e título confirmados. Lighthouse na URL pública via proxy registrou performance de 89/91 (mobile/desktop). A medição anterior em runner está [aqui](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655). [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado anterior. | Confirmar o processamento no Search Console, completar a inspeção manual com leitor de tela e validar o link direto de avaliação. |
 | N4 | Direção e jornada documentadas. [Teste de contato em paisagem](https://github.com/nunesd66/cartao-visitas-bruna/pull/119). As 10 mensagens de WhatsApp na versão publicada correspondem às intenções aprovadas. | Aceite visual e da hipótese prioritária, teste com público representativo e medição com dados autorizados. |
 | N5 | [Smoke de deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45877119725) concluído. Smoke de contingência passou 18/18. A última [execução por horário](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45707073865) visível na consulta ainda era de 25/11. [Ensaio de recuperação anterior](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
@@ -50,7 +50,7 @@ Em 26/11/2026, o [GitHub Pages publicou `da6bfe38eeaa806ea99d82259fb15e6600eb7ae
 | --- | --- |
 | Daniel | Revisar os PRs pendentes, disponibilizar a evidência de processamento do sitemap (N3) e os indicadores autorizados quando houver dados suficientes (N4/N5), indicar quem acompanha a operação (N5) e enviar o esboço do favicon. |
 | Bruna | Obter, com quem administra a ficha do Google, o link direto para solicitar avaliações (N3). Dar o aceite visual, confirmar a hipótese prioritária e indicar a pessoa representativa para o teste de tarefa (N4). |
-| Codex | Retentar a medição de Lighthouse em produção e a inspeção manual com leitor de tela em ambiente compatível. Conferir a evidência do smoke agendado após o atraso. Validar o CTA com o link oficial e analisar os dados quando disponíveis. |
+| Codex | Conferir a medição de Lighthouse sem a limitação do proxy em runner compatível e retomar a inspeção manual com leitor de tela. Conferir a evidência do smoke agendado após o atraso. Validar o CTA com o link oficial e analisar os dados quando disponíveis. |
 
 ### Prioridades de entrega
 
