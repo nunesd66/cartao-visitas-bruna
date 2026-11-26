@@ -695,6 +695,16 @@ body:has(.mobile-nav[open]) {
   white-space: normal;
 }
 
+.service-card__media-placeholder {
+  display: grid;
+  margin: 0;
+  padding: 1rem;
+  place-items: center;
+  border-bottom: 0.0625rem solid var(--color-border);
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
 .about {
   overflow: clip;
   background: var(--color-surface-soft);
