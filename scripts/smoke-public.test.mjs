@@ -18,6 +18,12 @@ const contentTypes = new Map([
   ['/site/js/analytics.js', 'text/javascript'],
   ['/site/js/privacy.js', 'application/x-javascript'],
   ['/site/js/map.js', 'text/javascript'],
+  ['/site/js/accessibility/index.js', 'text/javascript'],
+  ['/site/js/carousel/index.js', 'text/javascript'],
+  ['/site/js/faq/index.js', 'text/javascript'],
+  ['/site/js/header/index.js', 'text/javascript'],
+  ['/site/js/parallax/index.js', 'text/javascript'],
+  ['/site/js/whatsapp/index.js', 'text/javascript'],
   ['/site/robots.txt', 'text/plain'],
   ['/site/sitemap.xml', 'text/xml'],
   ['/site/images/primeira-foto.jpg', 'image/jpeg'],
@@ -51,7 +57,7 @@ async function fixture(t, override = new Map()) {
 test('smoke aceita os tipos esperados com variação de caixa e charset', async (t) => {
   const { base } = await fixture(t);
   const { stdout } = await runSmoke(base);
-  assert.match(stdout, /Resultado: 10\/10/);
+  assert.match(stdout, /Resultado: 16\/16/);
 });
 
 test('smoke rejeita Content-Type com substring enganosa', async (t) => {
@@ -76,7 +82,7 @@ test('smoke rejeita recurso vazio com status 200 e Content-Type correto', async 
     assert.equal(code, 1);
     assert.match(stdout, /FAIL CSS: 200 text\/css .* corpo vazio/);
     assert.match(stdout, /FAIL JS principal: 200 application\/javascript .* corpo vazio/);
-    assert.match(stdout, /Resultado: 8\/10/);
+    assert.match(stdout, /Resultado: 14\/16/);
     return true;
   });
 });
@@ -117,7 +123,19 @@ test('smoke reprova release com qualquer recurso obrigatório retornando 404', a
   await assert.rejects(runSmoke(base), ({ code, stdout }) => {
     assert.equal(code, 1);
     assert.match(stdout, /FAIL imagem social: 404/);
-    assert.match(stdout, /Resultado: 9\/10/);
+    assert.match(stdout, /Resultado: 15\/16/);
+    return true;
+  });
+});
+
+test('smoke reprova release se um módulo importado não estiver publicado', async (t) => {
+  const { base } = await fixture(t, new Map([
+    ['/site/js/faq/index.js', { status: 404 }],
+  ]));
+  await assert.rejects(runSmoke(base), ({ code, stdout }) => {
+    assert.equal(code, 1);
+    assert.match(stdout, /FAIL JS perguntas frequentes: 404/);
+    assert.match(stdout, /Resultado: 15\/16/);
     return true;
   });
 });

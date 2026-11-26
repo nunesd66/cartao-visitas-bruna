@@ -1,11 +1,8 @@
 import assert from 'node:assert/strict';
-import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import vm from 'node:vm';
+import { createAnalytics } from '../analytics.js';
 
-const analyticsSource = await readFile(new URL('../js/analytics.js', import.meta.url), 'utf8');
-
-function createAnalytics(measurementId = '', initialCookies = []) {
+function createAnalyticsHarness(measurementId = '', initialCookies = []) {
   const scripts = [];
   const cookieJar = new Map(initialCookies);
   const window = {
@@ -44,10 +41,10 @@ function createAnalytics(measurementId = '', initialCookies = []) {
     },
   });
 
-  vm.runInNewContext(analyticsSource, { window, document, URL });
+  const analytics = createAnalytics(window, document);
 
   return {
-    analytics: window.BrunaAnalytics,
+    analytics,
     scripts,
     cookieNames: () => [...cookieJar.keys()],
     isCollectionDisabled: () => Boolean(window['ga-disable-G-YVS4N0BZ9S'] || window['ga-disable-G-TEST123456']),
@@ -56,7 +53,7 @@ function createAnalytics(measurementId = '', initialCookies = []) {
 }
 
 test('sin ID real, consentimento nao inicia fila, script ou eventos', () => {
-  const { analytics, scripts, calls } = createAnalytics();
+  const { analytics, scripts, calls } = createAnalyticsHarness();
 
   assert.equal(analytics.setConsent(true), false);
   assert.equal(analytics.isEnabled(), false);
@@ -66,7 +63,7 @@ test('sin ID real, consentimento nao inicia fila, script ou eventos', () => {
 });
 
 test('ID real configurado nao ativa coleta nem solicita Google tag sem consentimento', () => {
-  const { analytics, scripts, calls } = createAnalytics('G-YVS4N0BZ9S');
+  const { analytics, scripts, calls } = createAnalyticsHarness('G-YVS4N0BZ9S');
 
   assert.equal(analytics.isEnabled(), false);
   assert.equal(analytics.track('whatsapp_booking_click', { cta_location: 'hero' }), false);
@@ -75,7 +72,7 @@ test('ID real configurado nao ativa coleta nem solicita Google tag sem consentim
 });
 
 test('exige consentimento, carrega uma tag e configura o consent mode uma vez', () => {
-  const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
+  const { analytics, scripts, calls } = createAnalyticsHarness('G-TEST123456');
 
   assert.equal(analytics.track('faq_open', { faq_id: 'faq_01' }), false);
   assert.equal(scripts.length, 0);
@@ -118,7 +115,7 @@ test('exige consentimento, carrega uma tag e configura o consent mode uma vez', 
 });
 
 test('normaliza eventos e descarta parametros fora da lista permitida', () => {
-  const { analytics, calls } = createAnalytics('G-TEST123456');
+  const { analytics, calls } = createAnalyticsHarness('G-TEST123456');
   analytics.setConsent(true);
 
   assert.equal(analytics.track('whatsapp_booking_click', {
@@ -146,7 +143,7 @@ test('normaliza eventos e descarta parametros fora da lista permitida', () => {
 });
 
 test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', () => {
-  const { analytics, scripts, calls, cookieNames, isCollectionDisabled } = createAnalytics('G-TEST123456', [
+  const { analytics, scripts, calls, cookieNames, isCollectionDisabled } = createAnalyticsHarness('G-TEST123456', [
     ['_ga', 'client-id'],
     ['_ga_G-TEST123456', 'session-id'],
     ['site-preference', 'kept'],
@@ -177,7 +174,7 @@ test('revogacao bloqueia eventos e atualiza consentimento sem duplicar a tag', (
 
 
 test('novo aceite após revogação não duplica configuração nem envia pageview manual', () => {
-  const { analytics, calls, scripts } = createAnalytics('G-TEST123456');
+  const { analytics, calls, scripts } = createAnalyticsHarness('G-TEST123456');
   analytics.setConsent(true);
   scripts[0].onload();
   assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
@@ -193,7 +190,7 @@ test('novo aceite após revogação não duplica configuração nem envia pagevi
 
 
 test('erro de carregamento permite nova tentativa sem duplicar a configuração', () => {
-  const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
+  const { analytics, scripts, calls } = createAnalyticsHarness('G-TEST123456');
   assert.equal(analytics.setConsent(true), true);
   assert.equal(scripts.length, 1);
   scripts[0].onerror();
@@ -212,7 +209,7 @@ test('erro de carregamento permite nova tentativa sem duplicar a configuração'
 
 
 test('revogação durante carregamento descarta comandos pendentes e cancela tag', () => {
-  const { analytics, scripts, calls, isCollectionDisabled } = createAnalytics('G-TEST123456');
+  const { analytics, scripts, calls, isCollectionDisabled } = createAnalyticsHarness('G-TEST123456');
   assert.equal(analytics.setConsent(true), true);
   assert.equal(calls().filter(([kind, name]) => kind === 'event' && name === 'page_view').length, 0);
   assert.equal(typeof scripts[0].onload, 'function');
@@ -230,7 +227,7 @@ test('revogação durante carregamento descarta comandos pendentes e cancela tag
 });
 
 test('falha de carregamento descarta comandos antigos antes de tentar novamente', () => {
-  const { analytics, scripts, calls } = createAnalytics('G-TEST123456');
+  const { analytics, scripts, calls } = createAnalyticsHarness('G-TEST123456');
   assert.equal(analytics.setConsent(true), true);
   scripts[0].onerror();
   assert.equal(analytics.isEnabled(), false);

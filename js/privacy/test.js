@@ -1,11 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import vm from 'node:vm';
+import { initializePrivacy } from '../privacy.js';
 
-const privacySource = await readFile(new URL('../js/privacy.js', import.meta.url), 'utf8');
-const htmlSource = await readFile(new URL('../index.html', import.meta.url), 'utf8');
-const cssSource = await readFile(new URL('../css/style.css', import.meta.url), 'utf8');
+const htmlSource = await readFile(new URL('../../index.html', import.meta.url), 'utf8');
+const cssSource = await readFile(new URL('../../css/style.css', import.meta.url), 'utf8');
 
 class FakeElement {
   constructor({ hidden = false, selectorMap = {} } = {}) {
@@ -89,11 +88,10 @@ function createPrivacy(storage = new Map()) {
   const storageListeners = new Map();
   const window = {
     localStorage,
-    BrunaAnalytics: analytics,
     addEventListener(type, listener) { storageListeners.set(type, listener); },
   };
 
-  vm.runInNewContext(privacySource, { window, document });
+  initializePrivacy({ window, document, analytics });
 
   function receiveStorageChange(key, storageArea = localStorage) {
     storageListeners.get('storage')?.({ key, storageArea });

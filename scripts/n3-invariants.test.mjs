@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { initializeSite } from '../js/main.js';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (name) => readFileSync(path.join(root, name), 'utf8');
@@ -13,19 +14,52 @@ const attributes = (tag) => Object.fromEntries(
     .map(([, key, value]) => [key.toLowerCase(), value]),
 );
 
-test('scripts locais necessários preservam ordem de execução e não usam async', () => {
-  const local = scripts
-    .map((tag) => ({ tag, attrs: attributes(tag) }))
-    .filter(({ attrs }) => /^js\/(analytics|privacy|main|map)\.js$/.test(attrs.src || ''));
-  const sources = local.map(({ attrs }) => attrs.src);
-  for (const required of ['js/analytics.js', 'js/privacy.js', 'js/main.js']) {
-    assert.equal(sources.filter((source) => source === required).length, 1, required);
-  }
-  assert.ok(sources.indexOf('js/analytics.js') < sources.indexOf('js/privacy.js'));
-  assert.ok(sources.indexOf('js/privacy.js') < sources.indexOf('js/main.js'));
-  for (const { tag, attrs } of local) {
-    assert.match(tag, /\sdefer(?:\s|>)/i, 'script sem defer: ' + attrs.src);
-    assert.doesNotMatch(tag, /\sasync(?:\s|>)/i, 'script async pode romper ordem: ' + attrs.src);
+test('HTML carrega um único módulo inicializador, com execução após a leitura do documento', () => {
+  const withSource = scripts.filter((tag) => attributes(tag).src);
+  assert.equal(withSource.length, 1);
+  assert.deepEqual(attributes(withSource[0]), { type: 'module', src: 'js/main.js' });
+  assert.doesNotMatch(withSource[0], /\sasync(?:\s|=|>)/i);
+});
+
+test('inicializador restaura a escolha antes de permitir coleta do GA4', () => {
+  for (const choice of [null, 'rejected', 'accepted']) {
+    const scripts = [];
+    const button = { addEventListener() {} };
+    const toggle = { addEventListener() {}, setAttribute() {} };
+    const panel = {
+      addEventListener() {},
+      querySelector: () => button,
+      contains: () => false,
+      classList: { remove() {} },
+    };
+    const document = {
+      head: { appendChild(script) { scripts.push(script); } },
+      activeElement: null,
+      cookie: '',
+      addEventListener() {},
+      createElement: () => ({}),
+      querySelector(selector) {
+        if (selector === '[data-privacy-panel]') return panel;
+        if (selector === 'meta[name="ga4-measurement-id"]') return { content: 'G-TEST123456' };
+        return null;
+      },
+      querySelectorAll: (selector) => selector === '[data-privacy-toggle]' ? [toggle] : [],
+    };
+    const window = {
+      document,
+      localStorage: { getItem: () => choice },
+      location: { origin: 'https://example.test', pathname: '/' },
+      navigator: { maxTouchPoints: 0 },
+      matchMedia: () => ({ matches: false }),
+      addEventListener() {},
+    };
+
+    initializeSite(window);
+
+    const accepted = choice === 'accepted';
+    assert.equal(scripts.length, accepted ? 1 : 0);
+    assert.equal(window.BrunaAnalytics.isEnabled(), accepted);
+    assert.equal(panel.hidden, choice !== null);
   }
 });
 

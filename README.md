@@ -33,6 +33,8 @@ Acesse `http://localhost:8080`. Edite a estrutura da página em `src/index.html`
 
 ### Verificação local
 
+O `js/main.js` inicializa os módulos por funcionalidade. Os testes de comportamento ficam ao lado dos módulos em `js/`. Os testes estruturais e de publicação ficam em `scripts/`.
+
 ```bash
 node --check js/main.js
 node --check js/analytics.js

@@ -42,17 +42,12 @@ jobs:
           npm run build:css
           git diff --exit-code -- css/style.css
 
-      - name: Check JavaScript syntax
-        run: node --check js/main.js
-
-      - name: Check analytics JavaScript syntax
-        run: node --check js/analytics.js
-
-      - name: Check privacy JavaScript syntax
-        run: node --check js/privacy.js
-
-      - name: Check map JavaScript syntax
-        run: node --check js/map.js
+      - name: Check JavaScript module syntax
+        shell: bash
+        run: |
+          while IFS= read -r -d '' file; do
+            node --check "$file"
+          done < <(find js -type f -name '*.js' -print0)
 
       - name: Run all Node regression tests
         run: npm test

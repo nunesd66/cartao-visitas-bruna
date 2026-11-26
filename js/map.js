@@ -1,4 +1,4 @@
-(() => {
+export function initializeMap(document) {
   document.querySelectorAll('[data-map-load]').forEach((button) => {
     const frame = button.closest('.map-embed')?.querySelector('iframe[data-map-src]');
     const url = frame?.dataset.mapSrc;
@@ -12,4 +12,4 @@
     });
     button.hidden = false;
   });
-})();
+}

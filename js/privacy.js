@@ -1,4 +1,4 @@
-(() => {
+export function initializePrivacy({ window, document, analytics }) {
   const storageKey = 'bruna-analytics-consent-v1';
   const panel = document.querySelector('[data-privacy-panel]');
   const toggles = [...document.querySelectorAll('[data-privacy-toggle]')];
@@ -6,7 +6,6 @@
   const menuToggle = document.querySelector('.accessibility-tools__toggle');
   const acceptButton = panel?.querySelector('[data-privacy-choice="accepted"]');
   const rejectButton = panel?.querySelector('[data-privacy-choice="rejected"]');
-  const analytics = window.BrunaAnalytics;
 
   if (!panel || !toggles.length || !acceptButton || !rejectButton) {
     analytics?.setConsent(false);
@@ -91,4 +90,4 @@
   });
 
   restoreChoice();
-})();
+}

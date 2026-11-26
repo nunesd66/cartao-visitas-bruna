@@ -1,4 +1,4 @@
-(() => {
+export function createAnalytics(window, document) {
   const measurementIdPattern = /^G-[A-Z0-9]{6,}$/;
   const deniedConsent = Object.freeze({
     analytics_storage: 'denied',
@@ -238,5 +238,24 @@
     return true;
   };
 
-  window.BrunaAnalytics = Object.freeze({ setConsent, isEnabled, track });
-})();
+  return Object.freeze({ setConsent, isEnabled, track });
+}
+
+export function initializeAnalyticsTracking({ window, document, analytics }) {
+  document.addEventListener('click', (event) => {
+    const target = event.target instanceof window.Element ? event.target : event.target.parentElement;
+    const trigger = target?.closest('[data-analytics-event]');
+    if (!trigger || typeof analytics?.track !== 'function') return;
+
+    const eventName = trigger.dataset.analyticsEvent;
+    if (eventName === 'faq_open' && trigger.closest('details')?.open) return;
+
+    const parameters = {};
+    if (trigger.dataset.analyticsLocation) parameters.cta_location = trigger.dataset.analyticsLocation;
+    if (trigger.dataset.analyticsService) parameters.service_name = trigger.dataset.analyticsService;
+    if (trigger.dataset.analyticsChannel) parameters.channel = trigger.dataset.analyticsChannel;
+    if (trigger.dataset.analyticsQuestion) parameters.faq_id = trigger.dataset.analyticsQuestion;
+
+    analytics.track(eventName, parameters);
+  }, true);
+}
