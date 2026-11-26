@@ -34,25 +34,25 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 | N4 — Identidade visual e conversão | Direção visual aprovada pela profissional, sistema visual aplicado, jornada até o contato e hipótese de conversão documentada | Aceite visual responsivo, teste da jornada e protocolo de medição. Identificar cliques no WhatsApp como intenção de contato |
 | N5 — Operação contínua (proposta) | Release rastreável, verificação pós-publicação, recuperação, manutenção e ciclo de melhoria orientado por dados | Associar verificações a um deploy, ensaiar recuperação em branch isolada, registrar responsável operacional e documentar a primeira revisão de indicadores autorizados |
 
-## Situação em 19/11/2026
+## Situação em 23/11/2026
 
-| Nível | Evidências reutilizadas e verificações desta rodada | O que falta para o aceite |
+O [GitHub Pages publicou `d11e58db05a81dc902343186b4d3301b03dd29d2`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44605705990). A homologação dos três níveis segue pendente pelos critérios abaixo.
+
+| Nível | Evidências verificadas | O que falta para o aceite |
 | --- | --- | --- |
-| N3 | `5791e5a` publicado no Pages com 33/33 arquivos idênticos e smoke HTTP 10/10. Orca e Firefox confirmaram os anúncios do link de salto e do botão de recusa. Home indexada, aviso aprovado e correção do `page_view` verificada em produção. | Leitura do sitemap no Search Console, inspeção manual da jornada com leitor de tela e confirmação do destino do botão de avaliação. |
-| N4 | Direção e jornada documentadas. Chromium exercitou a jornada de contato em quatro tamanhos, com os quatro CTAs de serviço e os destinos de WhatsApp interceptados. [Evidência da jornada](n4-conversao.md#verificação-técnica-em-19112026). | Revisão responsiva da direção e aprovação da hipótese prioritária pela Bruna. Fechar a verificação dos destinos e registrar o teste de tarefa. Medir a hipótese após haver coleta autorizada e janela suficiente. |
-| N5 | Comparação de arquivos e [smoke HTTP vinculados ao deploy `5791e5a`](n3-homologacao-execucao.md#leitor-de-tela-e-publicação-do-pr-110). Ensaio isolado de rollback registrado e conferido na árvore Git. Existe um fluxo diário de smoke e um mapa de manutenção. | Confirmar a primeira execução recorrente, indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+| N3 | 33/33 arquivos públicos conferidos. O [Lighthouse](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655) mediu performance de 98 no mobile e 100 no desktop, com zero requisições aos destinos bloqueados do GA4. [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado. | Confirmar o processamento do sitemap no Search Console, completar a inspeção manual com leitor de tela e confirmar o destino do botão de avaliação. |
+| N4 | Direção e jornada documentadas. O Chromium exercitou a jornada de contato em quatro larguras e em duas janelas em paisagem, com destinos externos interceptados. [Registro do teste em paisagem](https://github.com/nunesd66/cartao-visitas-bruna/pull/119). | Aceite da direção visual e da hipótese prioritária, teste de tarefa com público representativo e medição após coleta autorizada. |
+| N5 | Os [smokes agendados e de contingência](n5-production-smoke.md#verificação-do-release-de-19112026) têm resultados identificados pelo gatilho. O [ensaio de recuperação](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos em ambiente isolado. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
-As evidências de 19/11 estão no [roteiro de homologação](n3-homologacao-execucao.md#verificação-da-publicação-em-19112026). O resultado do [ensaio de rollback](verificacao-release.md#evidência-de-17112026) continua vinculado à revisão usada no ensaio.
+O sitemap público respondeu HTTP 200 com XML. A página inicial consta como indexada na evidência de 18/11. A confirmação de processamento do sitemap depende do relatório da propriedade. O destino atual de “Avaliar no Google” segue publicado enquanto se aguarda o link oficial, pois a verificação de tráfego impediu confirmar a abertura do formulário.
 
 ### Pendências por responsável
 
 | Responsável | Pendências |
 | --- | --- |
-| Daniel | Confirmar o resultado do sitemap na propriedade do Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 para a primeira revisão quando houver dados suficientes (N4/N5). |
-| Bruna | Fornecer, com o administrador do Perfil da Empresa no Google, o link direto para solicitar avaliações (N3). Dar o aceite visual e confirmar a hipótese prioritária de conversão (N4). Combinar o teste com uma pessoa representativa do público. |
-| Codex | Completar a inspeção manual com leitor de tela em uma sessão interativa e verificar o CTA após obter o link direto (N3). Acompanhar a primeira execução agendada do smoke e analisar os indicadores quando houver dados autorizados (N5). |
-
-Em 19/11, o [histórico do smoke](https://github.com/nunesd66/cartao-visitas-bruna/actions/workflows/production-smoke.yml) registrou execuções por deploy. A consulta filtrada por `schedule` ainda retornava zero. Os nove links de avaliações publicadas chegaram às respectivas avaliações do Google. A abertura do formulário pelo botão “Avaliar no Google” ficou sem confirmação após a verificação de tráfego do Google.
+| Daniel | Revisar os PRs #118 a #122. Confirmar o processamento do sitemap no Search Console (N3), indicar quem acompanha a operação (N5) e disponibilizar os indicadores autorizados do GA4 quando houver dados suficientes (N4/N5). |
+| Bruna | Obter, com quem administra o Perfil da Empresa no Google, o link direto para solicitar avaliações (N3). Dar o aceite visual, confirmar a hipótese prioritária e indicar a pessoa representativa para o teste de tarefa (N4). |
+| Codex | Retomar a inspeção manual com leitor de tela quando houver sessão gráfica compatível. A tentativa de 23/11 voltou a receber `EPERM` ao abrir um socket Unix. Validar o CTA com o link oficial e analisar os dados quando houver acesso autorizado. |
 
 ### Prioridades de entrega
 
