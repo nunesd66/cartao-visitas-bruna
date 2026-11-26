@@ -31,7 +31,8 @@ const commit = git('rev-parse', '--verify', '--end-of-options', ref + '^{commit}
 const paths = git(
   'ls-tree', '-rz', '--name-only', commit, '--',
   'index.html', 'css/style.css', 'js', 'images', 'robots.txt', 'sitemap.xml',
-).toString().split('\0').filter(Boolean);
+).toString().split('\0').filter((path) =>
+  path && (!path.startsWith('js/') || (path.endsWith('.js') && !/(?:^|[./])test\.js$/.test(path))));
 if (!paths.includes('index.html')) throw new Error('A revisão esperada precisa conter index.html');
 
 async function verify(path) {

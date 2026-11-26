@@ -20,6 +20,7 @@
 !/.github/workflows/pr-checks.yml
 !/.github/workflows/verify-pages-release.yml
 !/.github/workflows/n3-published-lighthouse.yml
+!/.github/workflows/deploy-pages.yml
 
 /css/*
 !/css/style.css

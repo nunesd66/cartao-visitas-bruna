@@ -50,6 +50,8 @@ O workflow `Pull request checks` valida build, sintaxe, testes Node e referênci
 
 ## SEO e publicação
 
+Para migrar a publicação para `dist/`, selecione **GitHub Actions** como origem em **Settings → Pages** e execute **Publish static site to GitHub Pages** na `master`. Confira o smoke e execute `node scripts/verify-release.mjs <SHA-do-deploy>` depois da publicação. Durante a transição, os arquivos gerados continuam na raiz. Para voltar ao fluxo anterior, selecione **Deploy from a branch**, com `master` e `/ (root)`.
+
 A branch protegida `master` publica no GitHub Pages por workflow. O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon de marca depende de aprovação. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
 
 ## Analytics e privacidade
