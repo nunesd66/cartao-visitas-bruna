@@ -58,3 +58,15 @@ jobs:
 
       - name: Check local asset references
         run: node scripts/check-local-assets.mjs
+
+      - name: Build and verify the static package
+        shell: bash
+        run: |
+          npm run build
+          cmp index.html dist/index.html
+          cmp css/style.css dist/css/style.css
+          python3 -m http.server 8765 --directory dist --bind 127.0.0.1 > "$RUNNER_TEMP/pages-preview.log" 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          curl --retry 5 --retry-connrefused --fail --silent http://127.0.0.1:8765/ >/dev/null
+          node scripts/smoke-public.mjs http://127.0.0.1:8765/
