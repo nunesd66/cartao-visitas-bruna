@@ -714,29 +714,14 @@ body:has(.mobile-nav[open]) {
   white-space: normal;
 }
 
-.service-card--assessment {
-  grid-column: 1 / -1;
-}
-
 .service-card__media-placeholder {
   display: grid;
-  min-height: 6rem;
   margin: 0;
   padding: 1rem;
   place-items: center;
   border-bottom: 0.0625rem solid var(--color-border);
-  background: var(--color-surface-soft);
   color: var(--color-text-muted);
   text-align: center;
-}
-
-.service-card--assessment .service-card__body :is(h3, p) {
-  min-height: 0;
-}
-
-.service-card--assessment .service-card__body > .button {
-  width: fit-content;
-  margin-top: 0.75rem;
 }
 
 .about {
