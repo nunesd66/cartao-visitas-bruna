@@ -9,7 +9,7 @@ const services = html.match(/<section class="section services"[\s\S]*?<\/section
 test('fotos de serviços preservam o texto alternativo e compartilham a mesma marca d’água', () => {
   assert.ok(services);
   const photos = [...services.matchAll(/<div class="service-card__photo"(?: data-inactive)?>([\s\S]*?)<\/div>/g)];
-  assert.equal(photos.length, 6);
+  assert.equal(photos.length, 7);
   for (const [, photo] of photos) {
     assert.match(photo, /<img\b[^>]*\balt="[^"]+"/);
     assert.match(photo, /class="photo-watermark" aria-hidden="true">@abrunasobrancelhas<\/span>/);
