@@ -1580,6 +1580,11 @@ body:has(.mobile-nav[open]) {
   display: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .accessibility-tools__toggle svg {
+    transition: none;
+  }
+}
 .accessibility-tools__toggle svg {
   width: 1.35rem;
   height: 1.35rem;
@@ -1751,11 +1756,6 @@ body:has(.mobile-nav[open]) {
   }
   .accessibility-help__desktop-instructions {
     display: none;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .accessibility-tools__toggle svg {
-    transition: none;
   }
 }
 .privacy-control__panel[hidden],

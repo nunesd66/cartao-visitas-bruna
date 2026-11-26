@@ -30,6 +30,12 @@
   display: none;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .accessibility-tools__toggle svg {
+    transition: none;
+  }
+}
+
 .accessibility-tools__toggle svg {
   width: 1.35rem;
   height: 1.35rem;
@@ -204,11 +210,5 @@
 
   .accessibility-help__desktop-instructions {
     display: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .accessibility-tools__toggle svg {
-    transition: none;
   }
 }
