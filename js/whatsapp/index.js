@@ -20,7 +20,7 @@ export function initializeWhatsAppForm({ window, document }) {
         questionField.reportValidity();
         return;
       }
-      const message = `Ol\u00e1! Vim pelo site e enviei uma d\u00favida pela se\u00e7\u00e3o de d\u00favidas frequentes: ${question}`;
+      const message = `Olá! Tenho uma dúvida: ${question}`;
       const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank', 'noopener,noreferrer');
     });
