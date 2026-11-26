@@ -27,6 +27,7 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7
         with:
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Node.js
@@ -39,12 +40,15 @@ jobs:
         env:
           DEPLOYMENT_SHA: ${{ github.event_name == 'deployment_status' && github.event.deployment.sha || '' }}
         run: |
-          set -o pipefail
+          set -eo pipefail
           args=()
           if [[ -n "$DEPLOYMENT_SHA" ]]; then
             args=(--published-sha "$DEPLOYMENT_SHA")
           fi
           node scripts/smoke-public.mjs https://nunesd66.github.io/cartao-visitas-bruna/ "${args[@]}" | tee smoke-result.txt
+          if [[ -n "$DEPLOYMENT_SHA" ]]; then
+            node scripts/verify-release.mjs "$DEPLOYMENT_SHA" | tee -a smoke-result.txt
+          fi
 
       - name: Publish run summary
         if: always()
@@ -56,7 +60,7 @@ jobs:
             echo "- Trigger: $GITHUB_EVENT_NAME"
             echo "- Repository revision checked out: $GITHUB_SHA"
             echo '- Note: repository revision does not prove which commit GitHub Pages published.'
-            echo '- This smoke checks HTTP status, media types and presence of content.'
+            echo '- Smoke checks HTTP status, media types and nonempty responses. After a deploy it also compares public files with the deployed commit.'
             echo ''
             echo '### Output'
             echo '```text'
