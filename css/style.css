@@ -636,6 +636,7 @@ body:has(.mobile-nav[open]) {
 }
 
 .service-card__gallery {
+  --photo-fade-duration: 280ms;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   overflow: clip;
@@ -643,12 +644,23 @@ body:has(.mobile-nav[open]) {
 
 .service-card__gallery > .service-card__photo {
   grid-area: 1/1;
+  z-index: 1;
+  opacity: 1;
+  transition: opacity var(--photo-fade-duration) ease;
 }
 
 .service-card__gallery > [data-inactive] {
+  z-index: 0;
+  opacity: 0;
   visibility: hidden;
+  transition: opacity 0s var(--photo-fade-duration), visibility 0s var(--photo-fade-duration);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .service-card__gallery > .service-card__photo {
+    transition: none;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .accessibility-tools__toggle svg {
     transition: none;
