@@ -2015,6 +2015,22 @@ body:has(.mobile-nav[open]) {
   resize: none;
 }
 
+.faq-question button[type=submit] {
+  cursor: pointer;
+}
+
+.faq-question button[type=submit]:active {
+  border-color: var(--color-primary-dark);
+  background: var(--color-primary-dark);
+  box-shadow: inset 0 0.15rem 0.3rem rgba(0, 0, 0, 0.24);
+  transform: translateY(0.1rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-question button[type=submit]:is(:hover, :active) {
+    transform: none;
+  }
+}
 @media (min-width: 60rem) {
   html {
     scroll-padding-top: 6rem;
