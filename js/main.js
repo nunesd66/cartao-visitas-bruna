@@ -15,10 +15,10 @@ export function initializeSite(window) {
   window.BrunaAnalytics = analytics;
   initializePrivacy({ window, document, analytics });
   initializeMap(document);
-  initializeServicePhotos({ window, document });
   initializeAnalyticsTracking({ window, document, analytics });
 
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  initializeServicePhotos({ window, document, motionPreference });
   const revealSiteHeader = initializeHeader({ window, document, motionPreference });
   initializeAccessibility({ window, document, motionPreference, revealSiteHeader });
   initializeParallax({ window, document, motionPreference });
