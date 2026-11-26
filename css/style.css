@@ -1386,65 +1386,6 @@ body:has(.mobile-nav[open]) {
   transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
-.final-cta .button::before,
-.final-cta .button::after,
-.final-cta .button > span::after {
-  position: absolute;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background: radial-gradient(ellipse at 50% 15%, var(--color-accent) 0 19%, transparent 21%), radial-gradient(ellipse at 83% 39%, var(--color-accent) 0 19%, transparent 21%), radial-gradient(ellipse at 70% 78%, var(--color-accent) 0 19%, transparent 21%), radial-gradient(ellipse at 30% 78%, var(--color-accent) 0 19%, transparent 21%), radial-gradient(ellipse at 17% 39%, var(--color-accent) 0 19%, transparent 21%), radial-gradient(circle at 50% 50%, var(--color-primary-dark) 0 12%, transparent 14%);
-  content: "";
-  opacity: 0.64;
-  pointer-events: none;
-}
-
-.final-cta .button::before {
-  top: -0.4rem;
-  left: 0.3rem;
-}
-
-.final-cta .button > span::after {
-  right: 0.45rem;
-  bottom: -0.4rem;
-}
-
-.final-cta .button::after {
-  top: -0.35rem;
-  right: 0.3rem;
-}
-
-.final-cta .button::before,
-.final-cta .button::after,
-.final-cta .button > span::after {
-  animation: floral-pulse 2s ease-in-out infinite;
-}
-
-.final-cta .button::before {
-  animation-delay: -0.65s;
-}
-
-.final-cta .button > span::after {
-  animation-delay: -1.3s;
-}
-
-@keyframes floral-pulse {
-  0% {
-    opacity: 0.48;
-    transform: scale(0.75) rotate(-18deg);
-  }
-  12% {
-    opacity: 0.72;
-  }
-  30% {
-    opacity: 0.72;
-    transform: scale(1) rotate(0);
-  }
-  50%, 100% {
-    opacity: 0.48;
-    transform: scale(0.75) rotate(12deg);
-  }
-}
 .final-cta .button:hover {
   box-shadow: 0 0 0 0.25rem rgba(255, 255, 255, 0.12), 0 0.85rem 1.8rem rgba(0, 0, 0, 0.28);
   transform: translateY(-0.16rem) scale(1.015);
