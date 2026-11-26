@@ -24,6 +24,7 @@ const contentTypes = new Map([
   ['/site/js/header/index.js', 'text/javascript'],
   ['/site/js/parallax/index.js', 'text/javascript'],
   ['/site/js/whatsapp/index.js', 'text/javascript'],
+  ['/site/js/services/index.js', 'text/javascript'],
   ['/site/robots.txt', 'text/plain'],
   ['/site/sitemap.xml', 'text/xml'],
   ['/site/images/primeira-foto.jpg', 'image/jpeg'],
@@ -57,7 +58,7 @@ async function fixture(t, override = new Map()) {
 test('smoke aceita os tipos esperados com variação de caixa e charset', async (t) => {
   const { base } = await fixture(t);
   const { stdout } = await runSmoke(base);
-  assert.match(stdout, /Resultado: 16\/16/);
+  assert.match(stdout, /Resultado: 17\/17/);
 });
 
 test('smoke rejeita Content-Type com substring enganosa', async (t) => {
@@ -82,7 +83,7 @@ test('smoke rejeita recurso vazio com status 200 e Content-Type correto', async 
     assert.equal(code, 1);
     assert.match(stdout, /FAIL CSS: 200 text\/css .* corpo vazio/);
     assert.match(stdout, /FAIL JS principal: 200 application\/javascript .* corpo vazio/);
-    assert.match(stdout, /Resultado: 14\/16/);
+    assert.match(stdout, /Resultado: 15\/17/);
     return true;
   });
 });
@@ -123,7 +124,7 @@ test('smoke reprova release com qualquer recurso obrigatório retornando 404', a
   await assert.rejects(runSmoke(base), ({ code, stdout }) => {
     assert.equal(code, 1);
     assert.match(stdout, /FAIL imagem social: 404/);
-    assert.match(stdout, /Resultado: 15\/16/);
+    assert.match(stdout, /Resultado: 16\/17/);
     return true;
   });
 });
@@ -135,7 +136,7 @@ test('smoke reprova release se um módulo importado não estiver publicado', asy
   await assert.rejects(runSmoke(base), ({ code, stdout }) => {
     assert.equal(code, 1);
     assert.match(stdout, /FAIL JS perguntas frequentes: 404/);
-    assert.match(stdout, /Resultado: 15\/16/);
+    assert.match(stdout, /Resultado: 16\/17/);
     return true;
   });
 });

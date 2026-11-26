@@ -6,6 +6,7 @@ import { initializeHeader } from './header/index.js';
 import { initializeMap } from './map.js';
 import { initializeParallax } from './parallax/index.js';
 import { initializePrivacy } from './privacy.js';
+import { initializeServicePhotos } from './services/index.js';
 import { initializeWhatsAppForm } from './whatsapp/index.js';
 
 export function initializeSite(window) {
@@ -14,6 +15,7 @@ export function initializeSite(window) {
   window.BrunaAnalytics = analytics;
   initializePrivacy({ window, document, analytics });
   initializeMap(document);
+  initializeServicePhotos({ window, document });
   initializeAnalyticsTracking({ window, document, analytics });
 
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
