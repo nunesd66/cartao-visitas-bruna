@@ -78,12 +78,6 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .accessibility-tools__toggle svg {
-    transition: none;
-  }
-}
-
 .service-card__body {
   position: relative;
   display: flex;

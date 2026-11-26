@@ -63,3 +63,35 @@
 .privacy-control__toggle--footer {
   display: none;
 }
+
+@media (min-width: 60rem) {
+  .privacy-control__panel.is-reopened {
+    bottom: 1rem;
+  }
+}
+
+@media (max-width: 47.999rem), (hover: none) and (pointer: coarse) {
+  .privacy-control__toggle--footer {
+    display: grid;
+    margin-inline-start: auto;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    padding: 0;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    color: var(--color-surface);
+    background: transparent;
+    cursor: pointer;
+  }
+
+  .privacy-control__toggle--footer svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.6;
+  }
+}

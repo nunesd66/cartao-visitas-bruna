@@ -7,7 +7,6 @@
 @use "base/section-layout";
 @use "../sections/services/services";
 @use "../sections/about/about";
-@use "../sections/certifications/certifications";
 @use "../sections/testimonials/testimonials";
 @use "../sections/faq/faq";
 @use "../sections/final-cta/final-cta";
@@ -15,7 +14,7 @@
 @use "../sections/footer/footer";
 @use "../components/accessibility-tools/accessibility-tools";
 @use "../components/privacy/privacy";
-@use "components/floating-contact";
+@use "../components/floating-contact/floating-contact";
 @use "layout/responsive";
 @use "components/faq-question";
 @use "layout/desktop";
