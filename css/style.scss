@@ -566,24 +566,6 @@ body:has(.mobile-nav[open]) {
   object-position: center 35%;
 }
 
-.hero__note {
-  position: absolute;
-  z-index: 1;
-  right: 1.25rem;
-  bottom: 3.5rem;
-  max-width: 13.2rem;
-  margin: 0;
-  padding: 0.35rem 0.6rem;
-  border-radius: var(--radius-sm);
-  color: #fff;
-  background: rgb(36 58 46 / 0.85);
-  font-family: var(--font-serif);
-  font-size: 1.12rem;
-  font-style: italic;
-  line-height: 1.25;
-  text-align: right;
-}
-
 .hero__stamp,
 .about__visual span:not(.photo-watermark) {
   position: absolute;
@@ -1448,8 +1430,6 @@ body:has(.mobile-nav[open]) {
   transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
 }
 
-.hero__note::before,
-.hero__note::after,
 .final-cta .button::before,
 .final-cta .button::after,
 .final-cta .button > span::after {
@@ -1469,13 +1449,11 @@ body:has(.mobile-nav[open]) {
   pointer-events: none;
 }
 
-.hero__note::before,
 .final-cta .button::before {
   top: -0.4rem;
   left: 0.3rem;
 }
 
-.hero__note::after,
 .final-cta .button > span::after {
   right: 0.45rem;
   bottom: -0.4rem;
