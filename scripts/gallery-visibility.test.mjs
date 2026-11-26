@@ -8,7 +8,7 @@ const services = html.match(/<section class="section services"[\s\S]*?<\/section
 
 test('fotos de serviços preservam o texto alternativo e compartilham a mesma marca d’água', () => {
   assert.ok(services);
-  const photos = [...services.matchAll(/<div class="service-card__photo">([\s\S]*?)<\/div>/g)];
+  const photos = [...services.matchAll(/<div class="service-card__photo"(?: data-inactive)?>([\s\S]*?)<\/div>/g)];
   assert.equal(photos.length, 6);
   for (const [, photo] of photos) {
     assert.match(photo, /<img\b[^>]*\balt="[^"]+"/);
@@ -16,14 +16,14 @@ test('fotos de serviços preservam o texto alternativo e compartilham a mesma ma
   }
 });
 
-test('galerias de serviços oferecem rolagem sem controles sobrepostos ou rotação', () => {
+test('galerias de serviços trocam fotos sem controles manuais nem rolagem', () => {
   assert.ok(services);
   const galleries = [...services.matchAll(/<div class="service-card__gallery"[^>]*>/g)];
   assert.equal(galleries.length, 2);
   for (const [gallery] of galleries) {
-    assert.match(gallery, /tabindex="0"/);
+    assert.doesNotMatch(gallery, /tabindex=/);
     assert.match(gallery, /aria-label="[^"]+"/);
   }
   assert.doesNotMatch(services, /data-image-rotator|data-gallery-next|data-gallery-toggle|aria-hidden="true"[^>]*alt=/);
-  assert.match(css, /\.service-card__gallery\s*\{[^}]*overflow-x:\s*auto/);
+  assert.match(css, /\.service-card__gallery\s*\{[^}]*overflow:\s*clip/);
 });

@@ -42,6 +42,7 @@ const resources = [
   ['JS cabeçalho', 'js/header/index.js', javascriptTypes],
   ['JS parallax', 'js/parallax/index.js', javascriptTypes],
   ['JS formulário do WhatsApp', 'js/whatsapp/index.js', javascriptTypes],
+  ['JS fotos de serviços', 'js/services/index.js', javascriptTypes],
   ['robots', 'robots.txt', ['text/plain']],
   ['sitemap', 'sitemap.xml', ['application/xml', 'text/xml']],
   ['imagem social', 'images/primeira-foto.jpg', ['image/jpeg']],
