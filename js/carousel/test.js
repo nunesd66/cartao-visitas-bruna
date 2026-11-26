@@ -1,16 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import vm from 'node:vm';
-
-const source = readFileSync(new URL('../js/main.js', import.meta.url), 'utf8');
-const startMarker = "document.querySelectorAll('[data-carousel]').forEach((carousel) => {";
-const endMarker = '\nfaqAnswers.forEach((details) => {';
-const start = source.indexOf(startMarker);
-const end = source.indexOf(endMarker, start);
-assert.notEqual(start, -1, 'carousel initializer exists in main.js');
-assert.notEqual(end, -1, 'carousel initializer has a closing boundary');
-const carouselInitializer = source.slice(start, end);
+import { initializeCarousel } from './index.js';
 
 function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 292.5, gap = 16, reducedMotion = false, initiallyHidden = false, observeViewport = false } = {}) {
   const step = slideWidth + gap;
@@ -144,15 +134,8 @@ function createCarouselHarness({ count = 11, viewportWidth = 390, slideWidth = 2
       observe(target) { observedCarousel = target; }
     };
   }
-  vm.runInNewContext(carouselInitializer, {
-    document,
-    window,
-    performance: { now: () => clock },
-    motionPreference,
-    reduceMotion: reducedMotion,
-    Number,
-    Math,
-  });
+  window.performance = { now: () => clock };
+  initializeCarousel({ document, window, motionPreference });
 
   const flushFrames = () => {
     let guard = 0;

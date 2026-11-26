@@ -25,17 +25,15 @@
 !/css/style.css
 
 /js/*
+!/js/*/
 !/js/main.js
 !/js/analytics.js
 !/js/privacy.js
+!/js/map.js
 
 /scripts/*
-!/scripts/faq.test.mjs
 !/scripts/smoke-public.test.mjs
 !/scripts/check-local-assets.mjs
-!/scripts/analytics.test.mjs
-!/scripts/privacy.test.mjs
-!/scripts/carousel.test.mjs
 !/scripts/verify-release.mjs
 !/scripts/build-html.mjs
 !/scripts/build-html.test.mjs

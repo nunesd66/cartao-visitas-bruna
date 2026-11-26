@@ -1,6 +1,7 @@
 {
   "name": "bruna-eduarda-beauty-site",
   "private": true,
+  "type": "module",
   "scripts": {
     "build:html": "node scripts/build-html.mjs",
     "build:css": "sass --no-source-map --style=expanded src/styles/main.scss css/style.css",

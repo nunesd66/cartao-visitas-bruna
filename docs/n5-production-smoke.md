@@ -16,7 +16,7 @@ Um evento de implantação bem-sucedida da `master` no ambiente `github-pages` t
 4. Se houver falhas, investigue os arquivos indicados antes de homologar. Não realizar rollback automático.
 5. Complete as verificações manuais de [N3](n3-gate.md) e [homologação](n3-homologacao-execucao.md).
 
-O workflow consulta uma URL pública fixa, valida status HTTP 200, Content-Type e presença de conteúdo em dez recursos e termina com falha se qualquer recurso falhar. Não publica nem altera o site, e não requer secrets.
+O workflow consulta uma URL pública fixa, valida status HTTP 200, Content-Type e presença de conteúdo em 16 recursos, incluindo todos os módulos JavaScript do site, e termina com falha se qualquer recurso falhar. Não publica nem altera o site, e não requer secrets.
 
 ## Verificação do release de 19/11/2026
 

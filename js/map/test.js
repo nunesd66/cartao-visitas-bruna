@@ -1,10 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import test from 'node:test';
-import vm from 'node:vm';
+import { initializeMap } from '../map.js';
 
-const source = await readFile(new URL('../js/map.js', import.meta.url), 'utf8');
-const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+const html = await readFile(new URL('../../index.html', import.meta.url), 'utf8');
 
 const embedUrl = 'https://www.google.com/maps/embed?pb=fixture';
 
@@ -28,7 +27,7 @@ function setup(mapUrl = embedUrl, { keyboard = false } = {}) {
     remove() { removed = true; },
   };
   const document = { querySelectorAll: () => [button], activeElement: keyboard ? button : null };
-  vm.runInNewContext(source, { document });
+  initializeMap(document);
   return { button, iframe, frameAttributes, document, click: () => onClick?.(), removed: () => removed };
 }
 

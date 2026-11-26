@@ -1,13 +1,6 @@
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import vm from 'node:vm';
-
-const source = readFileSync(new URL('../js/main.js', import.meta.url), 'utf8');
-const start = source.indexOf("const aboutVisual = document.querySelector('.about__visual');");
-const end = source.indexOf("\ndocument.querySelectorAll('[data-carousel]')", start);
-assert.ok(start >= 0 && end > start, 'Parallax initializer exists');
-const initializer = source.slice(start, end);
+import { initializeParallax } from './index.js';
 
 function setup(initiallyReduced) {
   const frames = new Map();
@@ -32,7 +25,7 @@ function setup(initiallyReduced) {
     requestAnimationFrame(callback) { const key = id++; frames.set(key, callback); return key; },
     cancelAnimationFrame(key) { frames.delete(key); },
   };
-  vm.runInNewContext(initializer, { window, document, motionPreference, reduceMotion: initiallyReduced, Math });
+  initializeParallax({ window, document, motionPreference });
   const flush = () => {
     for (const callback of [...frames.values()]) callback();
     frames.clear();

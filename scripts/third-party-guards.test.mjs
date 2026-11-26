@@ -18,9 +18,7 @@ test('nenhum script remoto de analytics carrega diretamente pelo HTML', () => {
     const src = tag.match(/\ssrc\s*=\s*["']([^"']+)["']/i)?.[1];
     if (src) assert.ok(!/^https?:\/\//i.test(src), `script externo não aprovado: ${src}`);
   }
-  assert.match(html, /<script\s+src="js\/analytics\.js"\s+defer><\/script>/);
-  assert.match(html, /<script\s+src="js\/privacy\.js"\s+defer><\/script>/);
-  assert.ok(html.indexOf('js/analytics.js') < html.indexOf('js/privacy.js'));
+  assert.match(html, /<script\s+type="module"\s+src="js\/main\.js"><\/script>/);
   assert.match(analyticsSource, /!consentGranted\s*\|\|\s*!measurementId/);
   assert.match(privacySource, /analytics\?\.setConsent\(false\)/);
 });

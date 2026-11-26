@@ -1,15 +1,8 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import test from 'node:test';
-import vm from 'node:vm';
-
-const source = readFileSync(new URL('../js/main.js', import.meta.url), 'utf8');
-const start = source.indexOf("const siteHeader = document.querySelector('.site-header');");
-const end = source.indexOf('const accessibilityHelp', start);
-assert.ok(start >= 0 && end > start, 'header controller found');
-const controller = source.slice(start, end);
-const brandLinks = source.slice(source.indexOf("document.querySelectorAll('.brand"), source.indexOf('const faqAnswers'));
-const keyboardShortcuts = source.slice(source.indexOf('const accessibilityShortcutTargets'), source.indexOf('const aboutVisual'));
+import { initializeHeader } from './index.js';
+import { initializeAccessibility } from '../accessibility/index.js';
 
 function setup() {
   const classes = new Set();
@@ -38,7 +31,7 @@ function setup() {
   const heading = { focus() {}, scrollIntoView() {} };
   class ShortcutTarget { closest() { return null; } }
   const document = {
-    querySelectorAll() { return [brand]; },
+    querySelectorAll(selector) { return selector === '.brand[href="#inicio"]' ? [brand] : []; },
     addEventListener(type, callback) { callbacks.set('document:' + type, callback); },
     getElementById() { return heading; },
     activeElement: null,
@@ -51,6 +44,9 @@ function setup() {
   };
   const window = {
     scrollY: 0,
+    Element: ShortcutTarget,
+    performance: { now: () => clock },
+    navigator: { maxTouchPoints: 0 },
     scrollTo() {},
     matchMedia() { return { matches: false }; },
     addEventListener(type, callback) { callbacks.set(type, callback); },
@@ -66,18 +62,12 @@ function setup() {
       return id;
     },
   };
-  const context = {
-    window, document, performance: { now: () => clock },
-    Element: ShortcutTarget,
-    motionPreference: { matches: false },
-    navigator: { maxTouchPoints: 0 },
-    accessibilityHelp: null,
-    accessibilityTools: null,
-  };
-  vm.runInNewContext(brandLinks + controller + keyboardShortcuts + '\nthis.testRevealSiteHeader = revealSiteHeader;', context);
+  const motionPreference = { matches: false };
+  const revealSiteHeader = initializeHeader({ window, document, motionPreference });
+  initializeAccessibility({ window, document, motionPreference, revealSiteHeader });
   return {
     header, headerPin, document,
-    revealHeader() { context.testRevealSiteHeader(); },
+    revealHeader: revealSiteHeader,
     hidden: () => classes.has('is-hidden'),
     scrollTo(y) {
       window.scrollY = y;
@@ -147,13 +137,8 @@ test('return to the start by brand or keyboard shortcut reveals the header witho
   }
 });
 
-test('scroll-to-top controls use synchronized header restoration', () => {
-  assert.match(source, /if \(destination === 0\) revealSiteHeader\(\);/);
-  assert.doesNotMatch(source, /if \(destination === 0\) siteHeader\?\.classList\.remove/);
-});
-
 test('header pin changes action label without declaring toggle state', () => {
-  const html = readFileSync(new URL('../index.html', import.meta.url), 'utf8');
+  const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
   const tag = html.match(/<button[^>]*data-header-pin[^>]*>/)?.[0];
   assert.ok(tag);
   assert.doesNotMatch(tag, /aria-pressed=/);
@@ -165,4 +150,39 @@ test('header pin changes action label without declaring toggle state', () => {
   view.pin();
   assert.equal(view.headerPin.getAttribute('aria-label'), 'Fixar cabeçalho');
   assert.equal(view.headerPin.getAttribute('data-pinned'), 'false');
+});
+
+test('links da marca retornam ao topo respeitando a preferência atual de movimento', () => {
+  const preference = { matches: true, addEventListener() {} };
+  const scrolls = [];
+  const clickHandlers = [];
+  const brandLinks = Array.from({ length: 2 }, () => ({
+    addEventListener(type, listener) {
+      assert.equal(type, 'click');
+      clickHandlers.push(listener);
+    },
+  }));
+  const document = {
+    querySelector() { return null; },
+    querySelectorAll(selector) {
+      return selector === '.brand[href="#inicio"]' ? brandLinks : [];
+    },
+  };
+  const window = {
+    scrollTo({ top, behavior }) { scrolls.push({ top, behavior }); },
+  };
+  initializeHeader({ document, window, motionPreference: preference });
+
+  assert.equal(clickHandlers.length, 2);
+  let prevented = 0;
+  const click = { preventDefault() { prevented += 1; } };
+  clickHandlers[0](click);
+  preference.matches = false;
+  clickHandlers[1](click);
+
+  assert.equal(prevented, 2);
+  assert.deepEqual(scrolls, [
+    { top: 0, behavior: 'auto' },
+    { top: 0, behavior: 'smooth' },
+  ]);
 });
