@@ -157,7 +157,7 @@
     user-select: none;
   }
 
-  .testimonials__viewport a {
+  .testimonials__viewport a:not(.testimonial__action) {
     cursor: inherit;
   }
 
@@ -247,13 +247,22 @@
   font-weight: 750;
   line-height: 1;
   text-decoration: none;
+  cursor: pointer;
+  touch-action: pan-y pinch-zoom;
   transition: box-shadow 180ms ease, transform 180ms ease, background-color 180ms ease;
 }
 
 .testimonial__action:hover {
   background: var(--color-success);
   box-shadow: 0 0.35rem 0.85rem rgb(0 0 0 / 0.28);
+  text-decoration: underline;
   transform: translateY(-0.1rem);
+}
+
+.testimonial__action:active {
+  background: var(--color-success);
+  box-shadow: inset 0 0.15rem 0.3rem rgb(0 0 0 / 0.24);
+  transform: none;
 }
 
 .testimonial__action span:last-child {
