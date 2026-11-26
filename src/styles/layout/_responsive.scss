@@ -11,10 +11,6 @@
   .hero__proofs {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .certifications__grid {
-    gap: 1rem;
-  }
 }
 
 @media (min-width: 48rem) {
@@ -48,14 +44,6 @@
 
   .testimonials__track {
     padding-inline: max(0px, calc((100cqi - min(60cqi, 42rem)) / 2));
-  }
-
-  .certifications__grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .certificate {
-    padding: 1.7rem 1rem;
   }
 
   .faq__grid {
