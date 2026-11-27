@@ -198,6 +198,7 @@ export function initializeCarousel({ window, document, motionPreference }) {
       suppressDragClick = false;
 
       if (event.pointerType !== 'mouse' || event.button !== 0
+          || event.target.closest?.('.testimonial__action')
           || viewport.scrollWidth <= viewport.clientWidth) return;
       mouseDrag = {
         id: event.pointerId,
@@ -237,7 +238,7 @@ export function initializeCarousel({ window, document, motionPreference }) {
     document.addEventListener('pointercancel', (event) => finishMouseDrag(event));
     viewport.addEventListener('lostpointercapture', (event) => finishMouseDrag(event));
     viewport.addEventListener('dragstart', (event) => {
-      if (mouseDrag) event.preventDefault();
+      if (mouseDrag || event.target.closest?.('.testimonial__action')) event.preventDefault();
     });
     viewport.addEventListener('click', (event) => {
       if (!suppressDragClick || event.detail === 0) return;

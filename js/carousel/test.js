@@ -199,10 +199,11 @@ test('arrastar com o mouse move nos dois sentidos e encaixa no depoimento mais p
   assert.equal(status.textContent, '1 de 11');
 });
 
-test('soltar após arrastar sobre um link ativa o destino original uma vez', () => {
+test('soltar após arrastar sobre um link fora do botão ativa o destino original uma vez', () => {
   const { viewport, documentListeners } = createCarouselHarness();
   let opened = 0;
-  const target = { closest: () => ({ click: () => { opened++; } }) };
+  const link = { click: () => { opened++; } };
+  const target = { closest: (selector) => selector === 'a[href]' ? link : null };
   const event = { pointerId: 1, pointerType: 'mouse', button: 0, clientX: 300, target };
   const down = viewport.listeners.get('pointerdown');
   const up = documentListeners.get('pointerup');
@@ -232,6 +233,25 @@ test('soltar após arrastar sobre um link ativa o destino original uma vez', () 
   down({ ...event, pointerType: 'touch' });
   documentListeners.get('pointermove')({ ...event, pointerType: 'touch', clientX: 100 });
   assert.equal(viewport.classList.contains('is-dragging'), false);
+});
+
+test('o botão da avaliação pausa a rotação sem iniciar arraste ou cancelar o clique', () => {
+  const { viewport, documentListeners, isRotating } = createCarouselHarness();
+  const target = { closest: (selector) => selector === '.testimonial__action' ? {} : null };
+  const event = { pointerId: 1, pointerType: 'mouse', button: 0, clientX: 300, target };
+
+  viewport.listeners.get('pointerdown')(event);
+  documentListeners.get('pointermove')({ ...event, clientX: 100 });
+
+  assert.equal(isRotating(), false);
+  assert.equal(viewport.scrollLeft, 0);
+  assert.equal(viewport.capturedPointer, undefined);
+
+  let browserDragPrevented = false;
+  viewport.listeners.get('dragstart')({ target, preventDefault() { browserDragPrevented = true; } });
+  assert.equal(browserDragPrevented, true);
+  documentListeners.get('pointerup')(event);
+  viewport.listeners.get('click')({ detail: 1, preventDefault: () => assert.fail('o botão deve abrir o link') });
 });
 
 test('automatic rotation visits testimonial 10 between 9 and 11, then wraps', () => {
