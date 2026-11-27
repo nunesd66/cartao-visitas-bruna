@@ -123,6 +123,11 @@
   background: var(--color-primary);
 }
 
+.testimonials__dot:hover::before {
+  border-color: var(--color-primary-dark);
+  background: var(--color-primary-dark);
+}
+
 .testimonials__dot:focus-visible {
   outline: 0.18rem solid var(--color-primary);
   outline-offset: -0.1rem;
@@ -255,7 +260,6 @@
 .testimonial__action:hover {
   background: var(--color-success);
   box-shadow: 0 0.35rem 0.85rem rgb(0 0 0 / 0.28);
-  text-decoration: underline;
   transform: translateY(-0.1rem);
 }
 

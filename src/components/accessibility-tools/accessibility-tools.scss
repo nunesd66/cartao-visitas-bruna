@@ -115,6 +115,12 @@
   list-style: none;
 }
 
+.accessibility-tools__toggle:hover,
+.accessibility-tools__action:hover,
+.accessibility-help > summary:hover {
+  background: var(--color-surface-soft);
+}
+
 .accessibility-tools__action svg,
 .accessibility-help > summary svg {
   width: 1.4rem;

@@ -103,6 +103,11 @@ h3 {
   transform: translateY(-150%);
 }
 
+.skip-link:hover {
+  background: var(--color-primary);
+  text-decoration: none;
+}
+
 .skip-link:focus {
   transform: translateY(0);
 }

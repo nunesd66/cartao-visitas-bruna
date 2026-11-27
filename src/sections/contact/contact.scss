@@ -49,6 +49,11 @@
   font-size: 0.88rem;
 }
 
+.contact-item a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
 .map-placeholder {
   position: relative;
   display: grid;
