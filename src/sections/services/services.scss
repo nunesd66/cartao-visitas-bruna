@@ -2,6 +2,19 @@
   background: var(--color-surface);
 }
 
+.services__rotation {
+  margin: 0 auto 1rem;
+}
+
+.services__rotation:not([hidden]) {
+  display: flex;
+  cursor: pointer;
+}
+
+.services__rotation[hidden] {
+  display: none;
+}
+
 .services__grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
