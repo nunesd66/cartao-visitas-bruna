@@ -60,6 +60,10 @@
   line-height: 1.4;
 }
 
+.faq summary:hover {
+  color: var(--color-primary-dark);
+}
+
 .faq summary::-webkit-details-marker {
   display: none;
 }

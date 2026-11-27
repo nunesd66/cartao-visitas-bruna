@@ -64,9 +64,10 @@
   flex: 0 0 1.15rem;
 }
 
-.site-footer nav a:hover {
-  color: #fff;
-  text-decoration: underline;
+.site-footer nav a:hover,
+.brand--footer:hover,
+.brand--footer:hover .brand__tagline {
+  color: var(--color-accent);
 }
 
 .site-footer__bottom {

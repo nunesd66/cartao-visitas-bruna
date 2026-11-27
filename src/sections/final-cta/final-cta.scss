@@ -39,8 +39,7 @@
   color: #fff;
 }
 
-.final-cta .button--light,
-.final-cta .button--light:hover {
+.final-cta .button--light {
   color: var(--color-primary);
 }
 
@@ -58,6 +57,12 @@
   position: relative;
   box-shadow: 0 0.55rem 1.4rem rgb(0 0 0 / 0.2);
   transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.final-cta .button--light:hover {
+  border-color: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+  background: var(--color-surface-soft);
 }
 
 .final-cta .button:hover {

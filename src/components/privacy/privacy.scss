@@ -37,6 +37,11 @@
   line-height: 1.5;
 }
 
+.privacy-control__panel a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
 .privacy-control__actions {
   display: flex;
   flex-wrap: wrap;
@@ -58,6 +63,11 @@
   padding: 0.55rem 1rem;
   color: var(--color-primary);
   background: var(--color-surface);
+}
+
+.privacy-control__actions button:hover {
+  color: #fff;
+  background: var(--color-primary);
 }
 
 .privacy-control__toggle--footer {
@@ -83,6 +93,11 @@
     color: var(--color-surface);
     background: transparent;
     cursor: pointer;
+  }
+
+  .privacy-control__toggle--footer:hover {
+    color: var(--color-text);
+    background: var(--color-surface-soft);
   }
 
   .privacy-control__toggle--footer svg {

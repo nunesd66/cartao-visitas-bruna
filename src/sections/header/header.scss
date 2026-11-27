@@ -31,6 +31,11 @@
   text-decoration: none;
 }
 
+.site-header .brand:hover,
+.site-header .brand:hover .brand__tagline {
+  color: var(--color-primary);
+}
+
 .brand__name {
   font-family: var(--font-serif);
   font-size: 1.25rem;
@@ -89,6 +94,12 @@
   background: var(--color-primary-dark);
 }
 
+.header-pin:hover {
+  border-color: var(--color-primary);
+  color: #fff;
+  background: var(--color-primary);
+}
+
 .header-pin:focus-visible {
   outline: 0.2rem solid var(--color-primary);
   outline-offset: 0.15rem;
@@ -105,6 +116,10 @@
   border: 0.0625rem solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
+}
+
+.mobile-nav summary:hover {
+  background: var(--color-surface-soft);
 }
 
 .mobile-nav summary::-webkit-details-marker {

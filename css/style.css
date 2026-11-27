@@ -125,6 +125,11 @@ h3 {
   transform: translateY(-150%);
 }
 
+.skip-link:hover {
+  background: var(--color-primary);
+  text-decoration: none;
+}
+
 .skip-link:focus {
   transform: translateY(0);
 }
@@ -263,7 +268,7 @@ h3 {
 }
 
 .text-link:hover {
-  text-decoration: underline;
+  color: var(--color-primary);
 }
 
 .site-header {
@@ -297,6 +302,11 @@ h3 {
   color: var(--color-primary-dark);
   line-height: 1;
   text-decoration: none;
+}
+
+.site-header .brand:hover,
+.site-header .brand:hover .brand__tagline {
+  color: var(--color-primary);
 }
 
 .brand__name {
@@ -357,6 +367,12 @@ h3 {
   background: var(--color-primary-dark);
 }
 
+.header-pin:hover {
+  border-color: var(--color-primary);
+  color: #fff;
+  background: var(--color-primary);
+}
+
 .header-pin:focus-visible {
   outline: 0.2rem solid var(--color-primary);
   outline-offset: 0.15rem;
@@ -373,6 +389,10 @@ h3 {
   border: 0.0625rem solid var(--color-border);
   border-radius: var(--radius-sm);
   background: var(--color-surface);
+}
+
+.mobile-nav summary:hover {
+  background: var(--color-surface-soft);
 }
 
 .mobile-nav summary::-webkit-details-marker {
@@ -961,6 +981,11 @@ body:has(.mobile-nav[open]) {
   background: var(--color-primary);
 }
 
+.testimonials__dot:hover::before {
+  border-color: var(--color-primary-dark);
+  background: var(--color-primary-dark);
+}
+
 .testimonials__dot:focus-visible {
   outline: 0.18rem solid var(--color-primary);
   outline-offset: -0.1rem;
@@ -1088,7 +1113,6 @@ body:has(.mobile-nav[open]) {
 .testimonial__action:hover {
   background: var(--color-success);
   box-shadow: 0 0.35rem 0.85rem rgba(0, 0, 0, 0.28);
-  text-decoration: underline;
   transform: translateY(-0.1rem);
 }
 
@@ -1236,6 +1260,10 @@ body:has(.mobile-nav[open]) {
   line-height: 1.4;
 }
 
+.faq summary:hover {
+  color: var(--color-primary-dark);
+}
+
 .faq summary::-webkit-details-marker {
   display: none;
 }
@@ -1313,8 +1341,7 @@ body:has(.mobile-nav[open]) {
   color: #fff;
 }
 
-.final-cta .button--light,
-.final-cta .button--light:hover {
+.final-cta .button--light {
   color: var(--color-primary);
 }
 
@@ -1332,6 +1359,12 @@ body:has(.mobile-nav[open]) {
   position: relative;
   box-shadow: 0 0.55rem 1.4rem rgba(0, 0, 0, 0.2);
   transition: background-color 180ms ease, border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+}
+
+.final-cta .button--light:hover {
+  border-color: var(--color-surface-soft);
+  color: var(--color-primary-dark);
+  background: var(--color-surface-soft);
 }
 
 .final-cta .button:hover {
@@ -1392,6 +1425,11 @@ body:has(.mobile-nav[open]) {
 .contact-item a {
   color: var(--color-text-muted);
   font-size: 0.88rem;
+}
+
+.contact-item a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: none;
 }
 
 .map-placeholder {
@@ -1560,9 +1598,10 @@ body:has(.mobile-nav[open]) {
   flex: 0 0 1.15rem;
 }
 
-.site-footer nav a:hover {
-  color: #fff;
-  text-decoration: underline;
+.site-footer nav a:hover,
+.brand--footer:hover,
+.brand--footer:hover .brand__tagline {
+  color: var(--color-accent);
 }
 
 .site-footer__bottom {
@@ -1689,6 +1728,12 @@ body:has(.mobile-nav[open]) {
   background: var(--color-surface);
   cursor: pointer;
   list-style: none;
+}
+
+.accessibility-tools__toggle:hover,
+.accessibility-tools__action:hover,
+.accessibility-help > summary:hover {
+  background: var(--color-surface-soft);
 }
 
 .accessibility-tools__action svg,
@@ -1826,6 +1871,11 @@ body:has(.mobile-nav[open]) {
   line-height: 1.5;
 }
 
+.privacy-control__panel a:hover {
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
 .privacy-control__actions {
   display: flex;
   flex-wrap: wrap;
@@ -1847,6 +1897,11 @@ body:has(.mobile-nav[open]) {
   padding: 0.55rem 1rem;
   color: var(--color-primary);
   background: var(--color-surface);
+}
+
+.privacy-control__actions button:hover {
+  color: #fff;
+  background: var(--color-primary);
 }
 
 .privacy-control__toggle--footer {
@@ -1871,6 +1926,10 @@ body:has(.mobile-nav[open]) {
     color: var(--color-surface);
     background: transparent;
     cursor: pointer;
+  }
+  .privacy-control__toggle--footer:hover {
+    color: var(--color-text);
+    background: var(--color-surface-soft);
   }
   .privacy-control__toggle--footer svg {
     width: 1.25rem;
@@ -1899,6 +1958,10 @@ body:has(.mobile-nav[open]) {
   font-size: 1.65rem;
   font-weight: 700;
   text-decoration: none;
+}
+
+.whatsapp-float:hover {
+  background: var(--color-primary);
 }
 
 .whatsapp-float .whatsapp-icon {
@@ -2070,7 +2133,6 @@ body:has(.mobile-nav[open]) {
     gap: clamp(1rem, 2vw, 1.75rem);
   }
   .desktop-nav a {
-    position: relative;
     min-height: 2.75rem;
     align-content: center;
     color: var(--color-text-muted);
@@ -2078,19 +2140,8 @@ body:has(.mobile-nav[open]) {
     font-weight: 700;
     text-decoration: none;
   }
-  .desktop-nav a::after {
-    position: absolute;
-    right: 0;
-    bottom: 0.25rem;
-    left: 0;
-    height: 0.1rem;
-    background: var(--color-primary);
-    content: "";
-    transform: scaleX(0);
-    transition: transform 180ms ease;
-  }
-  .desktop-nav a:hover::after {
-    transform: scaleX(1);
+  .desktop-nav a:hover {
+    color: var(--color-primary-dark);
   }
   .header__cta {
     display: inline-flex;
