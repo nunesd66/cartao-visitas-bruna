@@ -24,6 +24,6 @@ test('galerias de serviços trocam fotos sem controles manuais nem rolagem', () 
     assert.doesNotMatch(gallery, /tabindex=/);
     assert.match(gallery, /aria-label="[^"]+"/);
   }
-  assert.doesNotMatch(services, /data-image-rotator|data-gallery-next|data-gallery-toggle|aria-hidden="true"[^>]*alt=/);
+  assert.doesNotMatch(services, /data-image-rotator|data-gallery-next|data-gallery-toggle|data-service-rotation|aria-hidden="true"[^>]*alt=/);
   assert.match(css, /\.service-card__gallery\s*\{[^}]*overflow:\s*clip/);
 });
