@@ -22,15 +22,12 @@ function activePhotos(gallery) {
 test('fotos de serviços avançam a cada dois segundos e voltam à primeira', () => {
   const galleries = [createGallery(2), createGallery(3), createGallery(1)];
   const timers = [];
-  const clicks = [];
   const preferenceChanges = [];
-  const control = { hidden: true, addEventListener(_event, callback) { clicks.push(callback); } };
   const motionPreference = {
-    matches: true,
+    matches: false,
     addEventListener(_event, callback) { preferenceChanges.push(callback); },
   };
   const document = {
-    querySelector: () => control,
     querySelectorAll(selector) {
       assert.equal(selector, '.service-card__gallery');
       return galleries;
@@ -42,12 +39,6 @@ test('fotos de serviços avançam a cada dois segundos e voltam à primeira', ()
   };
 
   initializeServicePhotos({ document, window, motionPreference });
-  assert.equal(control.hidden, false);
-  assert.equal(control.textContent, 'Retomar troca de fotos');
-  assert.equal(timers.length, 0);
-
-  clicks[0]();
-  assert.equal(control.textContent, 'Pausar troca de fotos');
   assert.equal(timers.length, 1);
   assert.equal(timers[0].delay, 2000);
   assert.deepEqual(galleries.map(activePhotos), [[0], [0], [0]]);
@@ -59,14 +50,28 @@ test('fotos de serviços avançam a cada dois segundos e voltam à primeira', ()
   timers[0].callback();
   assert.deepEqual(galleries.map(activePhotos), [[1], [0], [0]]);
 
-  clicks[0]();
+  motionPreference.matches = true;
+  preferenceChanges[0]();
   assert.equal(timers[0], null);
-  assert.equal(control.textContent, 'Retomar troca de fotos');
-  clicks[0]();
-  assert.ok(timers[1]);
-  preferenceChanges[0]({ matches: true });
-  assert.equal(timers[1], null);
-  assert.equal(control.textContent, 'Retomar troca de fotos');
+
+  motionPreference.matches = false;
+  preferenceChanges[0]();
+  assert.equal(timers[1].delay, 2000);
+  timers[1].callback();
+  assert.deepEqual(galleries.map(activePhotos), [[0], [1], [0]]);
+});
+
+test('movimento reduzido deixa a primeira foto estática', () => {
+  const gallery = createGallery(2);
+  const document = { querySelectorAll: () => [gallery] };
+  const window = {
+    setInterval() { assert.fail('Movimento reduzido não deve iniciar uma rotação'); },
+    clearInterval() {},
+  };
+  const motionPreference = { matches: true, addEventListener() {} };
+
+  initializeServicePhotos({ document, window, motionPreference });
+  assert.deepEqual(activePhotos(gallery), [0]);
 });
 
 test('galerias vazias ou com uma única foto dispensam o temporizador', () => {

@@ -15,23 +15,16 @@ export function initializeServicePhotos({ window, document, motionPreference }) 
     }
   }
 
-  const control = document.querySelector('[data-service-rotation]');
-  if (!control) return;
-
   let timer;
-  function setPlaying(playing) {
-    if (timer !== undefined) {
+  function updateRotation() {
+    if (motionPreference.matches) {
       window.clearInterval(timer);
       timer = undefined;
+    } else if (timer === undefined) {
+      timer = window.setInterval(advance, 2000);
     }
-    if (playing) timer = window.setInterval(advance, 2000);
-    control.textContent = playing ? 'Pausar troca de fotos' : 'Retomar troca de fotos';
   }
 
-  control.addEventListener('click', () => setPlaying(timer === undefined));
-  motionPreference.addEventListener('change', (event) => {
-    if (event.matches) setPlaying(false);
-  });
-  setPlaying(!motionPreference.matches);
-  control.hidden = false;
+  motionPreference.addEventListener('change', updateRotation);
+  updateRotation();
 }
