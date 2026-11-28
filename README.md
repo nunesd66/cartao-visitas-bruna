@@ -51,7 +51,7 @@ O workflow `Pull request checks` valida build, sintaxe, testes Node e referênci
 
 Com **GitHub Actions** como origem em **Settings → Pages**, execute manualmente **Publish static site to GitHub Pages** na `master` para publicar `dist/`. Após o deploy, o **Production smoke** verifica a disponibilidade dos recursos, incluindo a foto da avaliação, e compara os arquivos públicos com o SHA informado pelo deploy. Para repetir essa comparação manualmente, use **Verify published Pages release** com o SHA completo. Para voltar ao fluxo anterior, selecione **Deploy from a branch**, com `master` e `/ (root)`.
 
-O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon de marca depende de aprovação. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
+O HTML declara canonical, Open Graph e JSON-LD `BeautySalon`. O sitemap fica em `/cartao-visitas-bruna/sitemap.xml`. O Google lê as regras de rastreamento no `robots.txt` da raiz do host. Confira os endereços de publicação no [gate do N3](docs/n3-gate.md). O favicon BE usa as versões clara e escura fornecidas para a marca. Depois do deploy, verifique os recursos públicos, rode Lighthouse e confirme a indexação no Search Console.
 
 ## Analytics e privacidade
 
