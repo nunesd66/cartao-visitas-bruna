@@ -234,3 +234,8 @@ Registrar PASS, FAIL, BLOQUEADO ou NÃO EXECUTADO por cenário, com justificativ
 - O [PR #150](https://github.com/nunesd66/cartao-visitas-bruna/pull/150) está em revisão. No candidato `25192e4`, as duas linhas da lista aparecem na ordem solicitada e 104 testes passaram. O [CI da PR](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46017950202) também passou.
 - O ambiente desta rodada não disponibilizou Orca e Xvfb. A inspeção manual continua pendente. A leitura do sitemap no Search Console e os indicadores do GA4 exigem acesso ou evidência autorizada. A validação do formulário de avaliações aguarda o link direto da ficha.
 - Chromium na URL pública, com o mesmo proxy e destinos externos interceptados, confirmou em 390 e 1440 px título, botão principal de agendamento, foto de avaliação decodificada, galerias de Serviços sem botão, hover por cor e clique interceptado na avaliação sem mover o carrossel. Nenhum dado sintético foi enviado ao GA4.
+
+## Revisão de 28/11/2026
+
+- O [smoke de 27/11 confirmado pelo evento `schedule`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46069553549) iniciou às 18h19 de Brasília e passou 18/18. O SHA de checkout foi `115fbd9`. O SHA público foi verificado separadamente no deploy anterior. A consulta de 28/11 ocorreu antes do horário previsto para o smoke daquele dia.
+- O [PR #152](https://github.com/nunesd66/cartao-visitas-bruna/pull/152) incorpora os dois monogramas BE enviados para o favicon. O [CI](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46134059677) passou em `f80af3e`. A revisão ainda aguarda merge e deploy.

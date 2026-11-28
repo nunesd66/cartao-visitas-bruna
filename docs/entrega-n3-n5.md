@@ -34,7 +34,7 @@ Tarefas independentes de N3, N4 e N5 podem avançar em paralelo. Priorize as pen
 | N4 — Identidade visual e conversão | Direção visual aprovada pela profissional, sistema visual aplicado, jornada até o contato e hipótese de conversão documentada | Aceite visual responsivo, teste da jornada e protocolo de medição. Identificar cliques no WhatsApp como intenção de contato |
 | N5 — Operação contínua (proposta) | Release rastreável, verificação pós-publicação, recuperação, manutenção e ciclo de melhoria orientado por dados | Associar verificações a um deploy, ensaiar recuperação em branch isolada, registrar responsável operacional e documentar a primeira revisão de indicadores autorizados |
 
-## Situação em 27/11/2026
+## Situação em 28/11/2026
 
 Em 27/11/2026, o [GitHub Pages publicou `115fbd97ddc307d24d1dd500b188f031607a6963`](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46007323337). A conferência confirmou 41/41 arquivos. A homologação segue pendente pelos critérios abaixo e os resultados desta publicação estão no [roteiro de execução](n3-homologacao-execucao.md#publicação-de-27112026).
 
@@ -42,15 +42,15 @@ Em 27/11/2026, o [GitHub Pages publicou `115fbd97ddc307d24d1dd500b188f031607a696
 | --- | --- | --- |
 | N3 | Release, sitemap público, foto da avaliação, legenda e título confirmados. Lighthouse da revisão publicada via proxy registrou performance de 93/93 (mobile/desktop). A medição anterior em runner está [aqui](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44798447655). [Orca e Firefox](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/44595293760) registraram anúncios no percurso automatizado anterior. | Confirmar o processamento no Search Console, completar a inspeção manual com leitor de tela e validar o link direto de avaliação. |
 | N4 | Direção e jornada documentadas. [Teste de contato em paisagem](https://github.com/nunesd66/cartao-visitas-bruna/pull/119). As 10 mensagens de WhatsApp na versão publicada correspondem às intenções aprovadas. | Aceite visual e da hipótese prioritária, teste com público representativo e medição com dados autorizados. |
-| N5 | [Smoke de deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46007403326) concluído. Contingência de 27/11 passou 18/18. O [smoke por horário de 26/11](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/45899117251) passou 18/18. [Ensaio de recuperação anterior](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
+| N5 | [Smoke de deploy](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46007403326) concluído. Contingência de 27/11 passou 18/18. O [smoke por horário de 27/11](https://github.com/nunesd66/cartao-visitas-bruna/actions/runs/46069553549) passou 18/18. [Ensaio de recuperação anterior](verificacao-release.md#ensaio-de-recuperação-em-20112026) restaurou 33/33 arquivos. | Indicar o responsável operacional e registrar a primeira revisão de indicadores autorizados. |
 
 ### Pendências por responsável
 
 | Responsável | Pendências |
 | --- | --- |
-| Daniel | Revisar o [PR #150](https://github.com/nunesd66/cartao-visitas-bruna/pull/150), disponibilizar a evidência de processamento do sitemap (N3) e os indicadores autorizados quando houver dados suficientes (N4/N5), indicar quem acompanha a operação (N5) e enviar o esboço do favicon. |
+| Daniel | Revisar os PRs [#150](https://github.com/nunesd66/cartao-visitas-bruna/pull/150) e [#152](https://github.com/nunesd66/cartao-visitas-bruna/pull/152), disponibilizar a evidência de processamento do sitemap (N3) e os indicadores autorizados quando houver dados suficientes (N4/N5), indicar quem acompanha a operação (N5). |
 | Bruna | Obter, com quem administra a ficha do Google, o link direto para solicitar avaliações (N3). Dar o aceite visual, confirmar a hipótese prioritária e indicar a pessoa representativa para o teste de tarefa (N4). |
-| Codex | Conferir a execução agendada de 27/11 e repetir o Lighthouse sem o proxy em runner compatível. Retomar a inspeção manual com leitor de tela. Validar o CTA com o link oficial e analisar os dados quando disponíveis. |
+| Codex | Conferir a publicação dos PRs #150 e #152 e repetir o Lighthouse sem o proxy em runner compatível. Retomar a inspeção manual com leitor de tela. Validar o CTA com o link oficial e analisar os dados quando disponíveis. |
 
 ### Prioridades de entrega
 
