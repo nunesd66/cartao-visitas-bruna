@@ -25,6 +25,10 @@
   border-top: 0.0625rem solid var(--color-border);
 }
 
+.faq-question {
+  grid-area: question;
+}
+
 @media (max-width: 47.999rem) {
   .faq__grid {
     display: flex;

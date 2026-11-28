@@ -1,0 +1,17 @@
+      <section class="section booking" id="agendamento" aria-labelledby="booking-title" tabindex="-1">
+        <div class="container">
+          <div class="section-heading section-heading--center">
+            <h2 id="booking-title">Quando você pode ser atendida?</h2>
+            <p>Informe sua disponibilidade no formulário. A mensagem fica pronta para você enviar à Bruna pelo WhatsApp e combinar um horário.</p>
+          </div>
+          <form class="whatsapp-form" data-whatsapp-form="availability" hidden>
+            <label for="booking-availability">Dias e horários disponíveis</label>
+            <p class="booking__example" id="booking-availability-example">Exemplo: de segunda a sexta, das 17h às 19h.</p>
+            <textarea id="booking-availability" rows="3" maxlength="500" aria-describedby="booking-availability-example" required></textarea>
+            <button class="button button--small" type="submit">Consultar horários pelo WhatsApp</button>
+          </form>
+          <noscript>
+            <p class="booking__fallback"><a href="https://wa.me/5534992797055?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio.">Informe sua disponibilidade diretamente pelo WhatsApp</a>.</p>
+          </noscript>
+        </div>
+      </section>
