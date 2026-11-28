@@ -5,17 +5,18 @@ import { initializeWhatsAppForm } from './index.js';
 
 test('formulário de dúvidas permanece oculto sem JS e não serializa o texto', () => {
   const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
-  const form = html.match(/<form\b([^>]*\bdata-whatsapp-form\b[^>]*)>([\s\S]*?)<\/form>/i);
-  assert.ok(form, 'Formulário de dúvidas não encontrado');
-  assert.match(form[1], /\shidden(?:\s|$)/i, 'Expor o formulário somente após registrar o envio pelo WhatsApp');
-
-  const questionField = form[2].match(/<textarea\b[^>]*>/i)?.[0];
-  assert.ok(questionField, 'Campo de dúvidas não encontrado');
-  assert.doesNotMatch(questionField, /\sname\s*=/i, 'Impedir que o navegador serialize a dúvida no envio nativo');
+  const forms = [...html.matchAll(/<form\b([^>]*\bdata-whatsapp-form\b[^>]*)>([\s\S]*?)<\/form>/gi)];
+  assert.equal(forms.length, 2);
+  for (const [, attributes, contents] of forms) {
+    assert.match(attributes, /\shidden(?:\s|$)/i);
+    const field = contents.match(/<textarea\b[^>]*>/i)?.[0];
+    assert.ok(field);
+    assert.doesNotMatch(field, /\sname\s*=/i);
+  }
 });
 
 
-test('pergunta via WhatsApp é codificada e não é enviada quando está vazia', () => {
+function setupForm(whatsappForm) {
   const submissions = [];
   const inputHandlers = new Map();
   let validityMessage;
@@ -30,6 +31,7 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
   };
   const handlers = new Map();
   const form = {
+    dataset: { whatsappForm },
     hidden: true,
     querySelector: () => questionField,
     addEventListener(type, callback) { handlers.set(type, callback); },
@@ -40,16 +42,20 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
   const window = { open(...args) { submissions.push(args); } };
   initializeWhatsAppForm({ document, window });
   assert.equal(form.hidden, false);
+  return { questionField, inputHandlers, handlers, submissions, validity: () => ({ validityMessage, reports }) };
+}
+
+test('pergunta via WhatsApp é codificada e não é enviada quando está vazia', () => {
+  const { questionField, inputHandlers, handlers, submissions, validity } = setupForm('');
   let prevented = 0;
   const submit = () => handlers.get('submit')({ preventDefault() { prevented++; } });
   questionField.value = '  ';
   submit();
   assert.equal(submissions.length, 0);
-  assert.equal(validityMessage, 'Digite sua dúvida antes de enviar.');
-  assert.equal(reports, 1);
+  assert.deepEqual(validity(), { validityMessage: 'Digite sua dúvida antes de enviar.', reports: 1 });
   questionField.value = 'Pode ser às 9h? & sábado #1';
   inputHandlers.get('input')();
-  assert.equal(validityMessage, '');
+  assert.equal(validity().validityMessage, '');
   submit();
   assert.equal(prevented, 2);
   assert.equal(submissions.length, 1);
@@ -60,4 +66,22 @@ test('pergunta via WhatsApp é codificada e não é enviada quando está vazia',
   assert.ok(parsed.searchParams.get('text').includes('Pode ser às 9h? & sábado #1'));
   assert.equal(target, '_blank');
   assert.equal(features, 'noopener,noreferrer');
+});
+
+test('disponibilidade mantém horários e quebras de linha na mensagem do WhatsApp', () => {
+  const { questionField, handlers, submissions, validity } = setupForm('availability');
+  const submit = () => handlers.get('submit')({ preventDefault() {} });
+  questionField.value = '  ';
+  submit();
+  assert.deepEqual(validity(), {
+    validityMessage: 'Informe os dias e horários em que você pode ser atendida.',
+    reports: 1,
+  });
+  assert.equal(submissions.length, 0);
+
+  questionField.value = '  Segunda a sexta, das 17h às 19h\nSábado, às 9h & às 11h  ';
+  submit();
+  const url = new URL(submissions[0][0]);
+  assert.equal(url.pathname, '/5534992797055');
+  assert.equal(url.searchParams.get('text'), 'Olá! Gostaria de agendar um horário. Minha disponibilidade:\nSegunda a sexta, das 17h às 19h\nSábado, às 9h & às 11h\nVocê tem algum horário disponível nesse período?');
 });

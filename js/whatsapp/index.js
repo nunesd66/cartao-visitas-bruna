@@ -2,6 +2,7 @@ export function initializeWhatsAppForm({ window, document }) {
   document.querySelectorAll('[data-whatsapp-form]').forEach((form) => {
     const questionField = form.querySelector('textarea');
     if (!questionField) return;
+    const isAvailability = form.dataset.whatsappForm === 'availability';
 
     const resizeQuestionField = () => {
       questionField.style.height = 'auto';
@@ -14,13 +15,17 @@ export function initializeWhatsAppForm({ window, document }) {
 
     form.addEventListener('submit', (event) => {
       event.preventDefault();
-      const question = questionField.value.trim();
-      if (!question) {
-        questionField.setCustomValidity('Digite sua dúvida antes de enviar.');
+      const text = questionField.value.trim();
+      if (!text) {
+        questionField.setCustomValidity(isAvailability
+          ? 'Informe os dias e horários em que você pode ser atendida.'
+          : 'Digite sua dúvida antes de enviar.');
         questionField.reportValidity();
         return;
       }
-      const message = `Olá! Tenho uma dúvida: ${question}`;
+      const message = isAvailability
+        ? `Olá! Gostaria de agendar um horário. Minha disponibilidade:\n${text}\nVocê tem algum horário disponível nesse período?`
+        : `Olá! Tenho uma dúvida: ${text}`;
       const url = `https://wa.me/5534992797055?text=${encodeURIComponent(message)}`;
       window.open(url, '_blank', 'noopener,noreferrer');
     });
