@@ -1,0 +1,15 @@
+# N5 — Mapa de manutenção do site
+
+| O que mudou | Onde editar | O que conferir |
+| --- | --- | --- |
+| Apresentação e números da Bruna | [Seção Sobre](../src/sections/about/about.html) | Texto e números aprovados pela Bruna. Conferir leitura no celular. |
+| Serviços, legendas e fotos | [Seção Serviços](../src/sections/services/services.html), [imagens](../images/) e [módulo de rotação](../js/services/index.js) | Legendas aprovadas, fotos autorizadas, texto alternativo, rotação de 2 segundos e preferência de movimento reduzido. Preservar a foto original ao preparar versões para a web. |
+| Botões de agendamento e contato | [Cabeçalho](../src/sections/header/header.html), [abertura](../src/sections/hero/hero.html), [serviços](../src/sections/services/services.html), [chamada final](../src/sections/final-cta/final-cta.html) e [contato flutuante](../src/components/floating-contact/floating-contact.html) | Conferir número, texto decodificado do WhatsApp e identificação de cada CTA. Se o número mudar, conferir também o [formulário da FAQ](../js/whatsapp/index.js), o [aviso de privacidade](../src/components/privacy/privacy.html) e os dados estruturados em `src/index.html`. |
+| Telefone, endereço, horários e mapa | [Seção Contato](../src/sections/contact/contact.html) e [dados estruturados](../src/index.html) | Os dados visíveis, o destino do Maps e os dados estruturados devem corresponder aos canais aprovados. O mapa só carrega após acionamento. |
+| Depoimentos e avaliações | [Seção Depoimentos](../src/sections/testimonials/testimonials.html) e [módulo do carrossel](../js/carousel/index.js) | Conferir autorizações, fonte da avaliação e abertura do link sem deslocamento causado pelo clique. Para o botão de avaliação geral, usar o endereço confirmado pelo responsável pela ficha do Google. |
+| Privacidade e analytics | [Aviso](../src/components/privacy/privacy.html), [consentimento](../js/privacy.js) e [analytics](../js/analytics.js) | Conferir aceite, recusa, revogação e parâmetros permitidos. Interceptar integrações durante testes para evitar dados sintéticos no GA4 real. |
+| Título, favicon e SEO | [Documento principal](../src/index.html), [imagens](../images/), [sitemap](../sitemap.xml) e [robots](../robots.txt) | Conferir título da aba, carregamento dos ícones, canonical, dados estruturados e sitemap. Confirmar o processamento da propriedade no Search Console quando houver acesso autorizado. |
+
+Bruna confirma conteúdo comercial, fotos e canais. Daniel confirma a aprovação da alteração e indica a pessoa responsável pela operação. Quem mantém o site executa os testes, registra o SHA publicado e acompanha o smoke. A indicação da pessoa responsável ainda está pendente.
+
+Após alterar os fontes, atualizar o HTML com `npm run build:html` e o CSS com `npm run build:css` quando aplicável. Conferir `npm test`, `node scripts/check-local-assets.mjs` e `npm run build`. A pasta `dist/` é gerada no build. O [roteiro de publicação e recuperação](verificacao-release.md) descreve a comparação com o SHA publicado e o rollback.

@@ -23,7 +23,7 @@ Não publicar métricas de conversão como se fossem agendamentos: cliques no Wh
 | Prioridade | Entrega isolável | Verificação e evidência | Dependência |
 | --- | --- | --- | --- |
 | Alta | Checklist de release e rollback para GitHub Pages | SHA, URLs HTTP, checks de assets, procedimento de `git revert` | N3 smoke e publicação |
-| Alta | Mapa de manutenção e responsabilidade de conteúdo | Local de edição, riscos de regressão e validação da responsável | Revisão de dados comerciais |
+| Alta | [Mapa de manutenção e responsabilidade de conteúdo](n5-manutencao.md) | Local de edição, riscos de regressão e validação da responsável | Revisão de dados comerciais |
 | Média | Orçamento de performance com baseline real | Lighthouse mobile/desktop com SHA; diferenças documentadas | Medição em produção |
 | Média | [Política de revisão de terceiros e dependências](n5-revisao-dependencias.md) | Scripts, permissões, atualização do Sass, privacidade e links | Revisão técnica |
 | Baixa | Plano de observabilidade sem coleta excessiva | Métricas de operação e consentimento aprovadas | Avaliar necessidade e LGPD |
