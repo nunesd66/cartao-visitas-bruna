@@ -1198,7 +1198,7 @@ body:has(.mobile-nav[open]) {
 
 .faq__grid {
   display: grid;
-  grid-template-areas: "intro" "list" "question" "booking";
+  grid-template-areas: "intro" "list" "question";
   gap: 2.5rem;
 }
 
@@ -1214,6 +1214,10 @@ body:has(.mobile-nav[open]) {
 .faq__list {
   grid-area: list;
   border-top: 0.0625rem solid var(--color-border);
+}
+
+.faq-question {
+  grid-area: question;
 }
 
 @media (max-width: 47.999rem) {
@@ -1361,6 +1365,23 @@ body:has(.mobile-nav[open]) {
 
 .final-cta .button:active {
   transform: translateY(0) scale(0.99);
+}
+
+.booking {
+  background: var(--color-surface);
+}
+
+.booking .section-heading p {
+  margin-inline: auto;
+}
+
+.booking__example {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.booking__fallback {
+  text-align: center;
 }
 
 .contact {
@@ -2065,9 +2086,8 @@ body:has(.mobile-nav[open]) {
     grid-area: auto;
   }
 }
-.faq-question:not([hidden]) {
+.whatsapp-form:not([hidden]) {
   display: grid;
-  grid-area: question;
   gap: 0.65rem;
   justify-self: center;
   width: 100%;
@@ -2075,22 +2095,13 @@ body:has(.mobile-nav[open]) {
   margin: 0.5rem auto 0;
 }
 
-.faq-question label {
+.whatsapp-form label {
   color: var(--color-text);
   font-size: 0.92rem;
   font-weight: 750;
 }
 
-.faq-question--booking:not([hidden]) {
-  grid-area: booking;
-}
-
-.faq-question--booking p {
-  margin: 0;
-  color: var(--color-text-muted);
-}
-
-.faq-question textarea {
+.whatsapp-form textarea {
   width: 100%;
   min-height: 6rem;
   overflow-y: hidden;
@@ -2103,11 +2114,11 @@ body:has(.mobile-nav[open]) {
   resize: none;
 }
 
-.faq-question button[type=submit] {
+.whatsapp-form button[type=submit] {
   cursor: pointer;
 }
 
-.faq-question button[type=submit]:active {
+.whatsapp-form button[type=submit]:active {
   border-color: var(--color-primary-dark);
   background: var(--color-primary-dark);
   box-shadow: inset 0 0.15rem 0.3rem rgba(0, 0, 0, 0.24);
@@ -2115,7 +2126,7 @@ body:has(.mobile-nav[open]) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .faq-question button[type=submit]:is(:hover, :active) {
+  .whatsapp-form button[type=submit]:is(:hover, :active) {
     transform: none;
   }
 }

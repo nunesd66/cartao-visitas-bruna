@@ -7,8 +7,7 @@
   grid-template-areas:
     "intro"
     "list"
-    "question"
-    "booking";
+    "question";
   gap: 2.5rem;
 }
 
@@ -24,6 +23,10 @@
 .faq__list {
   grid-area: list;
   border-top: 0.0625rem solid var(--color-border);
+}
+
+.faq-question {
+  grid-area: question;
 }
 
 @media (max-width: 47.999rem) {

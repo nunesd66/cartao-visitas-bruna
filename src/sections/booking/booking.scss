@@ -1,0 +1,16 @@
+.booking {
+  background: var(--color-surface);
+}
+
+.booking .section-heading p {
+  margin-inline: auto;
+}
+
+.booking__example {
+  margin: 0;
+  color: var(--color-text-muted);
+}
+
+.booking__fallback {
+  text-align: center;
+}

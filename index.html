@@ -492,16 +492,10 @@
               </p>
             </details>
           </div>
-          <form class="faq-question" data-whatsapp-form hidden>
+          <form class="whatsapp-form faq-question" data-whatsapp-form hidden>
             <label for="faq-question-input">Ainda tem uma dúvida específica?</label>
             <textarea id="faq-question-input" rows="3" maxlength="500" placeholder="Escreva sua dúvida aqui..." required></textarea>
             <button class="button button--small" type="submit">Enviar dúvida pelo WhatsApp</button>
-          </form>
-          <form class="faq-question faq-question--booking" data-whatsapp-form="availability" hidden>
-            <label for="booking-availability">Quais dias e horários você tem disponíveis?</label>
-            <p id="booking-availability-example">Exemplo: de segunda a sexta, das 17h às 19h.</p>
-            <textarea id="booking-availability" rows="3" maxlength="500" aria-describedby="booking-availability-example" required></textarea>
-            <button class="button button--small" type="submit">Consultar horários pelo WhatsApp</button>
           </form>
         </div>
       </section>
@@ -513,7 +507,26 @@
           <p>Agende seu atendimento ou tire suas dúvidas pelo WhatsApp.</p>
           <div class="button-group button-group--center">
             <a class="button button--light" data-analytics-event="whatsapp_booking_click" data-analytics-location="final_cta" href="https://wa.me/5534992797055?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio." target="_blank" rel="noopener noreferrer"><svg class="whatsapp-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20.5 11.7a8.4 8.4 0 0 1-12.4 7.4L3.5 20l.9-4.4A8.4 8.4 0 1 1 20.5 11.7Z"/><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.198-.347.223-.644.075-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.52.149-.174.198-.298.297-.496.1-.198.05-.372-.025-.52-.074-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.875 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.262.489 1.693.626.711.226 1.358.194 1.87.118.57-.085 1.758-.719 2.006-1.413.248-.694.248-1.288.173-1.412-.074-.124-.272-.198-.57-.347z"/></svg><span>Vamos marcar meu momento</span></a>
+            <a class="button button--light" href="#agendamento">Informar meus horários</a>
           </div>
+        </div>
+      </section>
+
+      <section class="section booking" id="agendamento" aria-labelledby="booking-title" tabindex="-1">
+        <div class="container">
+          <div class="section-heading section-heading--center">
+            <h2 id="booking-title">Quando você pode ser atendida?</h2>
+            <p>Informe sua disponibilidade no formulário. A mensagem fica pronta para você enviar à Bruna pelo WhatsApp e combinar um horário.</p>
+          </div>
+          <form class="whatsapp-form" data-whatsapp-form="availability" hidden>
+            <label for="booking-availability">Dias e horários disponíveis</label>
+            <p class="booking__example" id="booking-availability-example">Exemplo: de segunda a sexta, das 17h às 19h.</p>
+            <textarea id="booking-availability" rows="3" maxlength="500" aria-describedby="booking-availability-example" required></textarea>
+            <button class="button button--small" type="submit">Consultar horários pelo WhatsApp</button>
+          </form>
+          <noscript>
+            <p class="booking__fallback"><a href="https://wa.me/5534992797055?text=Ol%C3%A1%21%20Gostaria%20de%20agendar%20um%20hor%C3%A1rio.">Informe sua disponibilidade diretamente pelo WhatsApp</a>.</p>
+          </noscript>
         </div>
       </section>
 
