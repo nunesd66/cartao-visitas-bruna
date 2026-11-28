@@ -3,6 +3,15 @@ import { readFileSync } from 'node:fs';
 import test from 'node:test';
 import { initializeWhatsAppForm } from './index.js';
 
+test('botão principal de agendamento abre a mensagem de agendamento', () => {
+  const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
+  const heroLink = html.match(/<a\b[^>]*data-analytics-location="hero"[^>]*>/)?.[0];
+  assert.ok(heroLink);
+  const url = new URL(heroLink.match(/\bhref="([^"]+)"/)[1]);
+  assert.equal(url.origin + url.pathname, 'https://wa.me/5534992797055');
+  assert.equal(url.searchParams.get('text'), 'Olá! Gostaria de agendar um horário.');
+});
+
 test('formulário de dúvidas permanece oculto sem JS e não serializa o texto', () => {
   const html = readFileSync(new URL('../../index.html', import.meta.url), 'utf8');
   const forms = [...html.matchAll(/<form\b([^>]*\bdata-whatsapp-form\b[^>]*)>([\s\S]*?)<\/form>/gi)];
